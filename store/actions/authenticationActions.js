@@ -1,0 +1,2 @@
+export const SET_AUTHENTICATION = 'SET_AUTHENTICATION'
+export const SET_LOGOUT = 'SET_LOGOUT'
