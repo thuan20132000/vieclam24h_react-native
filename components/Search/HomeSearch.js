@@ -12,6 +12,7 @@ const HomeSearch = () => {
             placeholder="Search"
             onChangeText={onChangeSearch}
             value={searchQuery}
+            
         />
     );
 }

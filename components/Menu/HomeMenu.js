@@ -7,7 +7,6 @@ const HomeMenu = () => {
 
     const menuItems = Array(6).fill({});
 
-
     return (
         <View style={styles.container}>
             {
@@ -21,7 +20,7 @@ const HomeMenu = () => {
                             size={30}
                             onPress={() => console.log('Pressed')}
                         />
-                        <Text style={{fontSize:12}}>Sửa chửa dân dụng</Text>
+                        <Text style={{fontSize:12}}>Danh Mục Mo</Text>
                     </TouchableOpacity>
                 ))
             }
