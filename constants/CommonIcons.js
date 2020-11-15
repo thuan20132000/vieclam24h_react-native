@@ -11,4 +11,6 @@ export default {
     chatMessage:'message-processing-outline',
     historyJob:'playlist-edit',
     search:'magnify',
+    backArrow:'arrow-left-bold',
+    
 }

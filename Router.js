@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React,{useState} from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -19,15 +19,36 @@ import CustomerHomeScreen from './screens/CustomerHomeScreen';
 import CollaboratorHomeScreen from './screens/CollaboratorHomeScreen';
 import CustomerJobScreen from './screens/CustomerJobScreen';
 import JobCollaboratorScreen from './screens/JobCollaboratorScreen';
+import ChatScreen from './screens/ChatScreen';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
 
 
-function DetailScreen() {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Detail Screen</Text>
-        </View>
-    );
-}
+/**
+ * Authentication Stack
+ */
+
+ const AuthenticationStackNavigator = createStackNavigator();
+ function AuthenticationStack(){
+     return (
+         <AuthenticationStackNavigator.Navigator>
+             <AuthenticationStackNavigator.Screen
+                name="login"
+                component={LoginScreen}
+             />
+             <AuthenticationStackNavigator.Screen
+                name="register"
+                component={RegisterScreen}
+             />
+         </AuthenticationStackNavigator.Navigator>
+     )
+ }
+
+
+
+
+
+
 
 /**
  * Home Stack
@@ -195,7 +216,7 @@ function TabNavigator() {
                 name="CustomerJob"
                 component={CustomerJobStack}
             />
-            <BottomTabNavigator.Screen name="Messages" component={DetailScreen} />
+            <BottomTabNavigator.Screen name="Messages" component={ChatScreen} />
             <BottomTabNavigator.Screen name="Accounts" component={AccountStack} />
         </BottomTabNavigator.Navigator>
     );
@@ -206,9 +227,19 @@ function TabNavigator() {
 // Main
 
 const Router = () => {
+
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
+
+
+
     return (
         <NavigationContainer>
-            <TabNavigator />
+            {
+                isAuthenticated ?
+                <TabNavigator /> :
+                <AuthenticationStack/>
+
+            }
         </NavigationContainer>
     )
 }

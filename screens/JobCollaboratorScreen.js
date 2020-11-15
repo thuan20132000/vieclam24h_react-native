@@ -60,8 +60,12 @@ const JobInidicatorItem = () => {
                         backgroundColor: "#000"
                     }
                 }}
+                dragFromTopOnly={true}
+                
             >
-                <CollaboratorInformation/>
+                <CollaboratorInformation
+                    _refCollaboratorInformation = {_refCollaboratorInformation}
+                />
             </RBSheet>
         </View>
     )

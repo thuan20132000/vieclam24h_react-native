@@ -1,6 +1,8 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Avatar, Divider, List, Subheading, Title } from 'react-native-paper'
+import { ScrollView } from 'react-native-gesture-handler'
+import { Avatar, Button, Divider, List, Subheading, Title } from 'react-native-paper'
+import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
 
 const AccountScreen = (props) => {
@@ -10,7 +12,7 @@ const AccountScreen = (props) => {
 
 
     return (
-        <View>
+        <ScrollView>
             <View style={styles.userCardContainer}>
                 <Avatar.Image
                     size={88}
@@ -25,19 +27,49 @@ const AccountScreen = (props) => {
             <List.Item
                 title="Hồ Sơ Cá Nhân"
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                onPress={()=>navigation.navigate('CollaboratorProfile')}
+                onPress={() => navigation.navigate('CollaboratorProfile')}
+            />
+            <List.Item
+                title="Thông Tin Thanh Toán"
+                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                onPress={() => console.warn('ds')}
             />
             <List.Item
                 title="Lịch Sử Ứng Tuyển"
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                onPress={()=>console.warn('ds')}
+                onPress={() => console.warn('ds')}
             />
             <List.Item
-                title="Cài Đặt"
+                title="Thông Báo"
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                onPress={()=>console.warn('ds')}
+                onPress={() => console.warn('ds')}
             />
-        </View>
+            <List.Item
+                title="Trợ Giúp"
+                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                onPress={() => console.warn('ds')}
+            />
+            <List.Item
+                title="Đổi Mật Khẩu"
+                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                onPress={() => console.warn('ds')}
+            />
+            <List.Item
+                title="Đã Lưu"
+                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                onPress={() => console.warn('ds')}
+            />
+            <View style={styles.buttonLogoutWrap}>
+                <Button  style={styles.buttonLogout}
+                    mode="contained" 
+                    color={CommonColors.primary}
+                    onPress={() => console.log('Pressed')}
+                >
+                    Đăng Xuất
+                </Button>
+
+            </View>
+        </ScrollView>
     )
 }
 
@@ -53,6 +85,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: 16
     },
+    buttonLogoutWrap:{
+        marginVertical:16,
+    },
+    buttonLogout:{
+        width:220,
+        alignSelf:'center'
+    }
 
 
 })
