@@ -78,7 +78,6 @@ const RegisterScreen = (props) => {
             </View>
 
 
-
         </View>
     )
 }

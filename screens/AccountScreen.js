@@ -1,14 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Avatar, Button, Divider, List, Subheading, Title } from 'react-native-paper'
+import { useDispatch } from 'react-redux'
 import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
+
+import * as userActions from '../store/actions/authenticationActions';
 
 const AccountScreen = (props) => {
     const {
         navigation
     } = props;
+
+    const dispatch = useDispatch();
+
+    const [isLoading,setIsLoading] = useState(false);
+
+    const _logout = async () => {
+        setIsLoading(true);
+        await dispatch(userActions.logout());
+        setIsLoading(false);
+    }
 
 
     return (
@@ -63,7 +76,7 @@ const AccountScreen = (props) => {
                 <Button  style={styles.buttonLogout}
                     mode="contained" 
                     color={CommonColors.primary}
-                    onPress={() => console.log('Pressed')}
+                    onPress={_logout}
                 >
                     Đăng Xuất
                 </Button>

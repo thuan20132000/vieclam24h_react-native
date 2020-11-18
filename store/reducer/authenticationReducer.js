@@ -1,29 +1,34 @@
 
-import {SET_AUTHENTICATION, SET_LOGOUT} from '../actions/authenticationActions';
+import {LOGIN, LOGOUT} from '../actions/authenticationActions';
 
 const initialState = {
     userInformation:'',
-    access_token:'',
+    access_token:null,
 }
 
 
 
 export default (state = initialState,action) => {
     switch (action.type) {
-        case SET_AUTHENTICATION:
-            var userAuth = action.data
+        case LOGIN:
+            var email = String(action.email).toLocaleLowerCase();
+            var password = String(action.password).toLocaleLowerCase();
             
-            if(userAuth){
-                state.access_token = userAuth.access_token;
-                state.userInformation = userAuth
+            if(email==='admin@gmail.com' && password==='admin'){
+                state.access_token = 'adminadmin';
+                state.userInformation = {
+                    email:email,
+                }
             }
-            break;
+            return state;
         
 
-        case SET_LOGOUT:
-            state.access_token = null;
+        case LOGOUT:
+            
             state.userInformation = null;
-            break;
+            state.access_token = null;
+            
+            return state;
 
         default:
             break;

@@ -1,19 +1,22 @@
 import React from 'react'
-import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity,Image } from 'react-native'
 import { IconButton } from 'react-native-paper'
 
-const MenuItem = ({index}) => {
+const MenuItem = ({ index, item,navigation }) => {
+
     return (
         <TouchableOpacity key={index}
             style={styles.menuItem}
+            onPress={()=>navigation.navigate('JobList')}
         >
-            <IconButton
-                icon="camera"
-                color={'coral'}
-                size={30}
-                onPress={() => console.log('Pressed')}
+            <Image
+                style={{width:60,height:60}}
+                source={{
+                    uri: item.image,
+                }}
             />
-            <Text style={{ fontSize: 12 }}>Danh Mục Mo</Text>
+
+            <Text style={{ fontSize: 11 }}>{item.name}</Text>
         </TouchableOpacity>
     )
 }
@@ -25,5 +28,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        margin:8
     }
 })

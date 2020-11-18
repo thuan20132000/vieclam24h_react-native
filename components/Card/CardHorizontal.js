@@ -1,27 +1,30 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph,Caption } from 'react-native-paper';
 
 
 
 
 
-const CardHorizontal = () => {
+const CardHorizontal = ({index,item,onPress}) => {
+
+
     return (
         <View style={styles.cardContainer}>
             <Card.Cover style={styles.cardImage}
-                source={{ uri: 'https://picsum.photos/700' }}
+                source={{ uri:item.attributes.images[0]?.image_url || 'https://picsum.photos/700'  }}
             />
             <Card.Content style={styles.cardContent}>
-                <Title>Card title</Title>
-                <Paragraph>Card content</Paragraph>
+                <Title style={{fontSize:16}}>{item.attributes.name}</Title>
+                <Paragraph>{item.attributes.description}</Paragraph>
                 <Card.Actions>
                     <Button
-                        onPress={()=>console.warn('fs')}
+                        onPress={()=>onPress(item.id)}
                     >
                         Chi Tiêt
                     </Button>
                 </Card.Actions>
+                <Caption>{item.attributes.suggestion_price}</Caption>
             </Card.Content>
         </View>
 

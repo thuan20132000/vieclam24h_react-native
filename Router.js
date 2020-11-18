@@ -1,4 +1,4 @@
-import  React,{useState} from 'react';
+import  React,{useState,useEffect} from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -6,6 +6,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from './constants/CommonIcons';
+
+//redux
+import {useSelector} from 'react-redux';
+ 
+
 
 // Screen
 import HomeScreen from './screens/CollaboratorHomeScreen';
@@ -22,7 +27,13 @@ import JobCollaboratorScreen from './screens/JobCollaboratorScreen';
 import ChatScreen from './screens/ChatScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
+import JobListScreen from './screens/JobListScreen';
 
+
+
+
+// reducer
+import * as userActions from './store/actions/authenticationActions';
 
 /**
  * Authentication Stack
@@ -83,6 +94,10 @@ function CollaboratorHomeStack(){
             <CollaboratorHomeStackNavigator.Screen
                 name="Search"
                 component={SearchScreen}
+            />
+            <CollaboratorHomeStackNavigator.Screen
+                name="JobList"
+                component={JobListScreen}
             />
         </CollaboratorHomeStackNavigator.Navigator>
     )
@@ -188,8 +203,7 @@ function TabNavigator() {
                     }else {
                         iconName = CommonIcons.newsPaper
                     }
-                    
-
+    
                     // You can return any component that you like here!
                     return <MaterialCommunityIcon name={iconName} size={size} color={color} />;
                 },
@@ -228,7 +242,18 @@ function TabNavigator() {
 
 const Router = () => {
 
-    const [isAuthenticated,setIsAuthenticated] = useState(false);
+    const [isAuthenticated,setIsAuthenticated] = useState(true);
+    const userAccesstoken = useSelector(state => state.authentication.access_token);
+
+    useEffect(() => {
+
+        if(userAccesstoken){
+            setIsAuthenticated(true);
+
+        }else{
+            setIsAuthenticated(false);
+        }
+    }, [userAccesstoken]);
 
 
 

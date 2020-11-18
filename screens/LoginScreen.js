@@ -1,14 +1,39 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Button, Title } from 'react-native-paper'
+import { ActivityIndicator, Button, Title } from 'react-native-paper'
+import { useDispatch } from 'react-redux';
 import CommonColors from '../constants/CommonColors';
 
+
+
+import * as userActions from '../store/actions/authenticationActions';
+
 const LoginScreen = (props) => {
+    
     const {
         navigation
     } = props;
-    const [value, onChangeText] = useState();
+    
+    const dispatch = useDispatch();
+    const [userAuth, setUserAuth] = useState({
+        email: '',
+        password: ''
+    });
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const _login = async () => {
+
+        try {
+            setIsLoading(true);
+            dispatch(userActions.login(userAuth.email,userAuth.password));
+            setIsLoading(false);
+        } catch (error) {
+            console.warn("ERROR :", error);
+        }
+
+    }
 
     return (
         <View style={styles.container}>
@@ -22,22 +47,27 @@ const LoginScreen = (props) => {
             <View style={styles.loginForm}>
                 <TextInput
                     style={[styles.inputLogin, {}]}
-                    onChangeText={text => onChangeText(text)}
-                    value={value}
+                    onChangeText={text => setUserAuth({ ...userAuth, email: text })}
+                    value={userAuth.email}
                     placeholder={'Email'}
 
                 />
                 <TextInput
                     style={[styles.inputLogin, {}]}
-                    onChangeText={text => onChangeText(text)}
-                    value={value}
+                    onChangeText={text => setUserAuth({ ...userAuth, password: text })}
+                    value={userAuth.password}
                     placeholder={'Password'}
+                    secureTextEntry={true}
 
                 />
                 <TouchableOpacity style={styles.buttonSubmit}
-
+                    onPress={_login}
                 >
-                    <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Nhập</Text>
+                    {
+                        isLoading ? <ActivityIndicator/>:
+                        <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Nhập</Text>
+
+                    }
                 </TouchableOpacity>
             </View>
             <View style={styles.socialNetworkLogin}>
