@@ -42,7 +42,6 @@ const CollaboratorHomeScreen = (props) => {
     const _getJobs = async () => {
         setIsLoading(true);
         let data = await getJobs();
-        console.warn(data.data);
         if(data.data.length > 0 ){
             setJobs(data.data);
         }
@@ -77,7 +76,7 @@ const CollaboratorHomeScreen = (props) => {
 
             {/* Job List */}
             <View style={styles.vericleListContainer}>
-                <Subheading style={{ paddingHorizontal: 12 }}>Việc làm vừa đăng</Subheading>
+                <Subheading style={{ paddingHorizontal: 12 }}>Việc làm dành cho bạn</Subheading>
 
                 {
                     jobs &&

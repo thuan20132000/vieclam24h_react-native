@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
+import { ActivityIndicator } from 'react-native-paper';
 import CardHorizontal from '../components/Card/CardHorizontal';
 
 import { getJobs } from '../utils/serverApi';
@@ -14,7 +15,6 @@ const JobListScreen = (props) => {
     const _getJobs = async () => {
         setIsLoading(true);
         let data = await getJobs();
-        console.warn(data.data);
         if (data.data.length > 0) {
             setJobs(data.data);
         }
@@ -33,20 +33,22 @@ const JobListScreen = (props) => {
         <ScrollView
             style={{ display: 'flex', flexDirection: 'column', flex: 1 }}
         >
-            <View>
                 {
-                    jobs &&
+                    jobs.length > 0?
                     jobs.map((e, index) => 
                         <CardHorizontal
                             {...props}
                             item={e}
+                            key={index.toString()}
                             index={index}
                             onPress={_navigateToJobDetail}
                         />
-                    )
+                    ):
+                    <ActivityIndicator 
+                        size={24}
+                        style={{marginVertical:32}}
+                    />
                 }
-            </View>
-
 
         </ScrollView>
     )

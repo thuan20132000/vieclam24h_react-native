@@ -39,6 +39,43 @@ export const getCategory = async () => {
 }
 
 
+/**
+ * author:thuantruong
+ * description: get all occupations
+ * created_at:18/11/2020
+ * 
+ */
+
+export const getOccupations = async (category_id = '') => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/occupation?category=${category_id}`);
+
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT FETCH JOBS');
+
+            return {
+                data: [],
+                message: 'error'
+            }
+        }
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success'
+        }
+
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error
+        }
+    }
+}
+
+
 
 
 /**
@@ -131,7 +168,7 @@ export const getJobDetail = async (id) => {
  * created_at:18/11/2020
  */
 
-export const applyJob = async (user_id,job_id,expected_price,description="") => {
+export const applyJob = async (user_id, job_id, expected_price, description = "") => {
 
     try {
         let url = serverConfig.url;
@@ -144,22 +181,22 @@ export const applyJob = async (user_id,job_id,expected_price,description="") => 
             body: JSON.stringify({
                 "expected_price": expected_price,
                 "description": description,
-                "user_id":user_id,
+                "user_id": user_id,
                 "job_id": job_id
             })
         });
 
-        if(!dataFetch.ok){
+        if (!dataFetch.ok) {
             return {
-                data:null,
-                message:dataFetch
+                data: null,
+                message: dataFetch
             }
         }
 
         let dataRes = await dataFetch.json();
         return {
             data: dataRes,
-            message: 'success' 
+            message: 'success'
         }
     } catch (error) {
         return {
