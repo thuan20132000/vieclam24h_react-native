@@ -4,14 +4,13 @@ export const LOGOUT = 'LOGOUT'
 
 
 
-export const login = (email,password) => {
-
+export const login = (data) => {
     return async (dispatch) => {
         try {
+
             dispatch({
                 type:LOGIN,
-                email:email,
-                password:password
+                data:data
             })
         } catch (error) {
             console.warn(error);

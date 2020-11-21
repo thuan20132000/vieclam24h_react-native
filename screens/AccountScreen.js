@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Avatar, Button, Divider, List, Subheading, Title } from 'react-native-paper'
-import { useDispatch } from 'react-redux'
+import { Avatar, Button, Caption, Divider, List, Subheading, Title } from 'react-native-paper'
+import { useDispatch,useSelector } from 'react-redux'
 import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
 
@@ -12,6 +12,13 @@ const AccountScreen = (props) => {
     const {
         navigation
     } = props;
+    const {userInformation} = useSelector(state => state.authentication);
+
+    const [userAttributes,setUserAttributes] = useState();
+    
+    useEffect(() => {
+        setUserAttributes(userInformation.attributes);
+    }, [])
 
     const dispatch = useDispatch();
 
@@ -32,8 +39,9 @@ const AccountScreen = (props) => {
                     source={require('../assets/images/avatar1.jpg')}
                 />
                 <View style={styles.userInfor}>
-                    <Title>Thuan</Title>
-                    <Subheading>104 le van thinh</Subheading>
+                    <Title>{userAttributes?.name}</Title>
+                    <Subheading>{userAttributes?.address}</Subheading>
+                    <Caption>{userAttributes?.idcard}</Caption>
                 </View>
             </View>
             <Divider />

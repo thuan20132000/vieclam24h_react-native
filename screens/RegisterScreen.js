@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { Button, Paragraph, Dialog, Portal, Title, RadioButton, Drawer } from 'react-native-paper';
+import { Button, Paragraph, Dialog, Portal, Title, RadioButton, Drawer, ActivityIndicator, HelperText } from 'react-native-paper';
 import CommonColors from '../constants/CommonColors';
 
-import { getProvince, getDistrict, getSubdistrict } from './../utils/locationApi';
+import { register } from '../utils/serverApi';
 
 import LocationPicker from '../components/LocationPicker/LocationPicker';
 import OccupationSelection from '../components/Selection/OccupationSelection';
@@ -21,7 +21,7 @@ const SelectRole = ({ selectRoleVisible, setSelectRoleVisible, roleSelected, set
     const _onConfirm = () => {
         setRoleSelected({
             name: roleSelected == 'isCustomer' ? 'Tôi là khách hàng' : 'Tôi là cộng tác viên',
-            value: roleSelected
+            value: roleSelected == 'isCustomer'?3:2
         });
         setSelectRoleVisible(false);
     }
@@ -68,18 +68,14 @@ const RegisterScreen = (props) => {
         navigation
     } = props;
 
-
+    const [isLoading, setIsLoading] = useState(false);
     const [selectRoleVisible, setSelectRoleVisible] = useState(false);
     const [roleSelected, setRoleSelected] = useState({
         name: '',
         value: '',
     });
 
-    const [occupationSelect,setOccupationSelect] = useState([]);
-
-    useEffect(() => {
-        console.warn(occupationSelect.length);
-    }, [occupationSelect])
+    const [occupationSelect, setOccupationSelect] = useState([]);
 
     const [value, onChangeText] = useState();
 
@@ -89,14 +85,65 @@ const RegisterScreen = (props) => {
         phonenumber: '',
         password: '',
         idcard: '',
-        province:'',
-        province_code:'',
-        district:'',
-        district_code:'',
-        subDistrict:'',
-        subDistrict_code:'',
-        address:'',
-    })
+        province: '',
+        province_code: '',
+        district: '',
+        district_code: '',
+        subDistrict: '',
+        subDistrict_code: '',
+        address: '',
+        role: ''
+    });
+
+    const [isError, setIsError] = useState(false);
+
+
+
+
+    const _onRegister = async () => {
+
+        if(!userInfo.role){
+            Alert.alert("Alert","Vui lòng chọn vai trò!");
+            return;
+        }
+
+        setIsLoading(true);
+
+        let registerRes = await register(
+            userInfo.name,
+            userInfo.email,
+            userInfo.password,
+            userInfo.phonenumber,
+            userInfo.idcard,
+            userInfo.province,
+            userInfo.district,
+            userInfo.subDistrict,
+            userInfo.address,
+            userInfo.role
+        );
+        if (!registerRes.status) {
+            setIsError(true);
+            let errors = registerRes.data.message.email[0];
+            Alert.alert("Failed",errors);
+        }
+        setIsLoading(false);
+    }
+
+
+    useEffect(() => {
+        setUserInfo({...userInfo,role:roleSelected.value});
+
+    }, [roleSelected]);
+
+
+    const hasErrors = (error) => {
+        if (error == 'name') {
+            if (userInfo.name.length > 0) {
+                return false;
+            }
+        }
+
+    };
 
 
     return (
@@ -130,7 +177,7 @@ const RegisterScreen = (props) => {
                     {/* display occupation if user is collaborator */}
                     {
                         roleSelected.value == 'isCollaborator' &&
-                        <OccupationSelection 
+                        <OccupationSelection
                             itemSelected={occupationSelect}
                             setItemSelected={setOccupationSelect}
 
@@ -145,53 +192,103 @@ const RegisterScreen = (props) => {
                         placeholder={'Tên'}
 
                     />
+                    {
+                        (isError && !userInfo.name)
+                        && <HelperText type="error" visible={hasErrors()}>
+                            Vui lòng nhập tên!
+                            </HelperText>
+
+                    }
+
+
                     <TextInput
                         style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({...userInfo,email:text})}
+                        onChangeText={text => setUserInfo({ ...userInfo, email: text })}
                         value={userInfo.email}
                         placeholder={'Email'}
 
                     />
+                    {
+                        (isError && !userInfo.email)
+                        && <HelperText type="error" visible={hasErrors()}>
+                            Vui lòng nhập email!
+                            </HelperText>
+
+                    }
                     <TextInput
                         style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({...userInfo,phonenumber:text})}
+                        onChangeText={text => setUserInfo({ ...userInfo, phonenumber: text })}
                         value={userInfo.phonenumber}
                         placeholder={'Số điện thoại'}
+                        keyboardType={'numeric'}
 
                     />
+                    {
+                        (isError && !userInfo.phonenumber)
+                        && <HelperText type="error" visible={hasErrors()}>
+                            Vui lòng nhập số điện thoại!
+                            </HelperText>
+
+                    }
                     <TextInput
                         style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({...userInfo,password:text})}
+                        onChangeText={text => setUserInfo({ ...userInfo, password: text })}
                         value={userInfo.password}
                         placeholder={'Mật khẩu'}
                         secureTextEntry={true}
 
                     />
+                    {
+                        (isError && !userInfo.password)
+                        && <HelperText type="error" visible={hasErrors()}>
+                            Vui lòng nhập mật khẩu!
+                            </HelperText>
+
+                    }
                     <TextInput
                         style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({...userInfo,idcard:text})}
+                        onChangeText={text => setUserInfo({ ...userInfo, idcard: text })}
                         value={userInfo.idcard}
                         placeholder={'Số chứng minh nhân dân / căn cước công dân'}
+                        keyboardType={'numeric'}
 
                     />
+                    {
+                        (isError && !userInfo.idcard)
+                        && <HelperText type="error" visible={hasErrors()}>
+                            Vui lòng nhập chứng minh nhân dân!
+                            </HelperText>
+
+                    }
 
                     <LocationPicker />
 
                     <TextInput
                         style={[styles.inputLogin, {}]}
-                        onChangeText={text => onChangeText(text)}
-                        value={value}
-                        placeholder={'Đường'}
+                        onChangeText={text => setUserInfo({...userInfo,address:text})}
+                        value={userInfo.address}
+                        placeholder={'Địa chỉ'}
                         multiline={true}
 
                     />
+                    {
+                        (isError && !userInfo.idcard)
+                        && <HelperText type="error" visible={hasErrors()}>
+                            Vui lòng nhập chứng minh địa chỉ!
+                            </HelperText>
+
+                    }
 
 
                     {/*  */}
                     <TouchableOpacity style={styles.buttonSubmit}
-
+                        onPress={_onRegister}
                     >
+                        {
+                            isLoading && <ActivityIndicator />
+                        }
                         <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Ký</Text>
+
                     </TouchableOpacity>
                 </View>
                 <View style={styles.socialNetworkLogin}>

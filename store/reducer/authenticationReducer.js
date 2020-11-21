@@ -11,16 +11,8 @@ const initialState = {
 export default (state = initialState,action) => {
     switch (action.type) {
         case LOGIN:
-            var email = String(action.email).toLocaleLowerCase();
-            var password = String(action.password).toLocaleLowerCase();
-            
-            if(email==='admin@gmail.com' && password==='admin'){
-                state.access_token = 'adminadmin';
-                state.userInformation = {
-                    email:email,
-                }
-            }
-            return state;
+            console.warn(action.data);
+            return {...state,userInformation:action.data.data,access_token:action.data.token};
         
 
         case LOGOUT:

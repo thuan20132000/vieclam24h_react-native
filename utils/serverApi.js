@@ -5,6 +5,147 @@ import api from '../serverConfig';
 
 /**
  * author:thuantruong
+ * description: Login
+ * created_at:21/11/2020
+ * 
+ * @param {*} email 
+ * @param {*} password 
+ */
+export const login = async (email, password) => {
+
+
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/login`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "email": email,
+                "password": password
+
+            })
+        });
+
+
+        if (!dataFetch.ok) {
+            console.warn("ERROR AT LOGIN : ",dataFetch);
+            return {
+                data: null,
+                message: dataFetch,
+                status:false
+
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if(!dataRes.data){
+            return {
+                data: dataRes,
+                message: 'failed',
+                status:false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status:true
+        }
+
+        
+
+    } catch (error) {
+
+        return {
+            data: null,
+            message: 'failed'+error,
+            status:false
+
+        }
+    }
+
+}
+
+
+
+export const register = async (
+    name,
+    email,
+    password,
+    phonenumber,
+    idcard,
+    province,
+    district,
+    subdistrict,
+    address,
+    role,
+) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/register`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "name": name,
+                "email": email,
+                "password": password,
+                "phonenumber": phonenumber,
+                "idcard": idcard,
+                "address": address,
+                "province": province,
+                "district": district,
+                "subdistrict": subdistrict,
+                "role": role
+
+            })
+        });
+
+
+        if (!dataFetch.ok) {
+            console.warn("ERROR AT LOGIN : ",dataFetch);
+            return {
+                data: null,
+                message: dataFetch,
+                status:false
+
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if(!dataRes.data){
+            return {
+                data: dataRes,
+                message: 'failed',
+                status:false
+            }
+        }
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status:true
+        }
+
+    } catch (error) {
+        return {
+            data: null,
+            message: 'failed'+error,
+            status:false
+        }
+    }
+}
+
+
+/**
+ * author:thuantruong
  * description: get all category
  * created_at:17/10/2020
  */

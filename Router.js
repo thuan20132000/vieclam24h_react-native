@@ -34,6 +34,7 @@ import JobListScreen from './screens/JobListScreen';
 
 // reducer
 import * as userActions from './store/actions/authenticationActions';
+import CustomerJobCreationScreen from './screens/CustomerJobCreationScreen';
 
 /**
  * Authentication Stack
@@ -168,6 +169,10 @@ function CustomerHomeStack(){
  function CustomerJobStack(){
      return (
          <CustomerJobStackNavigator.Navigator>
+             <CustomerHomeStackNavigator.Screen
+                name="CustomerJobCreate"
+                component={CustomerJobCreationScreen}
+             />
              <CustomerJobStackNavigator.Screen
                 name="CustomerJob"
                 component={CustomerJobScreen}
@@ -178,13 +183,19 @@ function CustomerHomeStack(){
              />
          </CustomerJobStackNavigator.Navigator>
      )
- }
+}
 
 /**
  * tab
  */
 const BottomTabNavigator = createBottomTabNavigator();
 function TabNavigator() {
+
+
+    const userAccesstoken = useSelector(state => state.authentication.userInformation);
+    useEffect(() => {
+        console.warn(userAccesstoken);
+    }, [])
     return (
         <BottomTabNavigator.Navigator
             screenOptions={({ route }) => ({
@@ -242,12 +253,12 @@ function TabNavigator() {
 
 const Router = () => {
 
-    const [isAuthenticated,setIsAuthenticated] = useState(true);
+    const [isAuthenticated,setIsAuthenticated] = useState(false);
     const userAccesstoken = useSelector(state => state.authentication.access_token);
 
     useEffect(() => {
-
-        if(userAccesstoken){
+        console.warn(userAccesstoken);
+        if(userAccesstoken){    
             setIsAuthenticated(true);
 
         }else{

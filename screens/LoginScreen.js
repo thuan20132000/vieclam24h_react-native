@@ -1,25 +1,27 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ActivityIndicator, Button, Title } from 'react-native-paper'
+import { ActivityIndicator, Button, HelperText, Snackbar, Title } from 'react-native-paper'
 import { useDispatch } from 'react-redux';
 import CommonColors from '../constants/CommonColors';
 
-
+import { login } from '../utils/serverApi';
 
 import * as userActions from '../store/actions/authenticationActions';
 
 const LoginScreen = (props) => {
-    
+
     const {
         navigation
     } = props;
-    
+
     const dispatch = useDispatch();
     const [userAuth, setUserAuth] = useState({
         email: '',
         password: ''
     });
+    const [loginError, setLoginError] = useState();
+
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -27,13 +29,25 @@ const LoginScreen = (props) => {
 
         try {
             setIsLoading(true);
-            dispatch(userActions.login(userAuth.email,userAuth.password));
+
+            let loginRes = await login(userAuth.email, userAuth.password);
+            if (loginRes.status) {
+                dispatch(userActions.login(loginRes.data));
+            }
+
+            if (!loginRes.status) {
+               Alert.alert("Failed",loginRes.data?.message);
+            }
+
+
             setIsLoading(false);
         } catch (error) {
             console.warn("ERROR :", error);
         }
 
     }
+
+
 
     return (
         <View style={styles.container}>
@@ -64,8 +78,8 @@ const LoginScreen = (props) => {
                     onPress={_login}
                 >
                     {
-                        isLoading ? <ActivityIndicator/>:
-                        <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Nhập</Text>
+                        isLoading ? <ActivityIndicator /> :
+                            <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Nhập</Text>
 
                     }
                 </TouchableOpacity>
@@ -106,7 +120,7 @@ const LoginScreen = (props) => {
                 </TouchableOpacity>
             </View>
 
-
+            
 
         </View>
     )

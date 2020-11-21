@@ -3,13 +3,15 @@ import { StyleSheet, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { Dialog, Portal, Text, TextInput, Menu, Button, Divider, Title, Drawer, ActivityIndicator } from 'react-native-paper';
 import CommonColors from '../constants/CommonColors';
-
+import {useSelector} from 'react-redux';
 
 import { getProvince, getDistrict, getSubdistrict } from './../utils/locationApi';
 
 
 const SelectItem = ({ setDialogVisible, item,setLocationSelected,locationSelected,selectLocationType }) => {
     const [visible, setVisible] = React.useState(false);
+
+
 
     const openMenu = () => setVisible(true);
 
@@ -42,6 +44,7 @@ const SelectItem = ({ setDialogVisible, item,setLocationSelected,locationSelecte
 
 const CollaboratorProfileScreen = () => {
 
+    const {userInformation} = useSelector(state => state.authentication);
 
     const [isLoading, setIsLoading] = useState(false);
     const [userProfile, setUserProfile] = useState({
@@ -54,6 +57,20 @@ const CollaboratorProfileScreen = () => {
         subdistrict: '',
         address: ''
     });
+
+    useEffect(() => {
+        console.warn(userInformation);
+        if(userInformation){
+            setUserProfile({
+                username:userInformation.name,
+                email:userInformation.email,
+                phoneNumber:userInformation.phonenumber,
+                idCard:userInformation.idcard,
+                address:userInformation.address
+            });
+        }
+
+    }, []);
 
 
     const [dialogVisible, setDialogVisible] = useState(false);
