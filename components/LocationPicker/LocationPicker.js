@@ -1,5 +1,5 @@
-import React,{useState,useEffect} from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { Dialog, Portal, TextInput, Menu, Button, Divider, Title, Drawer, ActivityIndicator } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors';
@@ -8,7 +8,7 @@ import { getProvince, getDistrict, getSubdistrict } from '../../utils/locationAp
 
 
 
-const SelectItem = ({ setDialogVisible, item,setLocationSelected,locationSelected,selectLocationType }) => {
+const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelected, selectLocationType }) => {
     const [visible, setVisible] = React.useState(false);
 
     const openMenu = () => setVisible(true);
@@ -16,16 +16,16 @@ const SelectItem = ({ setDialogVisible, item,setLocationSelected,locationSelecte
     const closeMenu = () => setVisible(false);
 
     const _onSelectItem = async () => {
-        if(selectLocationType == 'province'){
-            setLocationSelected({...locationSelected,province:item.name_with_type,province_code:item.code});
+        if (selectLocationType == 'province') {
+            setLocationSelected({ ...locationSelected, province: item.name_with_type, province_code: item.code });
             setDialogVisible(false)
         }
-        if(selectLocationType == 'district'){
-            setLocationSelected({...locationSelected,district:item.name_with_type,district_code:item.code});
+        if (selectLocationType == 'district') {
+            setLocationSelected({ ...locationSelected, district: item.name_with_type, district_code: item.code });
             setDialogVisible(false)
         }
-        if(selectLocationType == 'subdistrict'){
-            setLocationSelected({...locationSelected,subdistrict:item.name_with_type,subdistrict_code:item.code});
+        if (selectLocationType == 'subdistrict') {
+            setLocationSelected({ ...locationSelected, subdistrict: item.name_with_type, subdistrict_code: item.code });
             setDialogVisible(false)
         }
     }
@@ -39,22 +39,27 @@ const SelectItem = ({ setDialogVisible, item,setLocationSelected,locationSelecte
 
     )
 }
-const LocationPicker = () => {
+const LocationPicker = ({location,setLocation}) => {
 
 
     const [isLoading, setIsLoading] = useState(false);
 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [dialogData, setDialogData] = useState([]);
-    const [locationSelected,setLocationSelected] = useState({
-        province:'',
-        province_code:'',
-        district:'',
-        district_code:'',
-        subdistrict:'',
-        subdistrict_code:'',
+    const [locationSelected, setLocationSelected] = useState({
+        province: '',
+        province_code: '',
+        district: '',
+        district_code: '',
+        subdistrict: '',
+        subdistrict_code: '',
     });
-    const [selectLocationType,setSelectLocationType] = useState('province');
+
+    useEffect(() => {
+        setLocation(locationSelected);
+    }, [locationSelected]);
+
+    const [selectLocationType, setSelectLocationType] = useState('province');
     const _openDialogLocation = async (type) => {
         setIsLoading(true);
         if (type == 'province') {
@@ -65,16 +70,16 @@ const LocationPicker = () => {
         }
         if (type == 'district') {
             setSelectLocationType(type);
-            if(locationSelected.province_code){
+            if (locationSelected.province_code) {
                 let locationRes = await getDistrict(locationSelected.province_code);
                 setDialogData(Object.values(locationRes.data));
                 setDialogVisible(true);
             }
-          
+
         }
-        if(type == 'subdistrict'){
+        if (type == 'subdistrict') {
             setSelectLocationType(type);
-            if(locationSelected.district_code){
+            if (locationSelected.district_code) {
                 let locationRes = await getSubdistrict(locationSelected.district_code);
                 setDialogData(Object.values(locationRes.data));
                 setDialogVisible(true);
@@ -85,52 +90,54 @@ const LocationPicker = () => {
     }
 
     useEffect(() => {
-        setLocationSelected({...locationSelected,district:'',district_code:''})
+        setLocationSelected({ ...locationSelected, district: '', district_code: '' })
     }, [locationSelected.province]);
 
     useEffect(() => {
-        setLocationSelected({...locationSelected,subdistrict:'',subdistrict_code:''})
+        setLocationSelected({ ...locationSelected, subdistrict: '', subdistrict_code: '' })
     }, [locationSelected.district])
 
     return (
         <View>
-            <Text></Text>
-
             <Drawer.Item
-                style={{ backgroundColor: CommonColors.primary }}
+                style={[styles.itemDrawer, {}]}
                 label={locationSelected.province || "Chọn Tỉnh / Thành Phố"}
                 onPress={() => _openDialogLocation('province')}
 
             />
             <Drawer.Item
-                style={{ backgroundColor: CommonColors.primary }}
+                style={[styles.itemDrawer, {}]}
                 label={locationSelected.district || "Chọn Quận / Huyện"}
                 onPress={() => _openDialogLocation('district')}
 
             />
             <Drawer.Item
-                style={{ backgroundColor: CommonColors.primary }}
+                style={[styles.itemDrawer, {}]}
                 label={locationSelected.subdistrict || "Chọn Phường / Xã"}
                 onPress={() => _openDialogLocation('subdistrict')}
 
             />
 
-<Portal>
-                <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)} style={{ flex: 1, padding: 0 }}>
+            <Portal>
+                <Dialog style={{ height: Dimensions.get('screen').height - 80, padding: 0 }}
+
+                    visible={dialogVisible}
+                    onDismiss={() => setDialogVisible(false)}
+                >
                     <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
                         <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
                             {
                                 isLoading ?
-                                <ActivityIndicator/> :
-                                dialogData.map((e, index) =>
-                                    <SelectItem 
-                                        item={e} 
-                                        setDialogVisible={setDialogVisible}
-                                        setLocationSelected={setLocationSelected}
-                                        locationSelected={locationSelected}
-                                        selectLocationType={selectLocationType}
-                                    />
-                                )
+                                    <ActivityIndicator /> :
+                                    dialogData.map((e, index) =>
+                                        <SelectItem
+                                            item={e}
+                                            setDialogVisible={setDialogVisible}
+                                            setLocationSelected={setLocationSelected}
+                                            locationSelected={locationSelected}
+                                            selectLocationType={selectLocationType}
+                                        />
+                                    )
 
                             }
 
@@ -145,4 +152,10 @@ const LocationPicker = () => {
 
 export default LocationPicker
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    itemDrawer: {
+        backgroundColor: 'white',
+        borderRadius: 22,
+        padding: 4
+    }
+})

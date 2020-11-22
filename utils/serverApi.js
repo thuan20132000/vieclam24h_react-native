@@ -31,39 +31,39 @@ export const login = async (email, password) => {
 
 
         if (!dataFetch.ok) {
-            console.warn("ERROR AT LOGIN : ",dataFetch);
+            console.warn("ERROR AT LOGIN : ", dataFetch);
             return {
                 data: null,
                 message: dataFetch,
-                status:false
+                status: false
 
             }
         }
 
         let dataRes = await dataFetch.json();
 
-        if(!dataRes.data){
+        if (!dataRes.data) {
             return {
                 data: dataRes,
                 message: 'failed',
-                status:false
+                status: false
             }
         }
 
         return {
             data: dataRes,
             message: 'success',
-            status:true
+            status: true
         }
 
-        
+
 
     } catch (error) {
 
         return {
             data: null,
-            message: 'failed'+error,
-            status:false
+            message: 'failed' + error,
+            status: false
 
         }
     }
@@ -109,36 +109,36 @@ export const register = async (
 
 
         if (!dataFetch.ok) {
-            console.warn("ERROR AT LOGIN : ",dataFetch);
+            console.warn("ERROR AT LOGIN : ", dataFetch);
             return {
                 data: null,
                 message: dataFetch,
-                status:false
+                status: false
 
             }
         }
 
         let dataRes = await dataFetch.json();
 
-        if(!dataRes.data){
+        if (!dataRes.data) {
             return {
                 data: dataRes,
                 message: 'failed',
-                status:false
+                status: false
             }
         }
 
         return {
             data: dataRes.data,
             message: 'success',
-            status:true
+            status: true
         }
 
     } catch (error) {
         return {
             data: null,
-            message: 'failed'+error,
-            status:false
+            message: 'failed' + error,
+            status: false
         }
     }
 }
@@ -346,4 +346,76 @@ export const applyJob = async (user_id, job_id, expected_price, description = ""
         }
     }
 
+}
+
+
+
+
+
+export const createJob = async (
+    name,
+    description,
+    address,
+    province,
+    district,
+    subdistrict,
+    suggestion_price,
+    author,
+    occupation_id,
+    occupation_name,
+    images=[]
+    ) => {
+    try {
+        let url = serverConfig.url;
+
+        let dataFetch = await fetch(`${url}/job`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: name,
+                description: description,
+                street: address,
+                province: province,
+                district: district,
+                subdistrict: subdistrict,
+                suggestion_price: suggestion_price,
+                author: author,
+                occupation_id: occupation_id,
+                occupation_name: occupation_name,
+                images:images
+            })
+        });
+
+        if (!dataFetch.ok) {
+            return {
+                data: null,
+                message: dataFetch
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if(dataRes.status){
+            return {
+                data: dataRes,
+                message: 'success'
+            }
+    
+        }
+
+        return {
+            data: dataRes,
+            message: 'failed'
+        }
+
+        
+    } catch (error) {
+        return {
+            data: null,
+            message: 'error ' + error
+        }
+    }
 }

@@ -1,4 +1,4 @@
-import  React,{useState,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,8 +8,8 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import CommonIcons from './constants/CommonIcons';
 
 //redux
-import {useSelector} from 'react-redux';
- 
+import { useSelector } from 'react-redux';
+
 
 
 // Screen
@@ -35,26 +35,27 @@ import JobListScreen from './screens/JobListScreen';
 // reducer
 import * as userActions from './store/actions/authenticationActions';
 import CustomerJobCreationScreen from './screens/CustomerJobCreationScreen';
+import CommonColors from './constants/CommonColors';
 
 /**
  * Authentication Stack
  */
 
- const AuthenticationStackNavigator = createStackNavigator();
- function AuthenticationStack(){
-     return (
-         <AuthenticationStackNavigator.Navigator>
-             <AuthenticationStackNavigator.Screen
+const AuthenticationStackNavigator = createStackNavigator();
+function AuthenticationStack() {
+    return (
+        <AuthenticationStackNavigator.Navigator>
+            <AuthenticationStackNavigator.Screen
                 name="login"
                 component={LoginScreen}
-             />
-             <AuthenticationStackNavigator.Screen
+            />
+            <AuthenticationStackNavigator.Screen
                 name="register"
                 component={RegisterScreen}
-             />
-         </AuthenticationStackNavigator.Navigator>
-     )
- }
+            />
+        </AuthenticationStackNavigator.Navigator>
+    )
+}
 
 
 
@@ -66,7 +67,7 @@ import CustomerJobCreationScreen from './screens/CustomerJobCreationScreen';
  * Home Stack
  */
 const StackNavigator = createStackNavigator();
-function HomeStackNavigator(){
+function HomeStackNavigator() {
     return (
         <StackNavigator.Navigator>
             <StackNavigator.Screen
@@ -81,7 +82,7 @@ function HomeStackNavigator(){
  * Collabirator Home Stack
  */
 const CollaboratorHomeStackNavigator = createStackNavigator();
-function CollaboratorHomeStack(){
+function CollaboratorHomeStack() {
     return (
         <CollaboratorHomeStackNavigator.Navigator>
             <CollaboratorHomeStackNavigator.Screen
@@ -111,7 +112,7 @@ function CollaboratorHomeStack(){
  * Collaborator's Job Stack
  */
 const CollaboratorJobStackNavigator = createStackNavigator();
-function CollaboratorJobStack(){
+function CollaboratorJobStack() {
     return (
         <CollaboratorHomeStackNavigator.Navigator>
             <CollaboratorHomeStackNavigator.Screen
@@ -128,7 +129,7 @@ function CollaboratorJobStack(){
  * Account Stack
  */
 const AccountStackNavigator = createStackNavigator();
-function AccountStack(){
+function AccountStack() {
     return (
         <AccountStackNavigator.Navigator>
             <AccountStackNavigator.Screen
@@ -150,7 +151,7 @@ function AccountStack(){
  * Customer Home Stack
  */
 const CustomerHomeStackNavigator = createStackNavigator();
-function CustomerHomeStack(){
+function CustomerHomeStack() {
     return (
         <CustomerHomeStackNavigator.Navigator>
             <CustomerHomeStackNavigator.Screen
@@ -165,37 +166,44 @@ function CustomerHomeStack(){
  * Customer's Job Stack
  */
 
- const CustomerJobStackNavigator = createStackNavigator();
- function CustomerJobStack(){
-     return (
-         <CustomerJobStackNavigator.Navigator>
-             <CustomerHomeStackNavigator.Screen
+const CustomerJobStackNavigator = createStackNavigator();
+function CustomerJobStack() {
+    return (
+        <CustomerJobStackNavigator.Navigator>
+            <CustomerHomeStackNavigator.Screen
                 name="CustomerJobCreate"
                 component={CustomerJobCreationScreen}
-             />
-             <CustomerJobStackNavigator.Screen
+            />
+            <CustomerJobStackNavigator.Screen
                 name="CustomerJob"
                 component={CustomerJobScreen}
-             />
-             <CustomerHomeStackNavigator.Screen
+            />
+            <CustomerHomeStackNavigator.Screen
                 name="JobCollaborator"
                 component={JobCollaboratorScreen}
-             />
-         </CustomerJobStackNavigator.Navigator>
-     )
+            />
+        </CustomerJobStackNavigator.Navigator>
+    )
 }
 
 /**
  * tab
  */
 const BottomTabNavigator = createBottomTabNavigator();
-function TabNavigator() {
+function TabNavigator(props) {
 
 
-    const userAccesstoken = useSelector(state => state.authentication.userInformation);
+    const { userInformation } = useSelector(state => state.authentication);
+    const [userRole, setUserRole] = useState();
+
     useEffect(() => {
-        console.warn(userAccesstoken);
-    }, [])
+
+        setUserRole(userInformation.role[0].id);
+
+
+    }, [userRole]);
+
+
     return (
         <BottomTabNavigator.Navigator
             screenOptions={({ route }) => ({
@@ -204,17 +212,17 @@ function TabNavigator() {
 
                     if (route.name === 'Home') {
                         iconName = CommonIcons.homeCircle
-                            
+
                     } else if (route.name === 'Settings') {
                         iconName = CommonIcons.bookMarker
-                    }else if (route.name === 'Messages'){
+                    } else if (route.name === 'Messages') {
                         iconName = CommonIcons.messages
-                    }else if(route.name === 'Accounts'){
+                    } else if (route.name === 'Accounts') {
                         iconName = CommonIcons.account
-                    }else {
+                    } else {
                         iconName = CommonIcons.newsPaper
                     }
-    
+
                     // You can return any component that you like here!
                     return <MaterialCommunityIcon name={iconName} size={size} color={color} />;
                 },
@@ -224,23 +232,45 @@ function TabNavigator() {
                 inactiveTintColor: 'gray',
             }}
         >
-            <BottomTabNavigator.Screen 
-                name="HomeStack" 
-                component={CollaboratorHomeStack} 
-            />
-            <BottomTabNavigator.Screen
-                name="CustomerHomeStack"
-                component={CustomerHomeStack}
-            />
 
-            <BottomTabNavigator.Screen 
-                name="MyJobs" 
-                component={CollaboratorJobStack} 
-            />
+
             <BottomTabNavigator.Screen
-                name="CustomerJob"
-                component={CustomerJobStack}
+                name="HomeStack"
+                component={CollaboratorHomeStack}
             />
+            {
+                (userRole && userRole == 2) &&
+                <BottomTabNavigator.Screen
+                    name="MyJobs"
+                    component={CollaboratorJobStack}
+                />
+            }
+            <BottomTabNavigator.Screen name="Messages1" component={ChatScreen} />
+
+            {
+                (userRole && userRole == 3) &&
+                <BottomTabNavigator.Screen
+                    name="CustomerJob"
+                    component={CustomerJobStack}
+                    
+                    options={{
+                        tabBarIcon: ({ color, size }) => (
+                                <MaterialCommunityIcon style={{ position: 'absolute', bottom: 12}}
+                                    name={CommonIcons.historyJob}
+                                    color={CommonColors.primary} size={54}
+                                />
+                        ),
+                        tabBarLabel:'Tạo công việc',
+                    }}
+                    
+                    
+
+                />
+            }
+
+
+
+
             <BottomTabNavigator.Screen name="Messages" component={ChatScreen} />
             <BottomTabNavigator.Screen name="Accounts" component={AccountStack} />
         </BottomTabNavigator.Navigator>
@@ -253,15 +283,14 @@ function TabNavigator() {
 
 const Router = () => {
 
-    const [isAuthenticated,setIsAuthenticated] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const userAccesstoken = useSelector(state => state.authentication.access_token);
 
     useEffect(() => {
-        console.warn(userAccesstoken);
-        if(userAccesstoken){    
+        if (userAccesstoken) {
             setIsAuthenticated(true);
 
-        }else{
+        } else {
             setIsAuthenticated(false);
         }
     }, [userAccesstoken]);
@@ -272,8 +301,8 @@ const Router = () => {
         <NavigationContainer>
             {
                 isAuthenticated ?
-                <TabNavigator /> :
-                <AuthenticationStack/>
+                    <TabNavigator /> :
+                    <AuthenticationStack />
 
             }
         </NavigationContainer>
