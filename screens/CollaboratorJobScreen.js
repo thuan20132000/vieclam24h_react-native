@@ -1,39 +1,85 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import { TabView, SceneMap } from 'react-native-tab-view';
+import { useSelector } from 'react-redux';
 import JobItem from '../components/Card/JobItem';
 
+import { getCollaboratorJobs } from '../utils/serverApi';
 
 
-const collaboratorJobs = Array(10).fill({});
 
-const ApplyingJob = () => (
-    
-    <ScrollView style={[styles.scene, { backgroundColor: 'white' }]} >
-        {
-            collaboratorJobs.map((e,index) => <JobItem/>)
+const ApplyingJob = ({ user_id, status = 2 }) => {
+
+    const [collaboratorJobs, setCollaboratorJob] = useState([]);
+
+    const _getCollaboratorJobs = async () => {
+        let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 3);
+        if (collaboratorJobRes.status) {
+            setCollaboratorJob(collaboratorJobRes.data);
         }
-    </ScrollView>
-);
+    }
+
+    useEffect(() => {
+        _getCollaboratorJobs();
+    }, [])
+
+    return (
+        <ScrollView style={[styles.scene, { backgroundColor: 'white' }]} >
+            {
+                collaboratorJobs.map((e, index) => <JobItem job={e} />)
+            }
+        </ScrollView>
+    )
+}
 
 
-const FinishedJob = () => (
-    <View style={[styles.scene, { backgroundColor: 'white' }]} />
-);
+const FinishedJob = ({user_id,status=3}) => {
+
+    const [collaboratorJobs, setCollaboratorJob] = useState([]);
+
+    const _getCollaboratorJobs = async () => {
+        let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 3);
+        if (collaboratorJobRes.status) {
+            setCollaboratorJob(collaboratorJobRes.data);
+        }
+    }
+
+    useEffect(() => {
+        _getCollaboratorJobs();
+    }, [])
+
+    return (
+        <ScrollView style={[styles.scene, { backgroundColor: 'white' }]} >
+            {
+                collaboratorJobs.map((e, index) => <JobItem job={e} />)
+            }
+        </ScrollView>
+    );
+}
+
 
 
 
 const CollaboratorJobScreen = () => {
     const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-        { key: 'applyingJob', title: 'Apply Job' },
-        { key: 'finishedJob', title: 'Finished Job' },
-    ]);
 
+    const { userInformation } = useSelector(state => state.authentication);
+
+
+    const [routes] = React.useState([
+        { key: 'applyingJob', title: 'đang ứng tuyển' },
+        { key: 'finishedJob', title: 'đã xác nhận' },
+    ]);
     const renderScene = SceneMap({
-        applyingJob: ApplyingJob,
-        finishedJob:FinishedJob
+        applyingJob: () =>
+            <ApplyingJob
+                user_id={userInformation.id}
+            />,
+        finishedJob: () =>
+            <FinishedJob
+                user_id={userInformation.id}
+            />
 
     });
 

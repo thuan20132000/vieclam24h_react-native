@@ -54,7 +54,6 @@ const JobListScreen = (props) => {
     const [selectedId, setSelectedId] = useState(null);
 
     const _loadMoreJobs = async () => {
-        console.warn('load...');
         setPerPage(perPage + 3);
         await _getJobs();
     }
@@ -92,7 +91,6 @@ const JobListScreen = (props) => {
                 keyExtractor={(item) => item.id}
                 extraData={selectedId}
                 onEndReached={_loadMoreJobs}
-                onEndReachedThreshold={0.5}
                 ListFooterComponent={() => <FooterList />}
             />
         </View>

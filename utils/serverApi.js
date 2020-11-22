@@ -351,7 +351,23 @@ export const applyJob = async (user_id, job_id, expected_price, description = ""
 
 
 
-
+/**
+ * author:thuantruong
+ * description:Create a new Job 
+ * created_at:22/11/2020
+ * 
+ * @param {*} name 
+ * @param {*} description 
+ * @param {*} address 
+ * @param {*} province 
+ * @param {*} district 
+ * @param {*} subdistrict 
+ * @param {*} suggestion_price 
+ * @param {*} author 
+ * @param {*} occupation_id 
+ * @param {*} occupation_name 
+ * @param {*} images 
+ */
 export const createJob = async (
     name,
     description,
@@ -363,8 +379,8 @@ export const createJob = async (
     author,
     occupation_id,
     occupation_name,
-    images=[]
-    ) => {
+    images = []
+) => {
     try {
         let url = serverConfig.url;
 
@@ -385,7 +401,7 @@ export const createJob = async (
                 author: author,
                 occupation_id: occupation_id,
                 occupation_name: occupation_name,
-                images:images
+                images: images
             })
         });
 
@@ -398,12 +414,12 @@ export const createJob = async (
 
         let dataRes = await dataFetch.json();
 
-        if(dataRes.status){
+        if (dataRes.status) {
             return {
                 data: dataRes,
                 message: 'success'
             }
-    
+
         }
 
         return {
@@ -411,11 +427,47 @@ export const createJob = async (
             message: 'failed'
         }
 
-        
+
     } catch (error) {
         return {
             data: null,
             message: 'error ' + error
+        }
+    }
+}
+
+
+
+
+
+export const getCollaboratorJobs = async (user_id,status,per_page) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job-collaborator-applying?user_id=${user_id}&status=${status}&per_page=${per_page}`);
+
+        if (!dataFetch.ok) {    
+            console.warn('ERROR AT FETCH COLLABORATOR JOB');
+
+            return {
+                data: [],
+                message: 'error',
+                status:false,
+            }
+        }
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status:true,
+        }
+
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status:false
         }
     }
 }

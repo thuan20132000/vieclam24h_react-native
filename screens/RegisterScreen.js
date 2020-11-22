@@ -95,6 +95,15 @@ const RegisterScreen = (props) => {
         role: ''
     });
 
+    const [userLocation,setUserLocation] = useState({
+        province: '',
+        province_code: '',
+        district: '',
+        district_code: '',
+        subdistrict: '',
+        subdistrict_code: '',
+    })
+
     const [isError, setIsError] = useState(false);
 
 
@@ -261,7 +270,10 @@ const RegisterScreen = (props) => {
 
                     }
 
-                    <LocationPicker />
+                    <LocationPicker 
+                        location={userLocation}
+                        setLocation={setUserLocation}
+                    />
 
                     <TextInput
                         style={[styles.inputLogin, {}]}

@@ -8,11 +8,13 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import CommonIcons from '../constants/CommonIcons';
 import CommonColors from '../constants/CommonColors';
 import RBSheet from "react-native-raw-bottom-sheet";
+import {useSelector} from 'react-redux';
 
 import { getJobDetail,applyJob } from '../utils/serverApi';
 
 
 const JobDetailScreen = (props) => {
+    const {userInformation} = useSelector(state => state.authentication);
 
 
     const job_id = props.route?.params?.job_id;
@@ -39,7 +41,7 @@ const JobDetailScreen = (props) => {
         try {
             setIsLoading(true);
             setIsDisabling(true);
-            let applyRes = await applyJob(14,job_id,jobApplyData.expected_price,jobApplyData.description);
+            let applyRes = await applyJob(userInformation.id,job_id,jobApplyData.expected_price,jobApplyData.description);
             console.warn('apply: ',applyRes);
             setIsLoading(false);
             setIsDisabling(false);

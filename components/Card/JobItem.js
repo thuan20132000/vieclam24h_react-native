@@ -6,17 +6,21 @@ import CommonIcons from '../../constants/CommonIcons';
 
 const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
-const JobItem = () => {
+const JobItem = ({job}) => {
+
+
     return (
         <Card style={styles.cardContainer}>
             <Card.Content>
-                <Title>Sửa cửa sổ </Title>
-                <Card.Title title="Nguyen Van Thinh" subtitle="104 Le Van Thinh" left={LeftContent} />
+                <Title>{job.relationships?.job?.name}</Title>
+                <Card.Title title={job.relationships?.author?.name} subtitle={job.relationships?.author.phonenumber} left={LeftContent} />
 
             </Card.Content>
             <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
                 <Chip style={{ width: 120, margin: 12, alignItems: 'center', alignContent: 'center' }}>
-                    Đang chờ
+                    {
+                        job.attributes.status==2?"Đang chờ":(job.attributes.status==3?"Chấp nhận":"Từ chối")
+                    }
                 </Chip>
                 <IconButton
                     icon={CommonIcons.chatMessage}
