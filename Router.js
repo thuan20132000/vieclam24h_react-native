@@ -255,9 +255,9 @@ function TabNavigator(props) {
                     
                     options={{
                         tabBarIcon: ({ color, size }) => (
-                                <MaterialCommunityIcon style={{ position: 'absolute', bottom: 12}}
+                                <MaterialCommunityIcon style={{ position: 'absolute', bottom: 6}}
                                     name={CommonIcons.historyJob}
-                                    color={CommonColors.primary} size={54}
+                                    color={CommonColors.primary} size={44}
                                 />
                         ),
                         tabBarLabel:'Tạo công việc',

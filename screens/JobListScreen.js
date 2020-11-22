@@ -38,6 +38,15 @@ const JobListScreen = (props) => {
 
     useEffect(() => {
         _getJobs();
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible:false
+        });
+
+        return ()=>{
+            props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible:true
+            });
+        }
     }, []);
 
 
@@ -45,6 +54,7 @@ const JobListScreen = (props) => {
     const [selectedId, setSelectedId] = useState(null);
 
     const _loadMoreJobs = async () => {
+        console.warn('load...');
         setPerPage(perPage + 3);
         await _getJobs();
     }
@@ -57,7 +67,7 @@ const JobListScreen = (props) => {
             />
         )
     }
-
+    
 
     return (
         <View
@@ -82,7 +92,7 @@ const JobListScreen = (props) => {
                 keyExtractor={(item) => item.id}
                 extraData={selectedId}
                 onEndReached={_loadMoreJobs}
-               onEndReachedThreshold={1}
+                onEndReachedThreshold={0.5}
                 ListFooterComponent={() => <FooterList />}
             />
         </View>
