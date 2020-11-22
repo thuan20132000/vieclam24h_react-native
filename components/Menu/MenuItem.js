@@ -4,10 +4,15 @@ import { IconButton } from 'react-native-paper'
 
 const MenuItem = ({ index, item,navigation }) => {
 
+
+    const _onNavigateToJobList = () => {
+        navigation.navigate('JobList',{category_id:item.id});
+    }
+
     return (
         <TouchableOpacity key={index}
             style={styles.menuItem}
-            onPress={()=>navigation.navigate('JobList')}
+            onPress={_onNavigateToJobList}
         >
             <Image
                 style={{width:60,height:60}}

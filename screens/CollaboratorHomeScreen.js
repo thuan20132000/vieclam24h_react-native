@@ -59,6 +59,7 @@ const CollaboratorHomeScreen = (props) => {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
+            onEnd
         >
             <SearchButton
                 onPress={_onSearchPress}

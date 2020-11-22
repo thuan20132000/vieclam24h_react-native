@@ -1,6 +1,7 @@
 import React,{useEffect} from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Avatar, Button, Card, Title, Paragraph,Caption } from 'react-native-paper';
+import CommonImages from '../../constants/CommonImages';
 
 
 
@@ -8,11 +9,10 @@ import { Avatar, Button, Card, Title, Paragraph,Caption } from 'react-native-pap
 
 const CardHorizontal = ({index,item,onPress}) => {
 
-
     return (
         <View style={styles.cardContainer}>
             <Card.Cover style={styles.cardImage}
-                source={{ uri:item.attributes.images[0]?.image_url || 'https://picsum.photos/700'  }}
+                source={{ uri:item.attributes.images[0]?.image_url || CommonImages.notFound  }}
             />
             <Card.Content style={styles.cardContent}>
                 <Title style={{fontSize:16}}>{item.attributes.name}</Title>

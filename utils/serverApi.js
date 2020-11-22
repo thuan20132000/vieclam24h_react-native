@@ -232,7 +232,7 @@ export const getJobs = async (category = '', number = '') => {
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job?category=${category}&number=${number}`);
+        let dataFetch = await fetch(`${url}/job?category=${category}&per_page=${number}`);
 
         if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH JOBS');
