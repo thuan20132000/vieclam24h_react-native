@@ -3,6 +3,7 @@ import { RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { ActivityIndicator } from 'react-native-paper';
 import CardHorizontal from '../components/Card/CardHorizontal';
+import FilterBar from '../components/Filter/FilterBar';
 
 import { getJobs } from '../utils/serverApi';
 
@@ -76,7 +77,9 @@ const JobListScreen = (props) => {
                 alignItems:'center'
             }}
         >
-            <FlatList style={{ flex: 1 }}
+            
+            {/*  */}
+            <FlatList style={{ flex: 1,zIndex:-1 }}
                 showsVerticalScrollIndicator={false}
                 data={jobs}
                 renderItem={({ item, index }) => (

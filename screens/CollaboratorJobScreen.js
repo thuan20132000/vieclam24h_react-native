@@ -34,7 +34,7 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
 }
 
 
-const FinishedJob = ({user_id,status=3}) => {
+const ConfirmJob = ({ user_id, status = 3 }) => {
 
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
 
@@ -52,7 +52,7 @@ const FinishedJob = ({user_id,status=3}) => {
     return (
         <ScrollView style={[styles.scene, { backgroundColor: 'white' }]} >
             {
-                collaboratorJobs.map((e, index) => <JobItem job={e} />)
+                collaboratorJobs.map((e, index) => <JobItem job={e} key={index.toString()} />)
             }
         </ScrollView>
     );
@@ -69,15 +69,21 @@ const CollaboratorJobScreen = () => {
 
     const [routes] = React.useState([
         { key: 'applyingJob', title: 'đang ứng tuyển' },
-        { key: 'finishedJob', title: 'đã xác nhận' },
+        { key: 'confirmJob', title: 'đã xác nhận' },
+        { key: 'finishedJob', title: 'đã hoàn thành' },
+
     ]);
     const renderScene = SceneMap({
         applyingJob: () =>
             <ApplyingJob
                 user_id={userInformation.id}
             />,
+        confirmJob: () =>
+            <ConfirmJob
+                user_id={userInformation.id}
+            />,
         finishedJob: () =>
-            <FinishedJob
+            <ConfirmJob
                 user_id={userInformation.id}
             />
 

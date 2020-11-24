@@ -440,18 +440,18 @@ export const createJob = async (
 
 
 
-export const getCollaboratorJobs = async (user_id,status,per_page) => {
+export const getCollaboratorJobs = async (user_id, status, per_page) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/job-collaborator-applying?user_id=${user_id}&status=${status}&per_page=${per_page}`);
 
-        if (!dataFetch.ok) {    
+        if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH COLLABORATOR JOB');
 
             return {
                 data: [],
                 message: 'error',
-                status:false,
+                status: false,
             }
         }
         let dataRes = await dataFetch.json();
@@ -459,7 +459,7 @@ export const getCollaboratorJobs = async (user_id,status,per_page) => {
         return {
             data: dataRes.data,
             message: 'success',
-            status:true,
+            status: true,
         }
 
 
@@ -467,7 +467,42 @@ export const getCollaboratorJobs = async (user_id,status,per_page) => {
         return {
             data: [],
             message: 'error ' + error,
-            status:false
+            status: false
+        }
+    }
+}
+
+
+
+
+
+export const searchJobs = async (query,district,limit = 6) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job-search?query=${query}&district=${district}&limit=${limit}`);
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT SEARCH JOB');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        console.warn(dataRes);
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
         }
     }
 }

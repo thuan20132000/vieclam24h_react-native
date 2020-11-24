@@ -245,7 +245,6 @@ function TabNavigator(props) {
                     component={CollaboratorJobStack}
                 />
             }
-            <BottomTabNavigator.Screen name="Messages1" component={ChatScreen} />
 
             {
                 (userRole && userRole == 3) &&

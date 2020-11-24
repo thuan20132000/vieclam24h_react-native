@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Text, View, TextInput,Image } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Subheading, Button } from 'react-native-paper'
 import HomeContent from '../components/Body/HomeContent'
@@ -11,14 +11,15 @@ import HomeSearch from '../components/Search/HomeSearch'
 import CommonIcons from '../constants/CommonIcons'
 import SearchButton from '../components/Search/SearchButton'
 
-import {getCategory,getJobs} from '../utils/serverApi';
+import { getCategory, getJobs } from '../utils/serverApi';
+import CommonColors from '../constants/CommonColors'
 
 const CollaboratorHomeScreen = (props) => {
 
     const menuItems = Array(6).fill({});
-    const [categories,setCategories] = useState([]);
-    const [jobs,setJobs] = useState([]);
-    const [isLoading,setIsLoading] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const [jobs, setJobs] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const {
         navigation
@@ -32,7 +33,7 @@ const CollaboratorHomeScreen = (props) => {
     const _getCategory = async () => {
         setIsLoading(true);
         let data = await getCategory();
-        if(data.data.length > 0){
+        if (data.data.length > 0) {
             setCategories(data.data);
         }
         setIsLoading(false);
@@ -42,19 +43,39 @@ const CollaboratorHomeScreen = (props) => {
     const _getJobs = async () => {
         setIsLoading(true);
         let data = await getJobs();
-        if(data.data.length > 0 ){
+        if (data.data.length > 0) {
             setJobs(data.data);
         }
         setIsLoading(false);
     }
     const _navigateToJobDetail = async (job_id) => {
-        props.navigation.navigate('JobDetail',{job_id:job_id})
+        props.navigation.navigate('JobDetail', { job_id: job_id })
     }
 
     useEffect(() => {
         _getCategory();
         _getJobs();
+
+
+        props.navigation.setOptions({
+            headerShown: true,
+            header: () => (
+                <View style={{ width: '100%',marginTop:10, height: 70,display: 'flex', flexDirection: 'row', justifyContent: 'flex-start',alignItems:'center',padding:0 }}>
+                    <Image
+                        style={{width:80,height:40}}
+                        source={{
+                            uri: 'https://graphicsmount.com/wp-content/uploads/edd/2017/08/Job-Search-Logo-1-1180x843.jpg',
+                        }}
+                    />
+
+                    <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500',marginHorizontal:22 }}>Viec Lam 24H</Text>
+                </View>
+            )
+        })
+
+
     }, []);
+
 
     return (
         <ScrollView
@@ -68,7 +89,7 @@ const CollaboratorHomeScreen = (props) => {
 
 
             <View style={styles.menuContainer}>
-                {   categories &&
+                {categories &&
                     categories.map((e, index) => <MenuItem index={index} item={e} {...props} />)
                 }
             </View>
@@ -81,14 +102,14 @@ const CollaboratorHomeScreen = (props) => {
 
                 {
                     jobs &&
-                    jobs.map((e, index) => 
-                    <CardHorizontal 
-                        index={index} 
-                        item={e} 
-                        {...props}  
-                        key={index.toString()}
-                        onPress={_navigateToJobDetail}
-                    />)
+                    jobs.map((e, index) =>
+                        <CardHorizontal
+                            index={index}
+                            item={e}
+                            {...props}
+                            key={index.toString()}
+                            onPress={_navigateToJobDetail}
+                        />)
                 }
             </View>
 
