@@ -55,12 +55,11 @@ const JobDetailScreen = (props) => {
     const [expectedPrice, setExpectedPrice] = useState('');
     const [jobMessage, setJobMessage] = useState('');
 
-    console.warn(job_id);
-
 
     const _getJobDetail = async () => {
         setIsLoading(true);
         let job = await getJobDetail(job_id);
+        console.warn(job);
         if (job.data) {
             setJobDetail(job.data);
         }

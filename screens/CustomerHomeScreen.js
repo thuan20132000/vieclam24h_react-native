@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Subheading } from 'react-native-paper'
@@ -7,11 +7,28 @@ import CardHorizontal from '../components/Card/CardHorizontal'
 import MenuItem from '../components/Menu/MenuItem'
 import SearchButton from '../components/Search/SearchButton'
 
+import {getCategory} from '../utils/serverApi';
+
 const CustomerHomeScreen = (props) => {
 
     const _onSearchPress = () => {
 
     }
+
+    const [isLoading,setIsLoading] = useState(false);
+    const [categories,setCategories] = useState([]);
+    const _getCategory = async () => {
+        setIsLoading(true);
+        let data = await getCategory();
+        if (data.data.length > 0) {
+            setCategories(data.data);
+        }
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
+        _getCategory();
+    }, [])
 
     const menuItems = Array(6).fill({});
 
@@ -27,7 +44,14 @@ const CustomerHomeScreen = (props) => {
 
             <View style={styles.menuContainer}>
                 {
-                    menuItems.map((e, index) => <MenuItem index={index} />)
+                    categories.map((e, index) => 
+                        <MenuItem 
+                            index={index} 
+                            item={e} 
+                            key={index.toString()}
+                            navigation={props.navigation}
+                        />
+                    )
                 }
             </View>
 
@@ -39,7 +63,7 @@ const CustomerHomeScreen = (props) => {
                 <Subheading style={{ paddingHorizontal: 12 }}>Ứng viên được đánh giá cao</Subheading>
 
                 {
-                    menuItems.map((e, index) => <CardHorizontal />)
+                  //  menuItems.map((e, index) => <CardHorizontal />)
                 }
             </View>
 

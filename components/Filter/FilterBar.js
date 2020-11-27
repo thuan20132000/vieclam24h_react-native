@@ -48,21 +48,7 @@ const FilterBar = ({searchDistrict,setSearchDistrict}) => {
                 onChangeItem={(item) => setSearchDistrict(item.value)}
             />
 
-            <DropDownPicker style={styles.selectWrap}
-                items={[
-                    { label: 'Giá', value: 'price' },
-                    { label: 'UK', value: 'uk' },
-                    { label: 'France', value: 'france' },
-                ]}
-                defaultValue={'price'}
-                containerStyle={{ height: 40 }}
-                itemStyle={{
-                    justifyContent: 'flex-start'
-                }}
-                dropDownStyle={{ backgroundColor: '#fafafa' }}
-                onChangeItem={(item) => console.warn(item.value)}
-            />
-
+           
 
         </View>
     )
@@ -78,7 +64,7 @@ const styles = StyleSheet.create({
     barWrap: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'flex-start'
     },
     selectWrap:{
         backgroundColor: '#fafafa', 

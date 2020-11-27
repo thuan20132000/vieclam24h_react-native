@@ -234,37 +234,45 @@ function TabNavigator(props) {
         >
 
 
-            <BottomTabNavigator.Screen
-                name="HomeStack"
-                component={CollaboratorHomeStack}
-            />
+
             {
                 (userRole && userRole == 2) &&
-                <BottomTabNavigator.Screen
-                    name="MyJobs"
-                    component={CollaboratorJobStack}
-                />
+                <>
+                    <BottomTabNavigator.Screen
+                        name="MyJobs"
+                        component={CollaboratorJobStack}
+                    />
+                    <BottomTabNavigator.Screen
+                        name="HomeStack"
+                        component={CollaboratorHomeStack}
+                    />
+                </>
             }
+
+
 
             {
                 (userRole && userRole == 3) &&
-                <BottomTabNavigator.Screen
-                    name="CustomerJob"
-                    component={CustomerJobStack}
-                    
-                    options={{
-                        tabBarIcon: ({ color, size }) => (
-                                <MaterialCommunityIcon style={{ position: 'absolute', bottom: 6}}
+                <>
+                    <BottomTabNavigator.Screen
+                        name="HomeStack"
+                        component={CustomerHomeStack}
+                    />
+                    <BottomTabNavigator.Screen
+                        name="CustomerJob"
+                        component={CustomerJobStack}
+
+                        options={{
+                            tabBarIcon: ({ color, size }) => (
+                                <MaterialCommunityIcon style={{ position: 'absolute', bottom: 6 }}
                                     name={CommonIcons.historyJob}
                                     color={CommonColors.primary} size={44}
                                 />
-                        ),
-                        tabBarLabel:'Tạo công việc',
-                    }}
-                    
-                    
-
-                />
+                            ),
+                            tabBarLabel: 'Tạo công việc',
+                        }}
+                    />
+                </>
             }
 
 

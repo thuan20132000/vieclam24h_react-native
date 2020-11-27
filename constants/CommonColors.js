@@ -1,4 +1,5 @@
 export default {
   primary:'#f4a460',
-  btnSubmit:'cornflowerblue'
+  btnSubmit:'cornflowerblue',
+  accent:'ghostwhite'
 }

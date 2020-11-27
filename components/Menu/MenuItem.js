@@ -9,6 +9,7 @@ const MenuItem = ({ index, item,navigation }) => {
         navigation.navigate('JobList',{category_id:item.id});
     }
 
+
     return (
         <TouchableOpacity key={index}
             style={styles.menuItem}
@@ -17,11 +18,11 @@ const MenuItem = ({ index, item,navigation }) => {
             <Image
                 style={{width:60,height:60}}
                 source={{
-                    uri: item.image,
+                    uri: item?.image,
                 }}
             />
 
-            <Text style={{ fontSize: 11 }}>{item.name}</Text>
+            <Text style={{ fontSize: 11 }}>{item?.name}</Text>
         </TouchableOpacity>
     )
 }

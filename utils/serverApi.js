@@ -439,7 +439,12 @@ export const createJob = async (
 
 
 
-
+/**
+ * 
+ * @param {*} user_id 
+ * @param {*} status 
+ * @param {*} per_page 
+ */
 export const getCollaboratorJobs = async (user_id, status, per_page) => {
     try {
         let url = serverConfig.url;
@@ -475,8 +480,15 @@ export const getCollaboratorJobs = async (user_id, status, per_page) => {
 
 
 
-
-export const searchJobs = async (query,district,limit = 6) => {
+/**
+ * author:thuantruong
+ * created_at:25/11/2020
+ * 
+ * @param {*} query 
+ * @param {*} district 
+ * @param {*} limit 
+ */
+export const searchJobs = async (query, district, limit = 6) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/job-search?query=${query}&district=${district}&limit=${limit}`);
@@ -502,6 +514,41 @@ export const searchJobs = async (query,district,limit = 6) => {
         return {
             data: [],
             message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+
+
+export const getCollaborator = async (by_category = '') => {
+    try {
+        let url = serverConfig.url;
+        let datafetch = await fetch(`${url}/collaborators?category=${by_category}`);
+        if (!datafetch.ok) {
+            console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await datafetch.json();
+        console.warn(dataRes);
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
             status: false
         }
     }

@@ -9,18 +9,19 @@ import CommonIcons from '../constants/CommonIcons';
 
 import { searchJobs } from '../utils/serverApi';
 
-const SearchItem = ({ }) => {
+const SearchItem = ({ title, occupation, onPressItem }) => {
     return (
         <>
             <TouchableOpacity style={{
-                backgroundColor: CommonColors.primary,
+                backgroundColor: CommonColors.accent,
                 margin: 2,
                 alignItems: 'flex-start',
                 padding: 8
-            }}
+                }}
+                onPress={onPressItem}
             >
-                <Text>Sửa điện</Text>
-                <Caption>Danh Muc</Caption>
+                <Text>{title}</Text>
+                <Caption>{occupation}</Caption>
             </TouchableOpacity>
             <Divider />
         </>
@@ -28,7 +29,7 @@ const SearchItem = ({ }) => {
 }
 
 
-const SearchScreen = () => {
+const SearchScreen = (props) => {
 
     const _refSearchInput = useRef();
     const [searchQuery, setSearchQuery] = React.useState('');
@@ -39,7 +40,7 @@ const SearchScreen = () => {
 
     const [searchData, setSearchData] = useState([]);
 
-    const [districtSearch,setDistrictSearch] = useState('');
+    const [districtSearch, setDistrictSearch] = useState('');
 
 
 
@@ -60,7 +61,7 @@ const SearchScreen = () => {
 
 
     const _onGetDataSearch = async (value) => {
-        let searchRes = await searchJobs(value,districtSearch);
+        let searchRes = await searchJobs(value, districtSearch);
         console.warn(searchRes);
         if (searchRes.status) {
             setSearchData(searchRes.data);
@@ -68,9 +69,15 @@ const SearchScreen = () => {
         }
     }
 
+    const _onNavigateToDetail = (item) => {
+        props.navigation.navigate('JobDetail',{job_id:item.id});
+    }
+
+
     useEffect(() => {
         _onGetDataSearch(searchQuery)
     }, [districtSearch])
+    
 
 
 
@@ -89,17 +96,25 @@ const SearchScreen = () => {
 
                 />
             </View>
-            <FilterBar 
+            <FilterBar
                 searchDistrict={districtSearch}
                 setSearchDistrict={setDistrictSearch}
             />
 
-            <ScrollView style={{zIndex:-1}}
+            <ScrollView style={{ zIndex: -1 }}
 
             >
                 {
                     searchData.length > 0 &&
-                    searchData.map((e, index) => <SearchItem />)
+                    searchData.map((e, index) =>
+                        <SearchItem key={index.toString()}
+                            item={e}
+                            title={e.name}
+                            occupation={e.occupation_name}
+                            onPressItem={()=>_onNavigateToDetail(e)}
+
+                        />
+                    )
                 }
             </ScrollView>
 

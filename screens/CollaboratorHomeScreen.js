@@ -37,7 +37,6 @@ const CollaboratorHomeScreen = (props) => {
             setCategories(data.data);
         }
         setIsLoading(false);
-
     }
 
     const _getJobs = async () => {
