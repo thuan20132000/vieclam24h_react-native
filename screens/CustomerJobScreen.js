@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Badge, Caption, Paragraph, Title } from 'react-native-paper';
@@ -39,6 +39,14 @@ const CustomerJobScreen = (props) => {
         navigation
     } = props;
     const customerJobData = Array(10).fill({});
+
+
+
+    useEffect(() => {
+        props.navigation.setOptions({
+            
+        });
+    }, [])
 
     return (
         <ScrollView>

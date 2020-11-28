@@ -36,6 +36,8 @@ import JobListScreen from './screens/JobListScreen';
 import * as userActions from './store/actions/authenticationActions';
 import CustomerJobCreationScreen from './screens/CustomerJobCreationScreen';
 import CommonColors from './constants/CommonColors';
+import CollaboratorListScreen from './screens/CollaboratorListScreen';
+import CollaboratorDetailScreen from './screens/CollaboratorDetailScreen';
 
 /**
  * Authentication Stack
@@ -137,7 +139,7 @@ function AccountStack() {
                 component={AccountScreen}
             />
             <AccountStackNavigator.Screen
-                name="CollaboratorProfile"
+                name="Collaborat orProfile"
                 component={CollaboratorProfileScreen}
             />
         </AccountStackNavigator.Navigator>
@@ -158,6 +160,14 @@ function CustomerHomeStack() {
                 name="CustomerHome"
                 component={CustomerHomeScreen}
             />
+            <CustomerHomeStackNavigator.Screen
+                name="CollaboratorList"
+                component={CollaboratorListScreen}
+            />
+            <CustomerHomeStackNavigator.Screen
+                name="CollaboratorDetail"
+                component={CollaboratorDetailScreen}
+            />
         </CustomerHomeStackNavigator.Navigator>
     )
 }
@@ -170,12 +180,8 @@ const CustomerJobStackNavigator = createStackNavigator();
 function CustomerJobStack() {
     return (
         <CustomerJobStackNavigator.Navigator>
-            <CustomerHomeStackNavigator.Screen
-                name="CustomerJobCreate"
-                component={CustomerJobCreationScreen}
-            />
             <CustomerJobStackNavigator.Screen
-                name="CustomerJob"
+                name="CustomerJobList"
                 component={CustomerJobScreen}
             />
             <CustomerHomeStackNavigator.Screen
@@ -259,8 +265,16 @@ function TabNavigator(props) {
                         component={CustomerHomeStack}
                     />
                     <BottomTabNavigator.Screen
-                        name="CustomerJob"
+                        name="CustomerJobList"
                         component={CustomerJobStack}
+
+                        options={{
+                            tabBarLabel:'Tin đăng'
+                        }}
+                    />
+                    <BottomTabNavigator.Screen
+                        name="CustomerJobCreation"
+                        component={CustomerJobCreationScreen}
 
                         options={{
                             tabBarIcon: ({ color, size }) => (

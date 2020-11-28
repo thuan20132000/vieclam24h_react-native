@@ -12,5 +12,8 @@ export default {
     historyJob:'playlist-edit',
     search:'magnify',
     backArrow:'arrow-left-bold',
-    
+    heartOutline:'heart-outline',
+    heart:'heart',
+    starOutline:'star-outline',
+    star:'star',
 }

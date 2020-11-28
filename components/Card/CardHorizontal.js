@@ -12,19 +12,19 @@ const CardHorizontal = ({index,item,onPress}) => {
     return (
         <View style={styles.cardContainer}>
             <Card.Cover style={styles.cardImage}
-                source={{ uri:item.attributes.images[0]?.image_url || CommonImages.notFound  }}
+                source={{ uri:item?.attributes?.images[0]?.image_url || CommonImages.notFound  }}
             />
             <Card.Content style={styles.cardContent}>
-                <Title style={{fontSize:16}}>{item.attributes.name}</Title>
-                <Paragraph>{item.attributes.description}</Paragraph>
+                <Title style={{fontSize:16}}>{item?.attributes.name}</Title>
+                <Paragraph>{item?.attributes.description}</Paragraph>
                 <Card.Actions>
                     <Button
-                        onPress={()=>onPress(item.id)}
+                        onPress={()=>onPress(item?.id)}
                     >
                         Chi Tiêt
                     </Button>
                 </Card.Actions>
-                <Caption>{item.attributes.suggestion_price}</Caption>
+                <Caption>{item?.attributes.suggestion_price}</Caption>
             </Card.Content>
         </View>
 

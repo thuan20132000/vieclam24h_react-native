@@ -522,7 +522,10 @@ export const searchJobs = async (query, district, limit = 6) => {
 
 
 
-
+/**
+ * 
+ * @param {*} by_category 
+ */
 export const getCollaborator = async (by_category = '') => {
     try {
         let url = serverConfig.url;
@@ -538,13 +541,50 @@ export const getCollaborator = async (by_category = '') => {
         }
 
         let dataRes = await datafetch.json();
-        console.warn(dataRes);
 
         return {
             data: dataRes.data,
             message: 'success',
             status: true
         }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+
+/**
+ * 
+ * @param {*} collaborator_id 
+ */
+export const getCollaboratorDetail = async (collaborator_id) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/collaborators/${collaborator_id}`);
+        if (!dataFetch.ok) {
+            console.warn("ERROT AT GET COLLABORATOR DETAIL");
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+
     } catch (error) {
         return {
             data: [],

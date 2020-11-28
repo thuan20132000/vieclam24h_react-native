@@ -2,18 +2,18 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity,Image } from 'react-native'
 import { IconButton } from 'react-native-paper'
 
-const MenuItem = ({ index, item,navigation }) => {
+const MenuItem = ({ index, item,navigation,onItemPress }) => {
 
 
-    const _onNavigateToJobList = () => {
-        navigation.navigate('JobList',{category_id:item.id});
-    }
+    // const _onNavigateToJobList = () => {
+    //     navigation.navigate('JobList',{category_id:item.id});
+    // }
 
 
     return (
         <TouchableOpacity key={index}
             style={styles.menuItem}
-            onPress={_onNavigateToJobList}
+            onPress={onItemPress}
         >
             <Image
                 style={{width:60,height:60}}
