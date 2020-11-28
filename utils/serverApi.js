@@ -523,7 +523,9 @@ export const searchJobs = async (query, district, limit = 6) => {
 
 
 /**
- * 
+ * author:thuantruong
+ * created_at:28/11/2020
+ * description:Get all collaborators or collaborator by category
  * @param {*} by_category 
  */
 export const getCollaborator = async (by_category = '') => {
@@ -560,7 +562,9 @@ export const getCollaborator = async (by_category = '') => {
 
 
 /**
- * 
+ * author:thuantruong
+ * created_at:28/11/2020
+ * description:Get collaborator detail
  * @param {*} collaborator_id 
  */
 export const getCollaboratorDetail = async (collaborator_id) => {
@@ -569,6 +573,48 @@ export const getCollaboratorDetail = async (collaborator_id) => {
         let dataFetch = await fetch(`${url}/collaborators/${collaborator_id}`);
         if (!dataFetch.ok) {
             console.warn("ERROT AT GET COLLABORATOR DETAIL");
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+
+/**
+ * author:thuantruong
+ * created_at:28/11/2020
+ * description: get all jobs that created by customer
+ * 
+ * @param {Number} customer_id 
+ * @param {desc|asc} sort_by
+ */
+export const getCustomerJobs = async (customer_id,sort_by='desc',per_page=15) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job?user_id=${customer_id}&sort_by=${sort_by}&per_page=${per_page}`);
+        if (!dataFetch.ok) {
+            console.warn("ERROT AT GET CUSTOMER JOBS");
 
             return {
                 data: [],

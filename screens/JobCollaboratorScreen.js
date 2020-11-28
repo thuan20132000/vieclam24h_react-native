@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import React, { useRef, useEffect, useState } from 'react'
+import { Dimensions, Linking, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar, IconButton } from 'react-native-paper'
 import CommonColors from '../constants/CommonColors'
@@ -8,24 +8,32 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import CollaboratorInformation from '../components/BottomSheet/CollaboratorInformation'
 
 
-const JobInidicatorItem = () => {
+const JobInidicatorItem = ({ item }) => {
 
 
-    const _refCollaboratorInformation = useRef(); 
+    const _refCollaboratorInformation = useRef();
 
     const _openCollaboratorInformation = () => {
         _refCollaboratorInformation.current.open();
     }
+
+    const _onCallPhoneNumber = () => {
+        Linking.openURL(`tel:${item?.phonenumber}`)
+    }
+
+    useEffect(() => {
+       // console.warn(item);
+    }, [])
     return (
         <View
             style={styles.jobIndicatorItem}
         >
             <Avatar.Image size={64} source={require('../assets/images/avatar1.jpg')} />
             <View style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <Text>Name</Text>
-                <Text>Giá đề nghị : 320000</Text>
+                <Text>{item?.name}</Text>
+                <Text>Giá nhận : {item?.expected_price}</Text>
                 <Text>Đánh giá: 5</Text>
-                <Text>Mô tả: dvsd dscds</Text>
+                <Text>Mô tả: {item?.description}</Text>
 
             </View>
             <View>
@@ -35,6 +43,12 @@ const JobInidicatorItem = () => {
                     color={CommonColors.primary}
                     size={26}
                     onPress={() => console.log('Pressed')}
+                />
+                <IconButton
+                    icon={CommonIcons.phone}
+                    color={CommonColors.primary}
+                    size={26}
+                    onPress={_onCallPhoneNumber}
                 />
                 <IconButton
                     icon={CommonIcons.account}
@@ -61,26 +75,42 @@ const JobInidicatorItem = () => {
                     }
                 }}
                 dragFromTopOnly={true}
-                
+
             >
                 <CollaboratorInformation
-                    _refCollaboratorInformation = {_refCollaboratorInformation}
+                    _refCollaboratorInformation={_refCollaboratorInformation}
                 />
             </RBSheet>
         </View>
     )
 }
 
-const JobCollaboratorScreen = () => {
+
+
+const JobCollaboratorScreen = (props) => {
 
     const jobIndicatorData = Array(12).fill({});
+    const [jobCandidates, setJobCandidates] = useState([]);
+
+    useEffect(() => {
+        // console.warn(props);
+        if (props.route.params?.candidates) {
+            setJobCandidates(props.route.params?.candidates);
+        }
+
+        props.navigation.setOptions({
+            title:'Ứng viên công việc'
+        })
+    }, [])
+
 
     return (
         <ScrollView>
             {
-                jobIndicatorData.map((e, index) =>
+                jobCandidates.map((e, index) =>
                     <JobInidicatorItem
-
+                        key={index}
+                        item={e}
                     />
                 )
             }

@@ -16,4 +16,5 @@ export default {
     heart:'heart',
     starOutline:'star-outline',
     star:'star',
+    phone:'phone-forward'
 }

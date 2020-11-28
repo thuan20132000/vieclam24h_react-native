@@ -185,9 +185,10 @@ function CustomerJobStack() {
                 component={CustomerJobScreen}
             />
             <CustomerHomeStackNavigator.Screen
-                name="JobCollaborator"
+                name="JobCollaboratorApplying"
                 component={JobCollaboratorScreen}
             />
+            
         </CustomerJobStackNavigator.Navigator>
     )
 }
