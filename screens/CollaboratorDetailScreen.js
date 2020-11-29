@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View, Image } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Avatar, Chip, IconButton } from 'react-native-paper'
+import { Avatar, Caption, Chip, IconButton } from 'react-native-paper'
 import CardReview from '../components/Card/CardReview'
 import ReviewStar from '../components/Review/ReviewStar'
 import CommonIcons from '../constants/CommonIcons'
@@ -30,7 +30,6 @@ const CollaboratorDetailScreen = (props) => {
             props.navigation.goBack();
             return;
         }
-        console.warn(collaboratorData.data);
         setCollaborator(collaboratorData.data);
         setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
 
@@ -82,6 +81,22 @@ const CollaboratorDetailScreen = (props) => {
                 </View>
             </View>
 
+            {/*  */}
+            <View style={styles.photoGalleryWrap}>
+                <Caption>Hình ảnh hoạt động</Caption>
+                <View style={styles.photoGallery}>
+                    {
+                        occupationsArr.map((e, index) =>
+                            <Image style={styles.occupationImage}
+                                source={{
+                                    uri: 'https://reactnative.dev/img/tiny_logo.png',
+                                }}
+                            />
+                        )
+                    }
+
+                </View>
+            </View>
             {/* Danh gia khach hang */}
             <View>
                 <Text>Đánh giá từ khách hàng</Text>
@@ -104,5 +119,23 @@ const styles = StyleSheet.create({
     userInfo: {
         margin: 12,
 
+    },
+    occupationsWrap: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginVertical: 16
+    },
+    photoGallery: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+
+    },
+    occupationImage: {
+        width: 100,
+        height: 100,
+        margin: 6
     }
 })

@@ -86,12 +86,17 @@ const CustomerJobScreen = (props) => {
     useEffect(() => {
         //console.warn(userInformation);
 
-        _getCustomerJobs();
+        props.navigation.addListener('focus', () => {
+            // do something
+            _getCustomerJobs();
+
+        });
+      
 
         props.navigation.setOptions({
             title:'Tin Đăng'
         });
-    }, []);
+    },[]);
 
     return (
         <ScrollView>

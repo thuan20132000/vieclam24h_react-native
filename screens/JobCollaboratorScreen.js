@@ -1,14 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { Dimensions, Linking, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { Avatar, IconButton } from 'react-native-paper'
+import { ActivityIndicator, Avatar, Chip, IconButton } from 'react-native-paper'
 import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
 import RBSheet from "react-native-raw-bottom-sheet";
 import CollaboratorInformation from '../components/BottomSheet/CollaboratorInformation'
+import { color } from 'react-native-reanimated'
+import {selectCandidate} from '../utils/serverApi';
 
-
-const JobInidicatorItem = ({ item }) => {
+const JobInidicatorItem = ({ item ,job_id}) => {
 
 
     const _refCollaboratorInformation = useRef();
@@ -21,8 +22,17 @@ const JobInidicatorItem = ({ item }) => {
         Linking.openURL(`tel:${item?.phonenumber}`)
     }
 
+
+    const [isLoading,setIsLoading] = useState(false);
+    const _onSelectCandidate = async () => {
+        console.warn('dsds: ',item,job_id);
+        let selectRes = await selectCandidate(job_id,item.job_collaborator_id);
+        console.warn(selectRes);
+        // selectCandidate()
+    }
+
     useEffect(() => {
-       // console.warn(item);
+        console.warn(item);
     }, [])
     return (
         <View
@@ -34,6 +44,22 @@ const JobInidicatorItem = ({ item }) => {
                 <Text>Giá nhận : {item?.expected_price}</Text>
                 <Text>Đánh giá: 5</Text>
                 <Text>Mô tả: {item?.description}</Text>
+                <Chip>{item?.job_collaborator_status == 1?"PENDING":"APPROVED"}</Chip>
+
+                <TouchableOpacity style={styles.buttonSubmit}
+                    disabled={isLoading?true:false}
+                    onPress={_onSelectCandidate}
+                >
+                    {
+                        isLoading ?
+                        <ActivityIndicator
+                            size={'small'}
+                            color={'blue'}
+                        />:
+                        <Text style={{color:'white',fontSize:16,fontWeight:'500'}}>Chọn ứng viên</Text>
+
+                    }
+                </TouchableOpacity>
 
             </View>
             <View>
@@ -91,26 +117,33 @@ const JobCollaboratorScreen = (props) => {
 
     const jobIndicatorData = Array(12).fill({});
     const [jobCandidates, setJobCandidates] = useState([]);
+    const [jobId,setJobId] = useState();
 
     useEffect(() => {
-        // console.warn(props);
-        if (props.route.params?.candidates) {
+        let jobCandidates = props.route.params?.candidates;
+        let job_id = props.route.params?.job_id; 
+        if (jobCandidates) {
             setJobCandidates(props.route.params?.candidates);
         }
+        if(job_id){
+            setJobId(job_id);
+        }
+
 
         props.navigation.setOptions({
-            title:'Ứng viên công việc'
+            title: 'Ứng viên ứng tuyển công việc'
         })
     }, [])
 
 
     return (
         <ScrollView>
-            {
+            {   (jobCandidates && jobId) &&
                 jobCandidates.map((e, index) =>
                     <JobInidicatorItem
                         key={index}
                         item={e}
+                        job_id={jobId}
                     />
                 )
             }
@@ -136,5 +169,12 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
+    },
+
+    buttonSubmit: {
+        marginVertical: 16, 
+        backgroundColor: CommonColors.btnSubmit,
+        padding:12,
+        borderRadius:16
     }
 })

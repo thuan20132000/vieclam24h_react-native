@@ -609,12 +609,58 @@ export const getCollaboratorDetail = async (collaborator_id) => {
  * @param {Number} customer_id 
  * @param {desc|asc} sort_by
  */
-export const getCustomerJobs = async (customer_id,sort_by='desc',per_page=15) => {
+export const getCustomerJobs = async (customer_id, sort_by = 'desc', per_page = 15) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/job?user_id=${customer_id}&sort_by=${sort_by}&per_page=${per_page}`);
         if (!dataFetch.ok) {
             console.warn("ERROT AT GET CUSTOMER JOBS");
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+
+
+export const selectCandidate = async (job_id, job_collaborator_id) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job/select-candidate`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                job_id: job_id,
+                job_collaborator_id: job_collaborator_id
+
+            })
+        });
+        if (!dataFetch.ok) {
+            console.warn("ERROT AT GET SELECT CANDIDATE");
 
             return {
                 data: [],
