@@ -31,7 +31,6 @@ export const login = async (email, password) => {
 
 
         if (!dataFetch.ok) {
-            console.warn("ERROR AT LOGIN : ", dataFetch);
             return {
                 data: null,
                 message: dataFetch,
@@ -503,7 +502,6 @@ export const searchJobs = async (query, district, limit = 6) => {
         }
 
         let dataRes = await dataFetch.json();
-        console.warn(dataRes);
         return {
             data: dataRes.data,
             message: 'success',
@@ -677,6 +675,85 @@ export const selectCandidate = async (job_id, job_collaborator_id) => {
             status: true
         }
 
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+
+/**
+ * author:thuantruong
+ * created_at:02/12/2020
+ * description:Get all customer's pending jobs
+ * @param {*} author_id 
+ */
+export const getUserPendingJobs = async (author_id) => {
+
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job/${author_id}/status/pending`);
+        if (!dataFetch.ok) {
+            console.warn("ERROT AT GET CUSTOMER PENDING JOBS");
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+/**
+ * author:thuantruong
+ * created_at:02/12/2020
+ * description:Get all customer's approved jobs
+ * @param {*} author_id 
+ */
+export const getUserApprovedJobs = async (author_id) => {
+
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job/${author_id}/status/approved`);
+        if (!dataFetch.ok) {
+            console.warn("ERROT AT GET CUSTOMER APPROVED JOBS");
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
     } catch (error) {
         return {
             data: [],

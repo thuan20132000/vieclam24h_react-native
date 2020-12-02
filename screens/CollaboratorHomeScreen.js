@@ -51,6 +51,11 @@ const CollaboratorHomeScreen = (props) => {
         props.navigation.navigate('JobDetail', { job_id: job_id })
     }
 
+
+    const _navigateToJobList = async (item) => {
+        props.navigation.navigate('JobList',{category_id:item.id});
+    }
+
     useEffect(() => {
         _getCategory();
         _getJobs();
@@ -89,7 +94,13 @@ const CollaboratorHomeScreen = (props) => {
 
             <View style={styles.menuContainer}>
                 {categories &&
-                    categories.map((e, index) => <MenuItem index={index} item={e} {...props} />)
+                    categories.map((e, index) => 
+                        <MenuItem 
+                            index={index} 
+                            item={e} 
+                            {...props} 
+                            onItemPress={()=>_navigateToJobList(e)}
+                        />)
                 }
             </View>
 

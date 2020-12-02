@@ -150,6 +150,12 @@ const JobDetailScreen = (props) => {
                                 onChangeText={text => setJobApplyData({...jobApplyData,expected_price:text})}
                                 keyboardType={'number-pad'}
                             />
+                            <Text style={{
+                                paddingHorizontal:18,
+                                color:'red'
+                            }}>
+                                Ngân sách đưa ra : {jobDetail?.attributes.suggestion_price} VND
+                            </Text>
                             <TextInput style={[styles.input, { height: 160 }]}
                                 label="Lời nhắn"
                                 value={jobApplyData.description}

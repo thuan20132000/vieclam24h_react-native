@@ -14,10 +14,11 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 3);
+        let collaboratorJobRes = await getCollaboratorJobs(user_id, status,4);
         if (collaboratorJobRes.status) {
             setCollaboratorJob(collaboratorJobRes.data);
         }
+
     }
 
     useEffect(() => {

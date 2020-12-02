@@ -6,8 +6,10 @@ import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
 import RBSheet from "react-native-raw-bottom-sheet";
 import CollaboratorInformation from '../components/BottomSheet/CollaboratorInformation'
-import { color } from 'react-native-reanimated'
 import {selectCandidate} from '../utils/serverApi';
+
+
+
 
 const JobInidicatorItem = ({ item ,job_id}) => {
 
@@ -25,15 +27,13 @@ const JobInidicatorItem = ({ item ,job_id}) => {
 
     const [isLoading,setIsLoading] = useState(false);
     const _onSelectCandidate = async () => {
-        console.warn('dsds: ',item,job_id);
         let selectRes = await selectCandidate(job_id,item.job_collaborator_id);
-        console.warn(selectRes);
         // selectCandidate()
     }
 
-    useEffect(() => {
-        console.warn(item);
-    }, [])
+    // useEffect(() => {
+    //     console.warn(item);
+    // }, [])
     return (
         <View
             style={styles.jobIndicatorItem}
@@ -133,7 +133,8 @@ const JobCollaboratorScreen = (props) => {
         props.navigation.setOptions({
             title: 'Ứng viên ứng tuyển công việc'
         })
-    }, [])
+    }, []);
+
 
 
     return (
