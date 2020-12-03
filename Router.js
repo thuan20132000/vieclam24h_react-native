@@ -139,7 +139,7 @@ function AccountStack() {
                 component={AccountScreen}
             />
             <AccountStackNavigator.Screen
-                name="Collaborat orProfile"
+                name="CollaboratorProfile"
                 component={CollaboratorProfileScreen}
             />
         </AccountStackNavigator.Navigator>
@@ -187,6 +187,10 @@ function CustomerJobStack() {
             <CustomerHomeStackNavigator.Screen
                 name="JobCollaboratorApplying"
                 component={JobCollaboratorScreen}
+            />
+             <CustomerHomeStackNavigator.Screen
+                name="CollaboratorDetail"
+                component={CollaboratorDetailScreen}
             />
             
         </CustomerJobStackNavigator.Navigator>

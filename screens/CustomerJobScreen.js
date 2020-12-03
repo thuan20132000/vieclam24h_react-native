@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { ActivityIndicator, Badge, Caption, Paragraph, Title } from 'react-native-paper';
 import CardHorizontal from '../components/Card/CardHorizontal';
@@ -41,7 +41,7 @@ const CustomerJobItem = ({ _onPress, item }) => {
     }, [])
 
     return (
-        
+
         <TouchableOpacity style={styles.itemContainer}
             onPress={_onPress}
         >
@@ -65,9 +65,12 @@ const CustomerJobItem = ({ _onPress, item }) => {
 /**
  * description: collaborators list
  */
-const PendingJob = ({ customerJobsData, navigation,isLoading }) => {
+const PendingJob = ({ navigation, userInformation }) => {
 
 
+    const [pendingJobsData, setPendingJobsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const _navigateToJobCollaboratorApplying = (job) => {
         navigation.navigate('JobCollaboratorApplying', {
@@ -75,21 +78,51 @@ const PendingJob = ({ customerJobsData, navigation,isLoading }) => {
             candidates: job.relationships?.candidates
         });
     }
+
+
+    const _getPendingJobsData = async () => {
+        setIsLoading(true);
+        let pendingJobsRes = await getUserPendingJobs(userInformation.id);
+        if (pendingJobsRes.status) {
+            setPendingJobsData(pendingJobsRes.data);
+        }
+        setIsLoading(false);
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        setTimeout(() => {
+            setRefreshing(false)
+        }, 2000);
+    }, []);
+
+    useEffect(() => {
+        _getPendingJobsData();
+    }, [])
+
+
+
     return (
-        <ScrollView>
-            
+        <ScrollView
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+
+            }
+        >
+
             {
                 !isLoading ?
-                customerJobsData.map((e, index) =>
-                    <CustomerJobItem
-                        key={index.toString()}
-                        _onPress={() => _navigateToJobCollaboratorApplying(e)}
-                        item={e}
+                    pendingJobsData.map((e, index) =>
+                        <CustomerJobItem
+                            key={index.toString()}
+                            _onPress={() => _navigateToJobCollaboratorApplying(e)}
+                            item={e}
+                        />
+                    ) :
+                    <ActivityIndicator
+                        size={'small'}
                     />
-                ):
-                <ActivityIndicator
-                    size={'small'}
-                />
             }
         </ScrollView>
     )
@@ -98,23 +131,66 @@ const PendingJob = ({ customerJobsData, navigation,isLoading }) => {
 
 
 
-const ApprovedJob = ({ customerJobsData, navigation }) => {
+const ApprovedJob = ({ navigation, userInformation }) => {
+
+
+    const [approvedJobsData, setApprovedJobsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+
     const _navigateToJobCollaboratorApplying = (job) => {
         navigation.navigate('JobCollaboratorApplying', {
             job_id: job.id,
             candidates: job.relationships?.candidates
         });
     }
+
+
+    const _getApprovedJobsData = async () => {
+        setIsLoading(true);
+        let approvedJobsRes = await getUserApprovedJobs(userInformation.id);
+        if (approvedJobsRes.status) {
+            setApprovedJobsData(approvedJobsRes.data);
+        }
+        setIsLoading(false);
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        setTimeout(() => {
+            setRefreshing(false)
+        }, 2000);
+    }, []);
+
+
+
+    useEffect(() => {
+        _getApprovedJobsData();
+    }, [])
+
     return (
-        <ScrollView>
+        <ScrollView
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+
+            }
+        >
             {
-                customerJobsData.map((e, index) =>
-                    <CustomerJobItem
-                        key={index.toString()}
-                        _onPress={() => _navigateToJobCollaboratorApplying(e)}
-                        item={e}
+                !isLoading ?
+
+                    approvedJobsData.map((e, index) =>
+                        <CustomerJobItem
+                            key={index.toString()}
+                            _onPress={() => _navigateToJobCollaboratorApplying(e)}
+                            item={e}
+                        />
+                    ) :
+                    <ActivityIndicator
+                        size={'small'}
+
                     />
-                )
             }
         </ScrollView>
     )
@@ -143,11 +219,9 @@ const CustomerJobScreen = (props) => {
     const { userInformation } = useSelector(state => state.authentication);
 
 
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [customerJobsData, setCustomerJobsData] = useState([]);
 
-    const [pendingJobsData, setPendingJobsData] = useState([]);
-    const [approvedJobsData, setApprovedJobsData] = useState([]);
     const [confirmedJobsData, setConfirmJobsData] = useState([]);
 
 
@@ -160,36 +234,7 @@ const CustomerJobScreen = (props) => {
     }
 
 
-    const _getPendingJobsData = async () => {
-        setIsLoading(true);
-        let pendingJobsRes = await getUserPendingJobs(userInformation.id);
-        if (pendingJobsRes.status) {
-            setPendingJobsData(pendingJobsRes.data);
-        }
-        setIsLoading(false);
-    }
-
-    const _getApprovedJobsData = async () => {
-        setIsLoading(true);
-        let approvedJobsRes = await getUserApprovedJobs(userInformation.id);
-        if (approvedJobsRes.status) {
-            setApprovedJobsData(approvedJobsRes.data);
-        }
-        setIsLoading(false);
-    }
-
     useEffect(() => {
-
-        // const unsubscribe = props.navigation.addListener('focus', () => {
-        //     // do something
-
-
-
-        // });
-
-        // return unsubscribe;
-            _getPendingJobsData();
-            _getApprovedJobsData();
 
 
     }, []);
@@ -206,15 +251,13 @@ const CustomerJobScreen = (props) => {
     const renderScene = SceneMap({
         pendingJob: () =>
             <PendingJob
-                customerJobsData={pendingJobsData}
                 navigation={props.navigation}
-                isLoading={isLoading}
+                userInformation={userInformation}
             />,
         approvedJob: () =>
             <ApprovedJob
-                customerJobsData={approvedJobsData}
                 navigation={props.navigation}
-                isLoading = {isLoading}
+                userInformation={userInformation}
             />,
         confirmedJob: () =>
             <ConfirmedJob

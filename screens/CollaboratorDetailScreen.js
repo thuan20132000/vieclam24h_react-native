@@ -68,9 +68,10 @@ const CollaboratorDetailScreen = (props) => {
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
                         collaboratorOccupations &&
-                        collaboratorOccupations.map(e =>
+                        collaboratorOccupations.map((e,index) =>
                             <Chip style={{ margin: 2 }}
                                 onPress={() => console.log('Pressed')}
+                                key={index.toString()}
                             >
                                 {e.name}
                             </Chip>

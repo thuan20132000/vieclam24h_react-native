@@ -16,5 +16,12 @@ export default {
     heart:'heart',
     starOutline:'star-outline',
     star:'star',
-    phone:'phone-forward'
+    phone:'phone-forward',
+    circle_brightness:'brightness-1',
+
+    face_verygood:'emoticon-kiss-outline',
+    face_good:'emoticon-outline',
+    face_normal:'emoticon-happy-outline',
+    face_bad:'emoticon-sad-outline',
+    face_sobad:'emoticon-angry-outline'
 }

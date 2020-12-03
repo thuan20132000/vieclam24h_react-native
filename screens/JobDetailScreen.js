@@ -33,6 +33,10 @@ const JobDetailScreen = (props) => {
     });
 
 
+    const _onValidateMaxSuggesstionPrice = () => {
+        
+    }
+
     const [jobDetail, setJobDetail] = useState();
 
 
