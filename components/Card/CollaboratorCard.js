@@ -15,8 +15,6 @@ const CollaboratorCard = ({ item,navigation }) => {
             onPress={()=>navigation.navigate('CollaboratorDetail',{collaborator_id:item.id})}
         >
        
-
-
             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <Title style={{ fontSize: 16, marginHorizontal: 6 }}>{item?.attributes.name}</Title>
 
@@ -26,10 +24,12 @@ const CollaboratorCard = ({ item,navigation }) => {
             </View>
             <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
                 {
-                    item?.relationships?.occupations.map((e) => (
-                        <Chip style={{
-                            margin: 2
-                        }}
+                    item?.relationships?.occupations.map((e,index) => (
+                        <Chip 
+                            key={index.toString()}
+                            style={{
+                                margin: 2
+                            }}
                             onPress={() => console.log('Pressed')}
                         >
                             {e.name}

@@ -7,7 +7,8 @@ import { useSelector } from 'react-redux';
 import {
     getCustomerJobs,
     getUserPendingJobs,
-    getUserApprovedJobs
+    getUserApprovedJobs,
+    getUserConfirmedJobs
 } from '../utils/serverApi';
 
 import { TabView, SceneMap } from 'react-native-tab-view';
@@ -197,11 +198,67 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 }
 
 
-const ConfirmedJob = () => {
+const ConfirmedJob = ({ navigation, userInformation }) => {
+
+
+    const [confirmedJobsData, setConfirmedJobsData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+
+
+    const _navigateToJobCollaboratorConfirmed = (job) => {
+        navigation.navigate('JobCollaboratorApplying', {
+            job_id: job.id,
+            candidates: job.relationships?.candidates
+        });
+    }
+
+
+    const _getConfirmedJobsData = async () => {
+        setIsLoading(true);
+        let approvedJobsRes = await getUserConfirmedJobs(userInformation.id);
+        if (approvedJobsRes.status) {
+            setConfirmedJobsData(approvedJobsRes.data);
+            console.warn(approvedJobsRes);
+        }
+        setIsLoading(false);
+    }
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        setTimeout(() => {
+            setRefreshing(false)
+        }, 2000);
+    }, []);
+
+
+
+    useEffect(() => {
+        _getConfirmedJobsData();
+    }, [])
+
     return (
-        <View>
-            <Text>Job confirmed</Text>
-        </View>
+        <ScrollView
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+
+            }
+        >
+            {
+                !isLoading ?
+
+                    confirmedJobsData.map((e, index) =>
+                        <View>
+                            <Text>{e.confirm.confirmed_price}</Text>
+                        </View>
+                    ) :
+                    <ActivityIndicator
+                        size={'small'}
+
+                    />
+            }
+        </ScrollView>
     )
 }
 
@@ -261,7 +318,8 @@ const CustomerJobScreen = (props) => {
             />,
         confirmedJob: () =>
             <ConfirmedJob
-
+                navigation={props.navigation}
+                userInformation={userInformation}
             />,
 
 

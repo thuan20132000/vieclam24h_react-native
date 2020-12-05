@@ -762,3 +762,101 @@ export const getUserApprovedJobs = async (author_id) => {
         }
     }
 }
+
+
+
+
+/**
+ * author:thuantruong
+ * created_at:05/12/2020
+ * description:Get all customer's confirmed jobs
+ * @param {*} author_id 
+ */
+export const getUserConfirmedJobs = async (author_id) => {
+
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job/${author_id}/status/confirmed`);
+        if (!dataFetch.ok) {
+            console.warn("ERROT AT GET CUSTOMER CONFIRMED JOBS");
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+
+/**
+ * author:thuantruong
+ * created_at:04/12/2020
+ * description:confirm finished job with review
+ * 
+ * @param {*} job_collaborator_id 
+ * @param {*} confirmed_price 
+ * @param {*} range 
+ * @param {*} content 
+ */
+export const confirmFinishedJob = async (job_collaborator_id,confirmed_price,range,content) => {
+    
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/jobconfirm`,{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                job_collaborator_id:job_collaborator_id,
+                confirmed_price:confirmed_price,
+                range:range,
+                content:content
+            })
+        });
+
+        let dataRes = await dataFetch.json();
+        if(dataRes.status){
+            return {
+                data:dataRes,
+                message:'success',
+                status:true,
+            }
+        }
+
+        return {
+            data:[],
+            message:dataRes.message,
+            status:false,
+        }
+
+    } catch (error) {
+        
+        return {
+            data:[],
+            status:false,
+            message:error
+        }
+
+    }
+
+}

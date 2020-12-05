@@ -1,12 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { Dimensions, Linking, StyleSheet, Text, View, TextInput } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { ActivityIndicator, Avatar, Chip, IconButton } from 'react-native-paper'
+import { ActivityIndicator, Avatar, Chip, IconButton, Snackbar } from 'react-native-paper'
 import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
 import RBSheet from "react-native-raw-bottom-sheet";
 import CollaboratorInformation from '../components/BottomSheet/CollaboratorInformation'
-import { selectCandidate } from '../utils/serverApi';
+import {
+    selectCandidate,
+    confirmFinishedJob
+} from '../utils/serverApi';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleBottomSheet from '../components/BottomSheet/SimpleBottomSheet'
@@ -26,6 +29,13 @@ const JobInidicatorItem = ({
     const _refCollaboratorInformation = useRef();
     const _refConfirmFinishedJobBottomSheet = useRef();
 
+
+    const [errorMessage, setErrorMessage] = useState({
+        status: false,
+        message: ''
+    });
+    const [showErrorMessage, setShowErrorMessage] = useState(false);
+
     const navigateToCollaboratorDetail = () => {
         _refCollaboratorInformation.current.open();
     }
@@ -41,12 +51,53 @@ const JobInidicatorItem = ({
         confirmedPrice: '',
         satisfationLevel: '',
         message: ''
-
     });
 
-    useEffect(() => {
-        console.warn(confirmedJobInfo)
-    }, [confirmedJobInfo]);
+
+    const _onCheckValidationConfirm = () => {
+        if (confirmedJobInfo.confirmedPrice == "" || !confirmedJobInfo.confirmedPrice) {
+            setErrorMessage({
+                status: true,
+                message: `Vui lòng nhập giá xác nhận`
+            });
+            return false;
+        }
+        if (confirmedJobInfo.satisfationLevel == "" || !confirmedJobInfo.satisfationLevel) {
+            setErrorMessage({
+                status: true,
+                message: `Vui lòng đánh giá ứng viên`
+            });
+            return false;
+        }
+        return true;
+    }
+
+    const _onConfirmFinishedJob = async () => {
+        // console.warn('confirmed: ',item);
+
+        let checkValidation = _onCheckValidationConfirm();
+        if (checkValidation) {
+            let confirmRes = await confirmFinishedJob(
+                item.job_collaborator_id,
+                confirmedJobInfo.confirmedPrice,
+                confirmedJobInfo.satisfationLevel,
+                confirmedJobInfo.message
+            );
+
+            console.warn(confirmRes);
+        }else{
+            setShowErrorMessage(true);
+        }
+    }
+
+
+
+
+
+
+    // useEffect(() => {
+    //     console.warn(item);
+    // }, []);
 
     return (
         <View
@@ -136,8 +187,7 @@ const JobInidicatorItem = ({
                 closeOnPressMask={false}
                 dragFromTopOnly={true}
             >
-
-                <IconButton style={{ position: 'relative',paddingTop:18 }}
+                <IconButton style={{ position: 'relative', paddingTop: 18 }}
                     icon={CommonIcons.backArrow}
                     color={'black'}
                     size={32}
@@ -155,17 +205,17 @@ const JobInidicatorItem = ({
                             )}
                             keyboardType={'numeric'}
                             placeholder={`Nhập giá hoàn thành công việc`}
-                        
+
                         />
-                        <Text style={{fontSize:10,color:'grey',fontStyle:'italic'}}>
+                        <Text style={{ fontSize: 10, color: 'grey', fontStyle: 'italic' }}>
                             Vui lòng cung cấp giá xác nhận để cải thiện môi trường kết nối tin cậy.
                         </Text>
                     </View>
                     {/*  */}
-                    <Text style={[styles.titleCaption,{marginHorizontal:16}]}>Mức độ hài lòng</Text>
-                    <ReviewSatisfationLevel 
-                        onSelected={(item)=>setConfirmedJobInfo({
-                            ...confirmedJobInfo,satisfationLevel:item.value
+                    <Text style={[styles.titleCaption, { marginHorizontal: 16 }]}>Mức độ hài lòng</Text>
+                    <ReviewSatisfationLevel
+                        onSelected={(item) => setConfirmedJobInfo({
+                            ...confirmedJobInfo, satisfationLevel: item.value
                         })}
                     />
                     {/*  */}
@@ -181,18 +231,37 @@ const JobInidicatorItem = ({
                             // numberOfLines={8}
                             multiline={true}
                             placeholder={'Đánh giá'}
-
                         />
                     </View>
 
-                    <TouchableOpacity style={[styles.buttonSubmit,{backgroundColor:CommonColors.primary,width:180,alignSelf:'center'}]}
-                        onPress={()=>console.warn('dsds')}
+                    <TouchableOpacity style={[styles.buttonSubmit, { backgroundColor: CommonColors.primary, width: 180, alignSelf: 'center' }]}
+                        onPress={_onConfirmFinishedJob}
                     >
-                        <Text style={{textAlign:'center',color:'white',fontSize:18,fontWeight:'500'}}>Xác Nhận</Text>
+                        <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: '500' }}>
+                            Xác Nhận
+                        </Text>
                     </TouchableOpacity>
 
                 </ScrollView>
+
+                {
+                    // errorMessage.status &&
+                    <Snackbar style={{ backgroundColor: 'coral' }}
+                        visible={showErrorMessage}
+                        onDismiss={()=>setShowErrorMessage(false)}
+                        action={{
+                            label: 'Undo',
+                            onPress: () => console.warn('dsds')
+                        }}>
+
+
+                        {errorMessage.message}
+                    </Snackbar>
+                }
+
             </SimpleBottomSheet>
+
+
         </View>
     )
 }
@@ -247,6 +316,9 @@ const JobCollaboratorScreen = (props) => {
             return 0;
         }
     }
+
+
+
 
     useEffect(() => {
         let jobCandidates = props.route.params?.candidates;
@@ -357,12 +429,12 @@ const styles = StyleSheet.create({
     },
     inputGroup: {
         marginVertical: 16,
-        marginHorizontal:8
+        marginHorizontal: 8
     },
     titleCaption: {
         fontWeight: '500',
         fontSize: 16,
         marginVertical: 8,
-        marginHorizontal:12
+        marginHorizontal: 12
     }
 })
