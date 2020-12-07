@@ -1,25 +1,32 @@
-import React,{useEffect} from 'react'
+import React, { useEffect } from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
-import { Avatar, Button, Card, Title, Paragraph,Caption } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, Caption } from 'react-native-paper';
 import CommonImages from '../../constants/CommonImages';
 
 
 
 
 
-const CardHorizontal = ({index,item,onPress}) => {
+const CardHorizontal = ({ index, item, onPress }) => {
+
+    console.warn(item);
 
     return (
         <View style={styles.cardContainer}>
-            <Card.Cover style={styles.cardImage}
-                source={{ uri:item?.attributes?.images[0]?.image_url || CommonImages.notFound  }}
-            />
+
+            {
+               
+                <Card.Cover style={styles.cardImage}
+                    source={{ uri: item?.attributes?.images[0]?.image_url || CommonImages.notFound }}
+                /> 
+           
+            }
             <Card.Content style={styles.cardContent}>
-                <Title style={{fontSize:16}}>{item?.attributes.name}</Title>
+                <Title style={{ fontSize: 16 }}>{item?.attributes.name}</Title>
                 <Paragraph>{item?.attributes.description}</Paragraph>
                 <Card.Actions>
                     <Button
-                        onPress={()=>onPress(item?.id)}
+                        onPress={() => onPress(item?.id)}
                     >
                         Chi Tiêt
                     </Button>
@@ -35,8 +42,8 @@ export default CardHorizontal
 
 const styles = StyleSheet.create({
     cardContainer: {
-        marginHorizontal:12,
-        marginBottom:8,
+        marginHorizontal: 12,
+        marginBottom: 8,
         display: 'flex',
         flexDirection: 'row',
         shadowColor: "#000",
@@ -48,7 +55,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
-        backgroundColor:'white'
+        backgroundColor: 'white'
 
 
     },

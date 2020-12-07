@@ -384,7 +384,6 @@ export const createJob = async (
     try {
         let url = serverConfig.url;
 
-        console.warn(images);
 
         let dataFetch = await fetch(`${url}/job`, {
             method: 'POST',
@@ -410,7 +409,8 @@ export const createJob = async (
         if (!dataFetch.ok) {
             return {
                 data: null,
-                message: dataFetch
+                message: dataFetch,
+                status:false,
             }
         }
 
@@ -419,21 +419,24 @@ export const createJob = async (
         if (dataRes.status) {
             return {
                 data: dataRes,
-                message: 'success'
+                message: 'success',
+                status:true
             }
 
         }
 
         return {
             data: dataRes,
-            message: 'failed'
+            message: 'failed',
+            status:false
         }
 
 
     } catch (error) {
         return {
             data: null,
-            message: 'error ' + error
+            message: 'error ' + error,
+            status:false
         }
     }
 }
@@ -821,11 +824,11 @@ export const getUserConfirmedJobs = async (author_id) => {
  * @param {*} range 
  * @param {*} content 
  */
-export const confirmFinishedJob = async (job_collaborator_id,confirmed_price,range,content) => {
+export const confirmFinishedJob = async (job_collaborator_id,job_id,confirmed_price,range,content) => {
     
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/jobconfirm`,{
+        let dataFetch = await fetch(`${url}/job/confirm-candidate`,{
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -833,6 +836,7 @@ export const confirmFinishedJob = async (job_collaborator_id,confirmed_price,ran
             },
             body: JSON.stringify({
                 job_collaborator_id:job_collaborator_id,
+                job_id:job_id,
                 confirmed_price:confirmed_price,
                 range:range,
                 content:content

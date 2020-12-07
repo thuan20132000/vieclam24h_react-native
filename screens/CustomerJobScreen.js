@@ -13,6 +13,9 @@ import {
 
 import { TabView, SceneMap } from 'react-native-tab-view';
 
+import { formatDateTime } from '../utils/helper';
+import CardJobConfirm from '../components/Card/CardJobConfirm';
+
 
 
 const CustomerJobItem = ({ _onPress, item }) => {
@@ -42,23 +45,27 @@ const CustomerJobItem = ({ _onPress, item }) => {
     }, [])
 
     return (
+       
+          
+                <TouchableOpacity style={styles.itemContainer}
+                    onPress={_onPress}
+                >
+                    <Title>{jobItem.title}</Title>
+                    <Paragraph>{jobItem.description}</Paragraph>
+                    <View>
+                        <Text>Giá đưa ra: {jobItem.suggestion_price}</Text>
+                    </View>
+                    <Caption>đăng lúc: {formatDateTime(item?.attributes?.created_at)}</Caption> 
 
-        <TouchableOpacity style={styles.itemContainer}
-            onPress={_onPress}
-        >
-            <Title>{jobItem.title}</Title>
-            <Paragraph>{jobItem.description}</Paragraph>
-            <View>
-                <Text>Giá đưa ra: 450000</Text>
-            </View>
-            <Caption>đăng lúc: 12:30 12/11/2020</Caption>
-            <Badge style={{ bottom: 100 }}
-                size={34}
-            >
-                {jobItem.candidateNumber}
-            </Badge>
+                    <Badge style={{ bottom: 100 }}
+                        size={34}
+                    >
+                        {jobItem.candidateNumber}
+                    </Badge>
 
-        </TouchableOpacity>
+                </TouchableOpacity>
+            
+
     )
 }
 
@@ -94,6 +101,7 @@ const PendingJob = ({ navigation, userInformation }) => {
         setRefreshing(true);
 
         setTimeout(() => {
+            _getPendingJobsData();
             setRefreshing(false)
         }, 2000);
     }, []);
@@ -219,15 +227,14 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
         let approvedJobsRes = await getUserConfirmedJobs(userInformation.id);
         if (approvedJobsRes.status) {
             setConfirmedJobsData(approvedJobsRes.data);
-            console.warn(approvedJobsRes);
         }
         setIsLoading(false);
     }
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-
         setTimeout(() => {
+            _getConfirmedJobsData();
             setRefreshing(false)
         }, 2000);
     }, []);
@@ -249,9 +256,9 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                 !isLoading ?
 
                     confirmedJobsData.map((e, index) =>
-                        <View>
-                            <Text>{e.confirm.confirmed_price}</Text>
-                        </View>
+                       <CardJobConfirm key={index.toString()}
+                            item={e}
+                       />
                     ) :
                     <ActivityIndicator
                         size={'small'}

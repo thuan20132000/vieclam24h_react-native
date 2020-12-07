@@ -14,3 +14,12 @@ export const generateCode = async (prefix='') => {
 
     return prefix+xx;
 }
+
+
+
+
+export const formatDateTime = (timestring) => {
+    let date = new  Date(timestring);
+
+    return `${date.getHours()}:${date.getMinutes()}  ${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+}

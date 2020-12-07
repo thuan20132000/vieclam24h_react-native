@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { Dimensions, Linking, StyleSheet, Text, View, TextInput } from 'react-native'
+import { Dimensions, Linking, StyleSheet, Text, View, TextInput, Alert } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { ActivityIndicator, Avatar, Chip, IconButton, Snackbar } from 'react-native-paper'
 import CommonColors from '../constants/CommonColors'
@@ -74,17 +74,24 @@ const JobInidicatorItem = ({
 
     const _onConfirmFinishedJob = async () => {
         // console.warn('confirmed: ',item);
-
+        console.warn(job_id);
         let checkValidation = _onCheckValidationConfirm();
+
         if (checkValidation) {
             let confirmRes = await confirmFinishedJob(
                 item.job_collaborator_id,
+                job_id,
                 confirmedJobInfo.confirmedPrice,
                 confirmedJobInfo.satisfationLevel,
                 confirmedJobInfo.message
             );
 
-            console.warn(confirmRes);
+            if(confirmRes.status){
+                Alert.alert('Thành công');
+                _refConfirmFinishedJobBottomSheet.current.close();
+
+            }
+
         }else{
             setShowErrorMessage(true);
         }
@@ -180,6 +187,7 @@ const JobInidicatorItem = ({
                 />
 
             </View>
+
             <SimpleBottomSheet
                 refRBSheet={_refConfirmFinishedJobBottomSheet}
                 height={deviceHeight}

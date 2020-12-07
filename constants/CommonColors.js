@@ -4,6 +4,6 @@ export default {
   accent:'ghostwhite',
   messagebox:'lightcyan',
   secondary:'aliceblue',
+  warning:'gold',
   
-  warning:'gold'
 }

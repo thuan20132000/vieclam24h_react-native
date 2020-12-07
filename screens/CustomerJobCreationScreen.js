@@ -46,11 +46,11 @@ const CustomerJobCreationScreen = (props) => {
 
 
 
-
+    const [isLoading,setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const _onCreateJob = async () => {
 
-
+        setIsLoading(true);
         let image_urls = [];
         if(jobImages.length>=0){
        
@@ -64,9 +64,6 @@ const CustomerJobCreationScreen = (props) => {
             
 
         }
-
-
-
 
         let jobRes = await createJob(
             jobInfo.name,
@@ -82,13 +79,13 @@ const CustomerJobCreationScreen = (props) => {
             image_urls
 
         );
-        console.warn(jobRes);
 
-        if (jobRes.message == 'failed') {
-            console.warn(jobRes);
+        if (!jobRes.status) {
             Alert.alert("Alert", "Tạo việc làm thất bại!");
             setIsError(true);
+            setIsLoading(false);
         }else if(jobRes.message == 'success'){
+            setIsLoading(false);
             props.navigation.navigate('HomeStack');
 
         }
