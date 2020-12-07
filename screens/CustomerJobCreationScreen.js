@@ -8,7 +8,12 @@ import CommonColors from '../constants/CommonColors'
 import { useSelector } from 'react-redux'
 
 import { createJob } from '../utils/serverApi';
-import { HelperText } from 'react-native-paper'
+import { HelperText } from 'react-native-paper';
+
+import storage from '@react-native-firebase/storage';
+import { utils } from '@react-native-firebase/app';
+import {generateCode} from '../utils/helper';
+
 const CustomerJobCreationScreen = (props) => {
 
 
@@ -28,7 +33,7 @@ const CustomerJobCreationScreen = (props) => {
         occupation_name: ''
     })
 
-    const [location,setLocation] = useState({
+    const [location, setLocation] = useState({
         province: '',
         province_code: '',
         district: '',
@@ -40,14 +45,29 @@ const CustomerJobCreationScreen = (props) => {
     const [jobImages, setJobImages] = useState([]);
 
 
-    // useEffect(() => {
-    //     setJobInfo({...jobInfo,author:userInformation.id});
-    // }, [jobInfo])
-
 
 
     const [isError, setIsError] = useState(false);
     const _onCreateJob = async () => {
+
+
+        let image_urls = [];
+        if(jobImages.length>=0){
+       
+            for (const element of jobImages) {
+                let image_name = await generateCode('_');
+                const reference = storage().ref(image_name);
+                let image_uploaded = await reference.putFile(element.path);
+                let image_url = await storage().ref(image_name).getDownloadURL();
+                image_urls.push(image_urls);
+            }
+            
+
+        }
+
+
+
+
         let jobRes = await createJob(
             jobInfo.name,
             jobInfo.description,
@@ -59,7 +79,8 @@ const CustomerJobCreationScreen = (props) => {
             userInformation.id,
             jobInfo.occupation_id,
             jobInfo.occupation_name,
-            
+            image_urls
+
         );
         console.warn(jobRes);
 
@@ -145,9 +166,9 @@ const CustomerJobCreationScreen = (props) => {
                 </View>
 
                 {/* Select province ,district and subdistrict */}
-                <LocationPicker 
-                    location = {location}
-                    setLocation = {setLocation}
+                <LocationPicker
+                    location={location}
+                    setLocation={setLocation}
                 />
                 {
                     (isError && !location.province)

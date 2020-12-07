@@ -130,12 +130,18 @@ const RegisterScreen = (props) => {
             userInfo.address,
             userInfo.role
         );
+
         if (!registerRes.status) {
             setIsError(true);
-            let errors = registerRes.data.message.email[0];
+            // let errors = registerRes.data.message.email[0];
+            let errors = registerRes;
+            setIsLoading(false);
+
             Alert.alert("Failed",errors);
+        }else{
+            setIsLoading(false);
+            props.navigation.navigate('login');
         }
-        setIsLoading(false);
     }
 
 
@@ -295,6 +301,7 @@ const RegisterScreen = (props) => {
                     {/*  */}
                     <TouchableOpacity style={styles.buttonSubmit}
                         onPress={_onRegister}
+                        disabled={isLoading}
                     >
                         {
                             isLoading && <ActivityIndicator />

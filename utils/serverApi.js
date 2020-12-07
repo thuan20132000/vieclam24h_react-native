@@ -1,5 +1,6 @@
 import serverConfig from '../serverConfig';
 import api from '../serverConfig';
+import storage from '@react-native-firebase/storage';
 
 
 
@@ -108,7 +109,7 @@ export const register = async (
 
 
         if (!dataFetch.ok) {
-            console.warn("ERROR AT LOGIN : ", dataFetch);
+            console.warn("ERROR AT REGISTER : ", dataFetch);
             return {
                 data: null,
                 message: dataFetch,
@@ -806,6 +807,8 @@ export const getUserConfirmedJobs = async (author_id) => {
 
 
 
+
+
 /**
  * author:thuantruong
  * created_at:04/12/2020
@@ -859,4 +862,11 @@ export const confirmFinishedJob = async (job_collaborator_id,confirmed_price,ran
 
     }
 
+}
+
+
+
+
+export const saveImageToClound = async (image_path) => {
+    
 }

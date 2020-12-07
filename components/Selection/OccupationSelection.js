@@ -79,6 +79,7 @@ const OccupationSelection = ({ title = "Show Dialog", itemSelected, setItemSelec
                             {
                                 occupations.map((e, index) =>
                                     <OccupationItem
+                                        key={index.toString()}
                                         item={e}
                                         itemSelected={itemSelected}
                                         setItemSelected={setItemSelected}

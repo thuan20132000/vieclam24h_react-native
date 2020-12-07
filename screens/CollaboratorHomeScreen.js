@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput,Image } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Image, RefreshControl } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Subheading, Button } from 'react-native-paper'
 import HomeContent from '../components/Body/HomeContent'
@@ -20,6 +20,8 @@ const CollaboratorHomeScreen = (props) => {
     const [categories, setCategories] = useState([]);
     const [jobs, setJobs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = React.useState(false);
+
 
     const {
         navigation
@@ -41,11 +43,13 @@ const CollaboratorHomeScreen = (props) => {
 
     const _getJobs = async () => {
         setIsLoading(true);
-        let data = await getJobs();
+        setRefreshing(true);
+        let data = await getJobs('',8);
         if (data.data.length > 0) {
             setJobs(data.data);
         }
         setIsLoading(false);
+        setRefreshing(false);
     }
     const _navigateToJobDetail = async (job_id) => {
         props.navigation.navigate('JobDetail', { job_id: job_id })
@@ -53,7 +57,7 @@ const CollaboratorHomeScreen = (props) => {
 
 
     const _navigateToJobList = async (item) => {
-        props.navigation.navigate('JobList',{category_id:item.id});
+        props.navigation.navigate('JobList', { category_id: item.id });
     }
 
     useEffect(() => {
@@ -64,19 +68,26 @@ const CollaboratorHomeScreen = (props) => {
         props.navigation.setOptions({
             headerShown: true,
             header: () => (
-                <View style={{ width: '100%',marginTop:10, height: 70,display: 'flex', flexDirection: 'row', justifyContent: 'flex-start',alignItems:'center',padding:0 }}>
+                <View style={{ width: '100%', marginTop: 10, height: 70, display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0 }}>
                     <Image
-                        style={{width:80,height:40}}
+                        style={{ width: 80, height: 40 }}
                         source={{
                             uri: 'https://graphicsmount.com/wp-content/uploads/edd/2017/08/Job-Search-Logo-1-1180x843.jpg',
                         }}
                     />
 
-                    <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500',marginHorizontal:22 }}>Viec Lam 24H</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500', marginHorizontal: 22 }}>Viec Lam 24H</Text>
                 </View>
             )
         })
 
+
+    }, [props.navigation]);
+
+
+    const onRefresh = React.useCallback(() => {
+         _getCategory();
+         _getJobs();
 
     }, []);
 
@@ -84,7 +95,11 @@ const CollaboratorHomeScreen = (props) => {
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            onEnd
+            contentContainerStyle={styles.scrollView}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+
         >
             <SearchButton
                 onPress={_onSearchPress}
@@ -94,12 +109,12 @@ const CollaboratorHomeScreen = (props) => {
 
             <View style={styles.menuContainer}>
                 {categories &&
-                    categories.map((e, index) => 
-                        <MenuItem 
-                            index={index} 
-                            item={e} 
-                            {...props} 
-                            onItemPress={()=>_navigateToJobList(e)}
+                    categories.map((e, index) =>
+                        <MenuItem
+                            index={index}
+                            item={e}
+                            {...props}
+                            onItemPress={() => _navigateToJobList(e)}
                         />)
                 }
             </View>
