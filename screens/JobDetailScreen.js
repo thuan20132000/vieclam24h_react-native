@@ -109,6 +109,8 @@ const JobDetailScreen = (props) => {
 
     useEffect(() => {
         _getJobDetail();
+
+
     }, [])
 
     return (
@@ -119,8 +121,8 @@ const JobDetailScreen = (props) => {
                 <>
                     <Carousel
                         ref={refCarousel}
-                        data={productItems}
-                        renderItem={({ item }) => <CardItem product={item} {...props} />}
+                        data={jobDetail.attributes?.images}
+                        renderItem={({ item }) => <CardItem image_url={item.image_url} {...props} />}
                         sliderWidth={deviceWidth}
                         itemWidth={deviceWidth}
                     />

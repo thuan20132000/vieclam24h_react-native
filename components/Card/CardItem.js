@@ -4,16 +4,14 @@ import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 
 
 
-const CardItem = (props) => {
+const CardItem = ({image_url}) => {
 
-    const {
-        image_url,
-    } = props;
+  
 
     return (
         <>
             <Card>
-                <Card.Cover source={{ uri: 'https://picsum.photos/700' }} />
+                <Card.Cover source={{ uri: image_url || 'https://picsum.photos/700' }} />
             </Card>
         </>
 

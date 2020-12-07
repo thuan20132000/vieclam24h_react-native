@@ -384,6 +384,8 @@ export const createJob = async (
     try {
         let url = serverConfig.url;
 
+        console.warn(images);
+
         let dataFetch = await fetch(`${url}/job`, {
             method: 'POST',
             headers: {

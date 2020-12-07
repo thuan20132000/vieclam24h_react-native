@@ -59,7 +59,7 @@ const CustomerJobCreationScreen = (props) => {
                 const reference = storage().ref(image_name);
                 let image_uploaded = await reference.putFile(element.path);
                 let image_url = await storage().ref(image_name).getDownloadURL();
-                image_urls.push(image_urls);
+                image_urls.push(image_url);
             }
             
 
