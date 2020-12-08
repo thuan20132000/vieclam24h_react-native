@@ -32,7 +32,7 @@ const CollaboratorDetailScreen = (props) => {
         }
         setCollaborator(collaboratorData.data);
         setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
-
+        console.warn(collaboratorData);
     }
 
     useEffect(() => {
@@ -68,7 +68,7 @@ const CollaboratorDetailScreen = (props) => {
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
                         collaboratorOccupations &&
-                        collaboratorOccupations.map((e,index) =>
+                        collaboratorOccupations.map((e, index) =>
                             <Chip style={{ margin: 2 }}
                                 onPress={() => console.log('Pressed')}
                                 key={index.toString()}
@@ -85,24 +85,48 @@ const CollaboratorDetailScreen = (props) => {
             {/*  */}
             <View style={styles.photoGalleryWrap}>
                 <Caption>Hình ảnh hoạt động</Caption>
-                <View style={styles.photoGallery}>
-                    {
-                        occupationsArr.map((e, index) =>
-                            <Image style={styles.occupationImage}
-                                source={{
-                                    uri: 'https://reactnative.dev/img/tiny_logo.png',
-                                }}
-                            />
-                        )
-                    }
+                {
+                    collaborator?.relationships.activity_images.length > 0 ?
+                        <View style={styles.photoGallery}>
+                            {
+                                collaborator.relationships.activity_images.map((e, index) =>
+                                    <Image style={styles.occupationImage}
+                                        key={index.toString()}
+                                        source={{
+                                            uri: 'https://reactnative.dev/img/tiny_logo.png',
+                                        }}
+                                    />
+                                )
+                            }
 
-                </View>
+                        </View> :
+                        <View style={{padding:6,marginVertical:22}}>
+                            <Text style={{fontStyle:'italic',fontSize:12}}>Chưa có hình ảnh hoạt động</Text>
+                        </View>
+                
+                }
+
             </View>
             {/* Danh gia khach hang */}
             <View>
                 <Text>Đánh giá từ khách hàng</Text>
-                <CardReview />
-                <CardReview />
+
+                {
+                    collaborator?.reviews.length > 0 ?
+                    <>
+                        {
+                            collaborator?.reviews?.map((e,index) =>
+                                <CardReview 
+                                    review={e}
+                                />
+
+                            )
+                        }
+                    </>:
+                    <View>
+                        <Text>Chưa có đánh giá nào từ khách hàng.</Text>
+                    </View>
+                }
 
             </View>
         </ScrollView>

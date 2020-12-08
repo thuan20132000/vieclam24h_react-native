@@ -1,10 +1,11 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { Avatar, Button, Caption, Divider, List, Subheading, Title } from 'react-native-paper'
-import { useDispatch,useSelector } from 'react-redux'
+import { Avatar, Button, Caption, Divider, List, Subheading, Title, IconButton } from 'react-native-paper'
+import { useDispatch, useSelector } from 'react-redux'
 import CommonColors from '../constants/CommonColors'
 import CommonIcons from '../constants/CommonIcons'
+import CommonImages from '../constants/CommonImages'
 
 import * as userActions from '../store/actions/authenticationActions';
 
@@ -12,32 +13,45 @@ const AccountScreen = (props) => {
     const {
         navigation
     } = props;
-    const {userInformation} = useSelector(state => state.authentication);
+    const { userInformation } = useSelector(state => state.authentication);
 
-    const [userAttributes,setUserAttributes] = useState();
-    
+    const [userAttributes, setUserAttributes] = useState();
+
     useEffect(() => {
         setUserAttributes(userInformation.attributes);
     }, [])
 
     const dispatch = useDispatch();
 
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const _logout = async () => {
         setIsLoading(true);
-        await dispatch(userActions.logout());
+        dispatch(userActions.logout());
         setIsLoading(false);
     }
 
 
+    useEffect(() => {
+        console.warn(userInformation);
+    }, [])
+
     return (
         <ScrollView>
             <View style={styles.userCardContainer}>
-                <Avatar.Image
+                <Avatar.Image style={{ zIndex: -1,position:'relative' }}
                     size={88}
-                    source={require('../assets/images/avatar1.jpg')}
+                    source={{
+                        uri: userInformation?.attributes?.profile_image || CommonImages.avatar
+                    }}
                 />
+                <IconButton style={{ position: 'absolute',left:0,bottom:-10 }}
+                    icon={"camera"}
+                    color={CommonColors.primary}
+                    size={20}
+                    onPress={() => console.log('Pressed')}
+                />
+
                 <View style={styles.userInfor}>
                     <Title>{userAttributes?.name}</Title>
                     <Subheading>{userAttributes?.address}</Subheading>
@@ -81,8 +95,8 @@ const AccountScreen = (props) => {
                 onPress={() => console.warn('ds')}
             />
             <View style={styles.buttonLogoutWrap}>
-                <Button  style={styles.buttonLogout}
-                    mode="contained" 
+                <Button style={styles.buttonLogout}
+                    mode="contained"
                     color={CommonColors.primary}
                     onPress={_logout}
                 >
@@ -106,12 +120,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         paddingLeft: 16
     },
-    buttonLogoutWrap:{
-        marginVertical:16,
+    buttonLogoutWrap: {
+        marginVertical: 16,
     },
-    buttonLogout:{
-        width:220,
-        alignSelf:'center'
+    buttonLogout: {
+        width: 220,
+        alignSelf: 'center'
     }
 
 

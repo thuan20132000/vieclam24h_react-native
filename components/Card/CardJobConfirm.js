@@ -6,7 +6,6 @@ import CommonImages from '../../constants/CommonImages';
 
 const CardJobConfirm = ({ item }) => {
 
-    console.warn(item);
 
     return (
         <View style={styles.container}>
@@ -26,8 +25,8 @@ const CardJobConfirm = ({ item }) => {
             </Text>
 
             <View style={{ display: 'flex', flexDirection: 'row', margin: 12, alignItems: 'center' }}>
-                <Avatar.Image size={64} source={{
-                    uri: item?.relationships?.candidate?.profile_image || CommonImages.avatar
+                <Avatar.Image size={44} source={{
+                    uri: CommonImages.avatar
                 }}
                 />
                 <View style={{display:'flex',flexDirection:'column'}}>

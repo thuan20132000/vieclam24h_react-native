@@ -410,7 +410,7 @@ export const createJob = async (
             return {
                 data: null,
                 message: dataFetch,
-                status:false,
+                status: false,
             }
         }
 
@@ -420,7 +420,7 @@ export const createJob = async (
             return {
                 data: dataRes,
                 message: 'success',
-                status:true
+                status: true
             }
 
         }
@@ -428,7 +428,7 @@ export const createJob = async (
         return {
             data: dataRes,
             message: 'failed',
-            status:false
+            status: false
         }
 
 
@@ -436,7 +436,7 @@ export const createJob = async (
         return {
             data: null,
             message: 'error ' + error,
-            status:false
+            status: false
         }
     }
 }
@@ -824,46 +824,46 @@ export const getUserConfirmedJobs = async (author_id) => {
  * @param {*} range 
  * @param {*} content 
  */
-export const confirmFinishedJob = async (job_collaborator_id,job_id,confirmed_price,range,content) => {
-    
+export const confirmFinishedJob = async (job_collaborator_id, job_id, confirmed_price, range, content) => {
+
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job/confirm-candidate`,{
+        let dataFetch = await fetch(`${url}/job/confirm-candidate`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                job_collaborator_id:job_collaborator_id,
-                job_id:job_id,
-                confirmed_price:confirmed_price,
-                range:range,
-                content:content
+                job_collaborator_id: job_collaborator_id,
+                job_id: job_id,
+                confirmed_price: confirmed_price,
+                range: range,
+                content: content
             })
         });
 
         let dataRes = await dataFetch.json();
-        if(dataRes.status){
+        if (dataRes.status) {
             return {
-                data:dataRes,
-                message:'success',
-                status:true,
+                data: dataRes,
+                message: 'success',
+                status: true,
             }
         }
 
         return {
-            data:[],
-            message:dataRes.message,
-            status:false,
+            data: [],
+            message: dataRes.message,
+            status: false,
         }
 
     } catch (error) {
-        
+
         return {
-            data:[],
-            status:false,
-            message:error
+            data: [],
+            status: false,
+            message: error
         }
 
     }
@@ -873,6 +873,52 @@ export const confirmFinishedJob = async (job_collaborator_id,job_id,confirmed_pr
 
 
 
-export const saveImageToClound = async (image_path) => {
-    
+export const updateUser = async (user_id, username, phonenumber, idcard, address, province, district, subdistrict, profile_image) => {
+
+
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/user/${user_id}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "name": username,
+                "phonenumber": phonenumber,
+                "idcard": idcard,
+                "address": address,
+                "province": province,
+                "district": district,
+                "subdistrict": subdistrict,
+                "profile_image": profile_image
+            })
+        });
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.data != null) {
+            return {
+                data: dataRes.data,
+                message: 'success',
+                status: true,
+            }
+        }
+
+        return {
+            data: [],
+            message: dataRes.message,
+            status: false,
+        }
+
+    } catch (error) {
+
+        return {
+            data: [],
+            status: false,
+            message: error
+        }
+
+    }
+
 }

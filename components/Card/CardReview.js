@@ -5,14 +5,18 @@ import CommonColors from '../../constants/CommonColors'
 import CommonImages from '../../constants/CommonImages'
 import ReviewStar from '../Review/ReviewStar'
 
-const CardReview = () => {
+const CardReview = ({ review }) => {
+
+    let rangeReview = Array(review.range).fill({});
+
+    console.warn(review);
     return (
         <View style={styles.container}
 
         >
             <View style={styles.avatar}>
                 <Avatar.Image size={44} source={{ uri: CommonImages.avatar }} />
-                <Text style={styles.textTitle}>Nguyen Van Tai</Text>
+                <Text style={styles.textTitle}>{review.name}</Text>
             </View>
             {/* review body */}
             <View style={styles.triangle}></View>
@@ -20,13 +24,18 @@ const CardReview = () => {
             <View style={styles.body}>
 
                 <View style={styles.message}>
-                    <Text style={styles.messageText}>fsd sdfds dsd</Text>
+                    <Text style={styles.messageText}>{review.review_content}</Text>
                 </View>
-                <View style={{ display: 'flex', flexDirection: 'row',marginLeft:8 }}>
-                    <ReviewStar />
-                    <ReviewStar />
-                    <ReviewStar />
-                    <ReviewStar />
+                <View style={{ display: 'flex', flexDirection: 'row', marginLeft: 8 }}>
+                    {
+                        rangeReview.map((e, index) =>
+                            <ReviewStar
+                                key={index.toString()}
+                            />
+
+                        )
+                    }
+
                 </View>
             </View>
         </View>
@@ -76,12 +85,12 @@ const styles = StyleSheet.create({
         borderRightColor: 'transparent',
         borderBottomColor: 'mintcream'
     },
-    message:{
-        marginVertical:4,
+    message: {
+        marginVertical: 4,
     },
-    messageText:{
-        color:'grey',
-        fontSize:16
+    messageText: {
+        color: 'grey',
+        fontSize: 16
     }
 
 

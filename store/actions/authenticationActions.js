@@ -1,6 +1,6 @@
 export const LOGIN = 'LOGIN'
 export const LOGOUT = 'LOGOUT'
-
+export const UPDATE = 'UPDATE'
 
 
 
@@ -20,6 +20,20 @@ export const login = (data) => {
     }
 
     
+}
+
+
+export const update = (data) => {
+    return async (dispatch) => {
+        try {
+            dispatch({
+                type:UPDATE,
+                data:data,
+            })
+        } catch (error) {
+            console.warn(error);
+        }
+    }
 }
 
 
