@@ -9,14 +9,13 @@ const CardReview = ({ review }) => {
 
     let rangeReview = Array(review.range).fill({});
 
-    console.warn(review);
     return (
         <View style={styles.container}
 
         >
             <View style={styles.avatar}>
-                <Avatar.Image size={44} source={{ uri: CommonImages.avatar }} />
-                <Text style={styles.textTitle}>{review.name}</Text>
+                <Avatar.Image size={44} source={{ uri: review.author_image || CommonImages.avatar }} />
+                <Text style={styles.textTitle}>{review.author_name}</Text>
             </View>
             {/* review body */}
             <View style={styles.triangle}></View>
@@ -47,7 +46,6 @@ export default CardReview
 const styles = StyleSheet.create({
     container: {
         padding: 8,
-        backgroundColor: 'gainsboro',
         marginVertical: 4,
         borderRadius: 12
 
@@ -64,7 +62,7 @@ const styles = StyleSheet.create({
     body: {
         marginLeft: 50,
         // marginVertical: 8,
-        backgroundColor: 'mintcream',
+        backgroundColor: 'coral',
         padding: 12,
         borderRadius: 8,
         position: 'relative'
@@ -83,13 +81,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: 30,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        borderBottomColor: 'mintcream'
+        borderBottomColor: 'coral'
     },
     message: {
         marginVertical: 4,
     },
     messageText: {
-        color: 'grey',
+        color: 'white',
         fontSize: 16
     }
 

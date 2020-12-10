@@ -8,13 +8,6 @@ import FilterBar from '../components/Filter/FilterBar';
 import { getJobs } from '../utils/serverApi';
 
 
-const wait = (timeout) => {
-    return new Promise(resolve => {
-        setTimeout(resolve, timeout);
-    });
-}
-
-
 const JobListScreen = (props) => {
 
 

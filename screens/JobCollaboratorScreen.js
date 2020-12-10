@@ -74,7 +74,6 @@ const JobInidicatorItem = ({
 
     const _onConfirmFinishedJob = async () => {
         // console.warn('confirmed: ',item);
-        console.warn(job_id);
         let checkValidation = _onCheckValidationConfirm();
 
         if (checkValidation) {
@@ -98,19 +97,13 @@ const JobInidicatorItem = ({
     }
 
 
-
-
-
-
-    // useEffect(() => {
-    //     console.warn(item);
-    // }, []);
-
     return (
         <View
             style={[styles.jobIndicatorItem, item.job_collaborator_status == 3 ? { backgroundColor: CommonColors.secondary } : { backgroundColor: 'white' }]}
         >
-            <Avatar.Image size={84} source={require('../assets/images/avatar1.jpg')} />
+            <Avatar.Image size={84} source={{
+                uri:item.profile_image || "https://ict-imgs.vgcloud.vn/2020/09/01/19/huong-dan-tao-facebook-avatar.jpg"
+            }} />
             <View style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -342,7 +335,7 @@ const JobCollaboratorScreen = (props) => {
 
 
         props.navigation.setOptions({
-            title: 'Ứng viên ứng tuyển công việc'
+            title: 'Ứng viên ứng tuyển'
         });
 
 

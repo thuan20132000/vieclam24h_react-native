@@ -28,7 +28,7 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
     return (
         <ScrollView style={[styles.scene, { backgroundColor: 'white' }]} >
             {
-                collaboratorJobs.map((e, index) => <JobItem job={e} />)
+                collaboratorJobs.map((e, index) => <JobItem key={index.toString()} job={e} />)
             }
         </ScrollView>
     )

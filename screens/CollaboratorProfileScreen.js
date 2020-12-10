@@ -12,7 +12,7 @@ import CommonImages from '../constants/CommonImages';
 import storage from '@react-native-firebase/storage';
 import { utils } from '@react-native-firebase/app';
 
-import {generateCode} from '../utils/helper';
+import { generateCode } from '../utils/helper';
 
 import { useDispatch } from 'react-redux';
 import * as userActions from '../store/actions/authenticationActions';
@@ -51,13 +51,13 @@ const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelec
     )
 }
 
-const CollaboratorProfileScreen = () => {
+const CollaboratorProfileScreen = (props) => {
 
     const { userInformation } = useSelector(state => state.authentication);
 
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
-    const [profileImage,setProfileImage] = useState('');
+    const [profileImage, setProfileImage] = useState('');
     const [userProfile, setUserProfile] = useState({
         id: '',
         username: '',
@@ -68,7 +68,7 @@ const CollaboratorProfileScreen = () => {
         district: '',
         subdistrict: '',
         address: '',
-        profile_image:''
+        profile_image: ''
     });
 
     useEffect(() => {
@@ -80,7 +80,7 @@ const CollaboratorProfileScreen = () => {
                 phoneNumber: userInformation.attributes?.phonenumber,
                 idCard: userInformation.attributes?.idcard,
                 address: userInformation.attributes?.address,
-                profile_image:userInformation?.attributes?.profile_image
+                profile_image: userInformation?.attributes?.profile_image
             });
         }
 
@@ -127,14 +127,14 @@ const CollaboratorProfileScreen = () => {
 
     }
 
-    const [isUpdating,setIsUpdating] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
     const _updateUserProfile = async () => {
 
         // console.warn(userProfile);
         // console.warn(locationSelected)
         let image_update = userProfile.profile_image;
         setIsUpdating(true);
-        if(profileImage){
+        if (profileImage) {
             let image_name = await generateCode('_');
             const reference = storage().ref(image_name);
             let image_updaloaded = await reference.putFile(profileImage);
@@ -154,13 +154,13 @@ const CollaboratorProfileScreen = () => {
             image_update
         )
 
-        if(!userRes.status){
-            Alert.alert("Thất bại","Cập nhật không thành công");
+        if (!userRes.status) {
+            Alert.alert("Thất bại", "Cập nhật không thành công");
 
-        }else{
-            Alert.alert("Thành công","Cập nhật tài khoản thành công");
+        } else {
+            Alert.alert("Thành công", "Cập nhật tài khoản thành công");
 
-       
+
             dispatch(userActions.update(userRes.data));
         }
 
@@ -169,13 +169,23 @@ const CollaboratorProfileScreen = () => {
 
 
     const _onOpenImagePicker = async () => {
-        ImagePicker.openPicker({
-            multiple:false,
-            mediaType:'photo'
-        }).then(imageRes => {
-            setUserProfile({...userProfile,profile_image:imageRes.path});
-            setProfileImage(imageRes.path);
-        });
+        try {
+            ImagePicker.openPicker({
+                multiple: false,
+                mediaType: 'photo'
+            }).then(imageRes => {
+                if (imageRes.path) {
+                    setUserProfile({ ...userProfile, profile_image: imageRes.path });
+                    setProfileImage(imageRes.path);
+                }
+
+            }).catch((error) =>
+                console.warn(error)
+            )
+        } catch (error) {
+            console.warn('ERRPR: ',error);
+        }
+
 
     }
 
@@ -187,6 +197,16 @@ const CollaboratorProfileScreen = () => {
         setLocationSelected({ ...locationSelected, subdistrict: '', subdistrict_code: '' })
     }, [locationSelected.district])
 
+
+    useEffect(() => {
+
+        let user_role = userInformation.role[0];
+
+        props.navigation.setOptions({
+            title: "Thông Tin Cá Nhân"
+        })
+    }, [])
+
     return (
 
         <ScrollView>
@@ -197,7 +217,7 @@ const CollaboratorProfileScreen = () => {
                 }}
                 keyboardVerticalOffset={50}
             >
-                <View style={{display:'flex',alignItems:'center'}}>
+                <View style={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
                         size={88}
                         source={{
@@ -281,6 +301,7 @@ const CollaboratorProfileScreen = () => {
                                     <ActivityIndicator /> :
                                     dialogData.map((e, index) =>
                                         <SelectItem
+                                            key={index.toString()}
                                             item={e}
                                             setDialogVisible={setDialogVisible}
                                             setLocationSelected={setLocationSelected}

@@ -9,11 +9,11 @@ const CollaboratorListScreen = (props) => {
 
     const [collaborators, setCollaborators] = useState([]);
 
-    const {category_id} = props.route.params;
+    const {category} = props.route.params;
 
     const _getCollaborators = async () => {
         setIsLoading(true);
-        let data = await getCollaborator(category_id);
+        let data = await getCollaborator(category.id);
         if (data.data.length > 0) {
             setCollaborators(data.data);
         }
@@ -22,6 +22,14 @@ const CollaboratorListScreen = (props) => {
 
     useEffect(() => {
         _getCollaborators();
+
+        props.navigation.setOptions({
+            title:`Ứng Viên ${category.name} `,
+            headerTitleStyle:{
+                fontSize:14
+            },
+        })
+
     }, []);
 
     return (

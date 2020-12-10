@@ -8,11 +8,11 @@ import CommonColors from '../constants/CommonColors'
 import { useSelector } from 'react-redux'
 
 import { createJob } from '../utils/serverApi';
-import { HelperText } from 'react-native-paper';
+import { ActivityIndicator, HelperText } from 'react-native-paper';
 
 import storage from '@react-native-firebase/storage';
 import { utils } from '@react-native-firebase/app';
-import {generateCode} from '../utils/helper';
+import { generateCode } from '../utils/helper';
 
 const CustomerJobCreationScreen = (props) => {
 
@@ -46,14 +46,14 @@ const CustomerJobCreationScreen = (props) => {
 
 
 
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [isError, setIsError] = useState(false);
     const _onCreateJob = async () => {
 
         setIsLoading(true);
         let image_urls = [];
-        if(jobImages.length>=0){
-       
+        if (jobImages.length >= 0) {
+
             for (const element of jobImages) {
                 let image_name = await generateCode('_');
                 const reference = storage().ref(image_name);
@@ -61,7 +61,7 @@ const CustomerJobCreationScreen = (props) => {
                 let image_url = await storage().ref(image_name).getDownloadURL();
                 image_urls.push(image_url);
             }
-            
+
 
         }
 
@@ -84,9 +84,25 @@ const CustomerJobCreationScreen = (props) => {
             Alert.alert("Alert", "Tạo việc làm thất bại!");
             setIsError(true);
             setIsLoading(false);
-        }else if(jobRes.message == 'success'){
+        } else if (jobRes.message == 'success') {
             setIsLoading(false);
-            props.navigation.navigate('HomeStack');
+            Alert.alert("Alert", "Tạo việc làm thành công !");
+            setJobInfo({
+                name: '',
+                description: '',
+                address: '',
+                province: '',
+                district: '',
+                subdistrict: '',
+                suggestion_price: '',
+                author: '',
+                occupation_id: '',
+                occupation_name: '',
+                
+            });
+            setJobImages([]);
+            
+            props.navigation.navigate('CustomerJobList');
 
         }
     }
@@ -100,7 +116,12 @@ const CustomerJobCreationScreen = (props) => {
 
         >
             <ScrollView
-
+                style={{
+                    paddingTop: 60
+                }}
+                contentInset={{
+                    bottom: 40
+                }}
             >
                 <TextInput
                     style={[styles.inputLogin, {}]}
@@ -205,8 +226,18 @@ const CustomerJobCreationScreen = (props) => {
 
                 <TouchableOpacity style={styles.buttonSubmit}
                     onPress={_onCreateJob}
+                    disabled={isLoading}
                 >
-                    <Text style={styles.buttonText}>Tạo việc làm</Text>
+                    {
+                        isLoading ?
+                            <ActivityIndicator
+                                size="small"
+                                color={"coral"}
+
+                            /> :
+                            <Text style={styles.buttonText}>Tạo việc làm</Text>
+
+                    }
                 </TouchableOpacity>
             </ScrollView>
         </KeyboardAvoidingView>

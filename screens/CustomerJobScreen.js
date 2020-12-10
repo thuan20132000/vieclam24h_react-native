@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, RefreshControl, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, Image, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
-import { ActivityIndicator, Badge, Caption, Paragraph, Title } from 'react-native-paper';
+import { ActivityIndicator, Badge, Caption, IconButton, Paragraph, Title } from 'react-native-paper';
 import CardHorizontal from '../components/Card/CardHorizontal';
 import { useSelector } from 'react-redux';
 import {
     getCustomerJobs,
     getUserPendingJobs,
     getUserApprovedJobs,
-    getUserConfirmedJobs
+    getUserConfirmedJobs,
+    deleteJobByAuthor
 } from '../utils/serverApi';
 
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-import { formatDateTime } from '../utils/helper';
+import { formatDateTime, formatCash } from '../utils/helper';
 import CardJobConfirm from '../components/Card/CardJobConfirm';
+import CommonColors from '../constants/CommonColors';
+import CommonIcons from '../constants/CommonIcons';
 
 
 
-const CustomerJobItem = ({ _onPress, item }) => {
+const CustomerJobItem = ({ _onPress, item, _onDelete }) => {
 
 
     // const _onPress = () => {
@@ -31,6 +34,8 @@ const CustomerJobItem = ({ _onPress, item }) => {
         created_at: '',
         candidateNumber: ''
     });
+
+    const [isDelete, setIsDelete] = useState(false);
 
 
 
@@ -45,26 +50,60 @@ const CustomerJobItem = ({ _onPress, item }) => {
     }, [])
 
     return (
-       
-          
-                <TouchableOpacity style={styles.itemContainer}
-                    onPress={_onPress}
-                >
-                    <Title>{jobItem.title}</Title>
-                    <Paragraph>{jobItem.description}</Paragraph>
-                    <View>
-                        <Text>Giá đưa ra: {jobItem.suggestion_price}</Text>
-                    </View>
-                    <Caption>đăng lúc: {formatDateTime(item?.attributes?.created_at)}</Caption> 
 
-                    <Badge style={{ bottom: 100 }}
-                        size={34}
-                    >
-                        {jobItem.candidateNumber}
-                    </Badge>
+        <View>
+            <TouchableOpacity style={[styles.itemContainer, { zIndex: -1 }]}
+                onPress={_onPress}
+            >
+                <Title>{jobItem.title}</Title>
+                <Paragraph>{jobItem.description}</Paragraph>
+                <View>
+                    <Text>Giá đưa ra: <Text style={{ color: 'red' }}>{formatCash(jobItem.suggestion_price)} vnđ</Text></Text>
+                </View>
 
-                </TouchableOpacity>
-            
+                <View style={[{ display: 'flex', flexDirection: 'row' }]}>
+                    {
+                        item.attributes?.images.map((e, index) =>
+                            <Image style={{
+                                width: 60,
+                                height: 60,
+                                margin: 4
+                            }}
+                                source={{
+                                    uri: e.image_url
+                                }}
+                            />
+                        )
+                    }
+                </View>
+                <Caption>Đăng lúc: {formatDateTime(item?.attributes?.created_at)}</Caption>
+
+
+                <View style={[{ position: 'absolute', right: 0, backgroundColor: CommonColors.primary, padding: 6 }]}>
+                    <Text style={[{ color: 'white', fontStyle: 'italic' }]}>
+                        Số người ứng tuyển <Text style={{ color: 'red', backgroundColor: 'white', fontWeight: '500', fontSize: 18 }}>{jobItem.candidateNumber}</Text>
+                    </Text>
+                </View>
+
+
+            </TouchableOpacity>
+            <IconButton style={{
+                position: 'absolute',
+                bottom: 0,
+                right: 0,
+                width: 100,
+                zIndex: 999
+
+            }}
+                icon={CommonIcons.removeTrash}
+                color={`red`}
+                size={26}
+                onPress={_onDelete}
+                disabled={isDelete}
+            />
+        </View>
+
+
 
     )
 }
@@ -111,6 +150,21 @@ const PendingJob = ({ navigation, userInformation }) => {
     }, [])
 
 
+    const _onDeleteJob = async (job) => {
+        let deleteRes = await deleteJobByAuthor(userInformation.id, job.id);
+
+        if (deleteRes.status) {
+            let jobs = pendingJobsData.filter(e => e.id != job.id);
+            setPendingJobsData(jobs);
+            Alert.alert("Thành Công", "Xoá công việc thành công")
+
+        }else{
+            Alert.alert("Thất Bại", "Xoá công việc thất bại!")
+
+        }
+    }
+
+
 
     return (
         <ScrollView
@@ -127,6 +181,8 @@ const PendingJob = ({ navigation, userInformation }) => {
                             key={index.toString()}
                             _onPress={() => _navigateToJobCollaboratorApplying(e)}
                             item={e}
+                            _onDelete={() => _onDeleteJob(e)}
+
                         />
                     ) :
                     <ActivityIndicator
@@ -177,7 +233,27 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 
     useEffect(() => {
         _getApprovedJobsData();
-    }, [])
+    }, []);
+
+
+
+
+    const _onDeleteJob = async (job) => {
+        let deleteRes = await deleteJobByAuthor(userInformation.id, job.id);
+
+        if (deleteRes.status) {
+            let jobs = approvedJobsData.filter(e => e.id != job.id);
+            setApprovedJobsData(jobs);
+            Alert.alert("Thành Công", "Xoá công việc thành công")
+
+        }else{
+            Alert.alert("Thất Bại", "Xoá công việc thất bại!")
+
+        }
+
+
+
+    }
 
     return (
         <ScrollView
@@ -194,6 +270,7 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                             key={index.toString()}
                             _onPress={() => _navigateToJobCollaboratorApplying(e)}
                             item={e}
+                            _onDelete={()=>_onDeleteJob(e)}
                         />
                     ) :
                     <ActivityIndicator
@@ -256,9 +333,10 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                 !isLoading ?
 
                     confirmedJobsData.map((e, index) =>
-                       <CardJobConfirm key={index.toString()}
+                        <CardJobConfirm key={index.toString()}
                             item={e}
-                       />
+
+                        />
                     ) :
                     <ActivityIndicator
                         size={'small'}
@@ -330,7 +408,20 @@ const CustomerJobScreen = (props) => {
             />,
 
 
-    })
+    });
+
+
+    const RenderTabBar = props => (
+        <TabBar
+            {...props}
+            indicatorStyle={{ backgroundColor: 'white' }}
+            style={{ backgroundColor: CommonColors.primary }}
+            labelStyle={{
+                fontWeight: '500'
+            }}
+        />
+    );
+
 
     return (
 
@@ -339,6 +430,8 @@ const CustomerJobScreen = (props) => {
             renderScene={renderScene}
             onIndexChange={setIndex}
             initialLayout={initialLayout}
+            renderTabBar={RenderTabBar}
+
         />
     )
 }

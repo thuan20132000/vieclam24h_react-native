@@ -23,3 +23,8 @@ export const formatDateTime = (timestring) => {
 
     return `${date.getHours()}:${date.getMinutes()}  ${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
 }
+
+
+export const formatCash = (str) => {
+    return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',')  
+}

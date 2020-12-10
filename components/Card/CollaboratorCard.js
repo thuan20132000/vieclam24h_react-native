@@ -1,5 +1,5 @@
 import React from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, View, Image } from 'react-native'
 import { Avatar, Button, Card, Title, Paragraph, Caption, Chip, IconButton } from 'react-native-paper';
 import CommonImages from '../../constants/CommonImages';
 import CommonColors from '../../constants/CommonColors'
@@ -9,23 +9,29 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
-const CollaboratorCard = ({ item,navigation }) => {
+const CollaboratorCard = ({ item, navigation }) => {
+
+    console.warn('ccL ', item);
+
+
+
     return (
-        <TouchableOpacity style={[styles.cardContainer,{zIndex:-1}]}
-            onPress={()=>navigation.navigate('CollaboratorDetail',{collaborator_id:item.id})}
+        <TouchableOpacity style={[styles.cardContainer, { zIndex: -1 }]}
+            onPress={() => navigation.navigate('CollaboratorDetail', { collaborator_id: item.id })}
         >
-       
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center',margin:4 }}>
+                <Avatar.Image size={64} source={{
+                    uri: item.attributes?.profile_image || CommonImages.notFound
+                }} />
                 <Title style={{ fontSize: 16, marginHorizontal: 6 }}>{item?.attributes.name}</Title>
 
-                <Avatar.Image size={24} source={{
-                    uri: CommonImages.notFound
-                }} />
+
             </View>
-            <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+            <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap',marginVertical:6 }}>
                 {
-                    item?.relationships?.occupations.map((e,index) => (
-                        <Chip 
+                    item?.relationships?.occupations.map((e, index) => (
+                        <Chip
                             key={index.toString()}
                             style={{
                                 margin: 2
@@ -37,6 +43,7 @@ const CollaboratorCard = ({ item,navigation }) => {
                     ))
                 }
             </View>
+           
         </TouchableOpacity>
 
     )
@@ -59,7 +66,8 @@ const styles = StyleSheet.create({
 
         elevation: 5,
         backgroundColor: 'white',
-        padding: 6
+        padding: 6,
+        margin:12
 
 
     },
@@ -69,5 +77,10 @@ const styles = StyleSheet.create({
     },
     cardContent: {
         width: '70%'
+    },
+    gridWrap:{
+        display:'flex',
+        flexDirection:'row',
+        flexWrap:'wrap'
     }
 })

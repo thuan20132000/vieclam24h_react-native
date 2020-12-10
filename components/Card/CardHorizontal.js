@@ -3,13 +3,12 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Avatar, Button, Card, Title, Paragraph, Caption } from 'react-native-paper';
 import CommonImages from '../../constants/CommonImages';
 
+import {formatCash} from '../../utils/helper';
 
 
 
 
 const CardHorizontal = ({ index, item, onPress }) => {
-
-    console.warn(item);
 
     return (
         <View style={styles.cardContainer}>
@@ -28,10 +27,10 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     <Button
                         onPress={() => onPress(item?.id)}
                     >
-                        Chi Tiêt
+                        Chi Tiết
                     </Button>
                 </Card.Actions>
-                <Caption>{item?.attributes.suggestion_price}</Caption>
+                <Caption>{formatCash(item?.attributes.suggestion_price)}</Caption>
             </Card.Content>
         </View>
 

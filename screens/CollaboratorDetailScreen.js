@@ -32,7 +32,6 @@ const CollaboratorDetailScreen = (props) => {
         }
         setCollaborator(collaboratorData.data);
         setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
-        console.warn(collaboratorData);
     }
 
     useEffect(() => {
@@ -41,7 +40,9 @@ const CollaboratorDetailScreen = (props) => {
     }, [])
 
     return (
-        <ScrollView style={{ padding: 12 }}>
+        <ScrollView
+            showsVerticalScrollIndicator={false}
+        >
             <IconButton style={{ position: 'absolute', zIndex: 999, right: 1 }}
                 icon={isFavorite ? CommonIcons.star : CommonIcons.starOutline}
                 color={'gold'}
@@ -49,10 +50,10 @@ const CollaboratorDetailScreen = (props) => {
                 onPress={() => setIsFavorite(!isFavorite)}
             />
 
-            <View style={styles.topBannerCard}>
+            <View style={[styles.sectionWrap,styles.topBannerCard]}>
 
                 <Avatar.Image size={84} source={{
-                    uri: CommonImages.avatar
+                    uri:collaborator?.attributes.profile_image ||  CommonImages.avatar
                 }} />
                 <View style={styles.userInfo}>
                     <Text style={styles.textTitle}>{collaborator && collaborator.attributes.name}</Text>
@@ -63,8 +64,8 @@ const CollaboratorDetailScreen = (props) => {
                 </View>
             </View>
 
-            <View>
-                <Text>Nghề nghiệp chuyên môn: </Text>
+            <View style={[styles.sectionWrap]}>
+                <Text style={[styles.sectionTitle,{}]} >Nghề nghiệp chuyên môn: </Text>
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
                         collaboratorOccupations &&
@@ -83,17 +84,17 @@ const CollaboratorDetailScreen = (props) => {
             </View>
 
             {/*  */}
-            <View style={styles.photoGalleryWrap}>
-                <Caption>Hình ảnh hoạt động</Caption>
+            <View style={[styles.sectionWrap]}>
+                <Text style={[styles.sectionTitle]} >Hình ảnh hoạt động</Text>
                 {
-                    collaborator?.relationships.activity_images.length > 0 ?
+                    collaborator?.relationships?.activity_images?.length > 0 ?
                         <View style={styles.photoGallery}>
                             {
-                                collaborator.relationships.activity_images.map((e, index) =>
+                                collaborator.relationships.activity_images?.map((e, index) =>
                                     <Image style={styles.occupationImage}
                                         key={index.toString()}
                                         source={{
-                                            uri: 'https://reactnative.dev/img/tiny_logo.png',
+                                            uri: e.image_url || 'https://reactnative.dev/img/tiny_logo.png',
                                         }}
                                     />
                                 )
@@ -108,8 +109,8 @@ const CollaboratorDetailScreen = (props) => {
 
             </View>
             {/* Danh gia khach hang */}
-            <View>
-                <Text>Đánh giá từ khách hàng</Text>
+            <View style={[styles.sectionWrap]}>
+                <Text style={[styles.sectionTitle]}>Đánh giá từ khách hàng</Text>
 
                 {
                     collaborator?.reviews.length > 0 ?
@@ -162,5 +163,16 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         margin: 6
+    },
+    sectionWrap:{
+        backgroundColor:'white',
+        margin:12,
+        borderRadius:12,
+        padding:6
+    },
+    sectionTitle:{
+        fontSize:16,
+        color:'grey',
+        fontWeight:'400'
     }
 })

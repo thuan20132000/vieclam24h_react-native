@@ -703,7 +703,7 @@ export const getUserPendingJobs = async (author_id) => {
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job/${author_id}/status/pending`);
+        let dataFetch = await fetch(`${url}/job/${author_id}/status/pending?`);
         if (!dataFetch.ok) {
             console.warn("ERROT AT GET CUSTOMER PENDING JOBS");
 
@@ -872,7 +872,20 @@ export const confirmFinishedJob = async (job_collaborator_id, job_id, confirmed_
 
 
 
-
+/**
+ * author:thuantruong
+ * created_at:9/12/2020
+ * description:Update user information
+ * @param {*} user_id 
+ * @param {*} username 
+ * @param {*} phonenumber 
+ * @param {*} idcard 
+ * @param {*} address 
+ * @param {*} province 
+ * @param {*} district 
+ * @param {*} subdistrict 
+ * @param {*} profile_image 
+ */
 export const updateUser = async (user_id, username, phonenumber, idcard, address, province, district, subdistrict, profile_image) => {
 
 
@@ -921,4 +934,39 @@ export const updateUser = async (user_id, username, phonenumber, idcard, address
 
     }
 
+}
+
+
+
+
+export const deleteJobByAuthor = async (author_id,job_id) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/job/${author_id}/delete/${job_id}`, {
+            method: 'DELETE',
+        });
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.status) {
+            return {
+                data: dataRes.data,
+                message: 'success',
+                status: true,
+            }
+        }
+
+        return {
+            data: [],
+            message: dataRes.message,
+            status: false,
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false,
+        }
+
+    }
 }

@@ -4,16 +4,25 @@ import { Avatar, Button, Card, Title, Chip, IconButton } from 'react-native-pape
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 
-const LeftContent = props => <Avatar.Icon {...props} icon="folder" />
 
 const JobItem = ({job}) => {
 
+    console.warn(job);
 
     return (
         <Card style={styles.cardContainer}>
             <Card.Content>
                 <Title>{job.relationships?.job?.name}</Title>
-                <Card.Title title={job.relationships?.author?.name} subtitle={job.relationships?.author.phonenumber} left={LeftContent} />
+                <Card.Title title={job.relationships?.author?.name} subtitle={job.relationships?.author.phonenumber} 
+                    left={()=>
+                        <Avatar.Image
+                            source={{
+                                uri:job.relationships?.author?.profile_image
+                            }}
+                            size={44}
+                        />
+                    } 
+                />
 
             </Card.Content>
             <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>

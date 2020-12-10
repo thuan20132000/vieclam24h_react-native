@@ -23,5 +23,7 @@ export default {
     face_good:'emoticon-outline',
     face_normal:'emoticon-happy-outline',
     face_bad:'emoticon-sad-outline',
-    face_sobad:'emoticon-angry-outline'
+    face_sobad:'emoticon-angry-outline',
+
+    removeTrash:'trash-can'
 }

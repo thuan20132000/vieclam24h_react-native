@@ -50,6 +50,9 @@ function AuthenticationStack() {
             <AuthenticationStackNavigator.Screen
                 name="login"
                 component={LoginScreen}
+                options={{
+                    title:"Đăng Nhập"
+                }}
             />
             <AuthenticationStackNavigator.Screen
                 name="register"
@@ -163,10 +166,20 @@ function CustomerHomeStack() {
             <CustomerHomeStackNavigator.Screen
                 name="CollaboratorList"
                 component={CollaboratorListScreen}
+                options={{
+                    title:"Danh Sách Ứng Viên"
+                }}
             />
             <CustomerHomeStackNavigator.Screen
                 name="CollaboratorDetail"
                 component={CollaboratorDetailScreen}
+                options={{
+                    title:"Thông tin ứng viên"
+                }}
+            />
+            <CollaboratorHomeStackNavigator.Screen
+                name="Search"
+                component={SearchScreen}
             />
         </CustomerHomeStackNavigator.Navigator>
     )
@@ -183,16 +196,19 @@ function CustomerJobStack() {
             <CustomerJobStackNavigator.Screen
                 name="CustomerJobList"
                 component={CustomerJobScreen}
+                options={{
+                    title:"Công Việc Đăng Tuyển"
+                }}
             />
             <CustomerHomeStackNavigator.Screen
                 name="JobCollaboratorApplying"
                 component={JobCollaboratorScreen}
             />
-             <CustomerHomeStackNavigator.Screen
+            <CustomerHomeStackNavigator.Screen
                 name="CollaboratorDetail"
                 component={CollaboratorDetailScreen}
             />
-            
+
         </CustomerJobStackNavigator.Navigator>
     )
 }
@@ -250,13 +266,14 @@ function TabNavigator(props) {
                 (userRole && userRole == 2) &&
                 <>
                     <BottomTabNavigator.Screen
-                        name="MyJobs"
-                        component={CollaboratorJobStack}
-                    />
-                    <BottomTabNavigator.Screen
                         name="HomeStack"
                         component={CollaboratorHomeStack}
                     />
+                    <BottomTabNavigator.Screen
+                        name="MyJobs"
+                        component={CollaboratorJobStack}
+                    />
+
                 </>
             }
 
@@ -274,7 +291,7 @@ function TabNavigator(props) {
                         component={CustomerJobStack}
 
                         options={{
-                            tabBarLabel:'Tin đăng'
+                            tabBarLabel: 'Tin đăng'
                         }}
                     />
                     <BottomTabNavigator.Screen

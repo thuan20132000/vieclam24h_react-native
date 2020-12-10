@@ -10,7 +10,7 @@ const ReviewStar = () => {
         <View>
 
             <MaterialCommunityIcons
-                name={CommonIcons.starOutline}
+                name={CommonIcons.star}
                 size={24}
                 color={'gold'}
             />

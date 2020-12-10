@@ -14,6 +14,7 @@ const AccountScreen = (props) => {
         navigation
     } = props;
     const { userInformation } = useSelector(state => state.authentication);
+    const [userRole, setUserRole] = useState();
 
     const [userAttributes, setUserAttributes] = useState();
 
@@ -33,19 +34,21 @@ const AccountScreen = (props) => {
 
 
     useEffect(() => {
-        console.warn(userInformation);
+        let user_role = userInformation.role[0];
+        setUserRole(user_role);
+        console.warn(user_role);
     }, [])
 
     return (
         <ScrollView>
             <View style={styles.userCardContainer}>
-                <Avatar.Image style={{ zIndex: -1,position:'relative' }}
+                <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
                     size={88}
                     source={{
                         uri: userInformation?.attributes?.profile_image || CommonImages.avatar
                     }}
                 />
-                <IconButton style={{ position: 'absolute',left:0,bottom:-10 }}
+                <IconButton style={{ position: 'absolute', left: 0, bottom: -10 }}
                     icon={"camera"}
                     color={CommonColors.primary}
                     size={20}
@@ -64,16 +67,7 @@ const AccountScreen = (props) => {
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
                 onPress={() => navigation.navigate('CollaboratorProfile')}
             />
-            <List.Item
-                title="Thông Tin Thanh Toán"
-                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                onPress={() => console.warn('ds')}
-            />
-            <List.Item
-                title="Lịch Sử Ứng Tuyển"
-                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                onPress={() => console.warn('ds')}
-            />
+          
             <List.Item
                 title="Thông Báo"
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}

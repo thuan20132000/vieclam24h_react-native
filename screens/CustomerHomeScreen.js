@@ -13,7 +13,7 @@ import { getCategory, getCollaborator } from '../utils/serverApi';
 const CustomerHomeScreen = (props) => {
 
     const _onSearchPress = () => {
-
+        props.navigation.navigate('Search');
     }
 
     const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +42,7 @@ const CustomerHomeScreen = (props) => {
 
     const _navigateToCollaboratorList = (e) => {
         props.navigation.navigate('CollaboratorList',{
-            category_id:e.id
+            category:e
         });
     }
 

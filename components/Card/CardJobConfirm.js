@@ -2,7 +2,7 @@ import React from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Avatar } from 'react-native-paper';
 import CommonImages from '../../constants/CommonImages';
-
+import {formatCash,formatDateTime} from '../../utils/helper';
 
 const CardJobConfirm = ({ item }) => {
 
@@ -21,7 +21,7 @@ const CardJobConfirm = ({ item }) => {
                 fontStyle: 'italic',
                 color: 'coral'
             }]}>
-                {item?.relationships?.confirm?.confirmed_price}
+                {formatCash(item?.relationships?.confirm?.confirmed_price)} vnđ
             </Text>
 
             <View style={{ display: 'flex', flexDirection: 'row', margin: 12, alignItems: 'center' }}>
@@ -45,9 +45,14 @@ const CardJobConfirm = ({ item }) => {
                     }]}>
                         {item?.relationships.candidate.email}
                     </Text>
-                </View>
 
+                </View>
             </View>
+            <Text style={{
+                fontSize:12,
+                color:'grey',
+                fontStyle:'italic'
+            }}>Xác nhận lúc : {formatDateTime(item?.relationships.candidate.updated_at || item?.relationships.candidate.created_at)} </Text>
 
 
         </View>
