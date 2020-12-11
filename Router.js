@@ -38,6 +38,7 @@ import CustomerJobCreationScreen from './screens/CustomerJobCreationScreen';
 import CommonColors from './constants/CommonColors';
 import CollaboratorListScreen from './screens/CollaboratorListScreen';
 import CollaboratorDetailScreen from './screens/CollaboratorDetailScreen';
+import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
 
 /**
  * Authentication Stack
@@ -179,7 +180,7 @@ function CustomerHomeStack() {
             />
             <CollaboratorHomeStackNavigator.Screen
                 name="Search"
-                component={SearchScreen}
+                component={SearchCollaboratorScreen}
             />
         </CustomerHomeStackNavigator.Navigator>
     )

@@ -525,6 +525,38 @@ export const searchJobs = async (query, district, limit = 6) => {
 
 
 
+export const searchCandidates = async (query = null, district = null, limit = 6) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/collaborator-search?query=${query}&district=${district}&limit=${limit}`);
+
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT SEARCH JOB');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+        let dataRes = await dataFetch.json();
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
 
 /**
  * author:thuantruong
@@ -939,7 +971,7 @@ export const updateUser = async (user_id, username, phonenumber, idcard, address
 
 
 
-export const deleteJobByAuthor = async (author_id,job_id) => {
+export const deleteJobByAuthor = async (author_id, job_id) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/job/${author_id}/delete/${job_id}`, {

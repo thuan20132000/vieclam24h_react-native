@@ -7,7 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {getDistrict} from '../../utils/locationApi';
 
 
-const FilterBar = ({searchDistrict,setSearchDistrict}) => {
+const FilterBar = ({searchDistrict,setSearchDistrict,customerStyle}) => {
 
     const [districts, setDistricts] = useState([{
         label:'all',value:'all'
@@ -35,7 +35,7 @@ const FilterBar = ({searchDistrict,setSearchDistrict}) => {
 
 
     return (
-        <View style={styles.barWrap}>
+        <View style={[styles.barWrap,customerStyle]}>
 
             <DropDownPicker style={styles.selectWrap}
                 items={districts}

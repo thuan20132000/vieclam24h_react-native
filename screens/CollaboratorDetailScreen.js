@@ -118,6 +118,7 @@ const CollaboratorDetailScreen = (props) => {
                         {
                             collaborator?.reviews?.map((e,index) =>
                                 <CardReview 
+                                    key={index.toString()}
                                     review={e}
                                 />
 

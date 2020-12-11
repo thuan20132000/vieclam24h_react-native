@@ -11,10 +11,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const CollaboratorCard = ({ item, navigation }) => {
 
-    console.warn('ccL ', item);
-
-
-
     return (
         <TouchableOpacity style={[styles.cardContainer, { zIndex: -1 }]}
             onPress={() => navigation.navigate('CollaboratorDetail', { collaborator_id: item.id })}
