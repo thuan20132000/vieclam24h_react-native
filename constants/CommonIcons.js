@@ -25,5 +25,8 @@ export default {
     face_bad:'emoticon-sad-outline',
     face_sobad:'emoticon-angry-outline',
 
-    removeTrash:'trash-can'
+    removeTrash:'trash-can',
+    tagPrice:"tag-text",
+    mapCheck:'map-marker-check'
+
 }

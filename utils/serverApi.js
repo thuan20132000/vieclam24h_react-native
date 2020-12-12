@@ -394,7 +394,7 @@ export const createJob = async (
             body: JSON.stringify({
                 name: name,
                 description: description,
-                street: address,
+                address: address,
                 province: province,
                 district: district,
                 subdistrict: subdistrict,
@@ -453,7 +453,7 @@ export const createJob = async (
 export const getCollaboratorJobs = async (user_id, status, per_page) => {
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job-collaborator-applying?user_id=${user_id}&status=${status}&per_page=${per_page}`);
+        let dataFetch = await fetch(`${url}/jobcollaborator/${user_id}/status/${status}?per_page=${per_page}`);
 
         if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH COLLABORATOR JOB');

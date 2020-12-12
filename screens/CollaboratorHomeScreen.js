@@ -48,6 +48,8 @@ const CollaboratorHomeScreen = (props) => {
         console.warn(data);
         if (data.data.length > 0) {
             setJobs(data.data);
+        }else{
+            setJobs([]);
         }
         setIsLoading(false);
         setRefreshing(false);

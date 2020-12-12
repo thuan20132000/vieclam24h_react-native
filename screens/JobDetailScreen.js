@@ -11,6 +11,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { useSelector } from 'react-redux';
 
 import { getJobDetail, applyJob } from '../utils/serverApi';
+import {formatCash} from '../utils/helper';
 
 
 const JobDetailScreen = (props) => {
@@ -162,7 +163,11 @@ const JobDetailScreen = (props) => {
                     {/* Description */}
                     <View style={styles.jobDescriptionsContainer}>
                         <Text style={styles.jobTitle}>{jobDetail.attributes.name}</Text>
-                        <Text style={styles.jobPrice}>Giá đưa ra : <Text style={{ fontSize: 18, color: CommonColors.primary }}>{jobDetail.attributes.suggestion_price} vnd</Text></Text>
+                        <Text style={styles.jobPrice}>Giá đưa ra : 
+                            <Text style={{ fontSize: 18, color: CommonColors.primary }}>
+                                {formatCash(jobDetail.attributes?.suggestion_price)} vnd
+                            </Text>
+                            </Text>
                         <View style={styles.jobDescriptionWrap}>
                             <Text style={styles.jobDescriptionText}>
                                 {jobDetail.attributes.description}
@@ -202,7 +207,7 @@ const JobDetailScreen = (props) => {
                                 fontWeight:'300',
                                 fontStyle:'italic'
                             }}>
-                                Ngân sách đưa ra : {jobDetail?.attributes.suggestion_price} VND
+                                Ngân sách đưa ra : { jobDetail?.attributes.suggestion_price} VND
                             </Text>
                             <TextInput style={[styles.input, { height: 160 }]}
                                 label="Lời nhắn"

@@ -43,7 +43,7 @@ const CollaboratorListScreen = (props) => {
                         navigation={props.navigation}
                     />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item,index) => index.toString()}
             // extraData={selectedId}
             // onEndReached={_loadMoreJobs}
             // ListFooterComponent={() => <FooterList />}

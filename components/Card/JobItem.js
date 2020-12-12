@@ -1,43 +1,160 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, Text, Image } from 'react-native'
 import { Avatar, Button, Card, Title, Chip, IconButton } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
+import CommonImages from '../../constants/CommonImages';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { formatCash,formatDateTime } from '../../utils/helper';
+
+const JobItem = ({ job }) => {
 
 
-const JobItem = ({job}) => {
-
-    console.warn(job);
+    const apply_job = job.relationship?.job;
+    const job_location = job.relationship?.job?.location;
+    const job_author = job.relationship?.job_author;
 
     return (
         <Card style={styles.cardContainer}>
-            <Card.Content>
-                <Title>{job.relationships?.job?.name}</Title>
-                <Card.Title title={job.relationships?.author?.name} subtitle={job.relationships?.author.phonenumber} 
-                    left={()=>
-                        <Avatar.Image
-                            source={{
-                                uri:job.relationships?.author?.profile_image
-                            }}
-                            size={44}
-                        />
-                    } 
-                />
+      
+                <Text style={{
+                    color:'grey',
+                    fontSize:12,
+                    fontStyle:'italic',
+                    textAlign:'right',
+                    margin:4
+                }}>
+                    Xác nhận lúc: {formatDateTime(job.attributes.updated_at)}
+                </Text>
+            <View style={{ margin: 6 }}>
+                <Text style={{
+                    fontSize: 16,
+                    fontWeight: '600',
+                    marginVertical: 6
+                }}>{apply_job.name}</Text>
 
-            </Card.Content>
-            <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
-                <Chip style={{ width: 120, margin: 12, alignItems: 'center', alignContent: 'center' }}>
-                    {
-                        job.attributes.status==2?"Đang chờ":(job.attributes.status==3?"Chấp nhận":"Từ chối")
-                    }
-                </Chip>
-                <IconButton
-                    icon={CommonIcons.chatMessage}
-                    color={CommonColors.primary}
-                    size={28}
-                    onPress={() => console.log('Pressed')}
-                />
+
+                <View style={{ display: 'flex', flexDirection: 'row', marginVertical: 2 }}>
+                    <MaterialCommunityIcons
+                        name={CommonIcons.mapCheck}
+                        size={18}
+                        color={CommonColors.primary}
+                    />
+                    <Text style={{
+                        fontSize: 14,
+                        fontWeight: '400',
+                        color: 'grey',
+                        fontStyle: 'italic',
+                        marginHorizontal: 6
+                    }}>
+                        {job_location.address}
+                    </Text>
+
+                </View>
+                <View style={{ display: 'flex', flexDirection: 'row', marginVertical: 2 }}>
+                    <MaterialCommunityIcons
+                        name={CommonIcons.tagPrice}
+                        size={18}
+                        color={CommonColors.primary}
+                    />
+                    <Text style={{
+                        fontSize: 14,
+                        fontWeight: '400',
+                        color: 'grey',
+                        fontStyle: 'italic',
+                        marginHorizontal: 6
+                    }}>
+                        Giá đưa ra: <Text style={{
+                            color: 'red'
+                        }}>{formatCash(apply_job?.suggestion_price)} đ</Text>
+                    </Text>
+                </View>
+                {
+                    job?.attributes?.confirmed_price &&
+                    <View style={{ display: 'flex', flexDirection: 'row', marginVertical: 2 }}>
+                        <MaterialCommunityIcons
+                            name={CommonIcons.tagPrice}
+                            size={18}
+                            color={CommonColors.primary}
+                        />
+                        <Text style={{
+                            fontSize: 14,
+                            fontWeight: '400',
+                            color: 'grey',
+                            fontStyle: 'italic',
+                            marginHorizontal: 6
+                        }}>
+                            Giá xác nhận: <Text style={{
+                                color: 'red'
+                            }}>{formatCash(job?.attributes?.confirmed_price)} đ</Text>
+                        </Text>
+                    </View>
+
+                }
+
             </View>
+            <View style={{
+                display: 'flex',
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'center'
+            }}
+            >
+                {
+                    apply_job.images.map((e, index) =>
+                        <Image style={{
+                            width: 70,
+                            height: 70,
+                            margin: 2
+                        }}
+                            source={{
+                                uri: e.image_url || CommonImages.notFound
+                            }}
+                        />
+                    )
+                }
+
+            </View>
+            <View style={{
+                margin: 8,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center'
+            }}>
+                <Image style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20
+                }}
+                    source={{
+                        uri: job_author.profile_image || CommonImages.notFound
+                    }}
+                />
+                <View>
+                    <Text style={{
+                        fontSize: 16,
+                        color: 'grey',
+                        fontWeight: '600',
+                        marginHorizontal: 12
+                    }}>
+                        {job_author.name}
+                    </Text>
+                    <Text style={{
+                        fontSize: 12,
+                        color: 'grey',
+                        fontWeight: '600',
+                        marginHorizontal: 12
+                    }}>
+                        {job_author.phonenumber}
+                    </Text>
+                </View>
+                <View>
+
+                </View>
+
+            </View>
+
         </Card>
     )
 }
@@ -57,5 +174,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
+        margin: 8,
+        borderRadius: 18
     }
 })
