@@ -27,6 +27,9 @@ export default {
 
     removeTrash:'trash-can',
     tagPrice:"tag-text",
-    mapCheck:'map-marker-check'
+    mapCheck:'map-marker-check',
+
+    fileLink:'file-link',
+    send:'send'
 
 }

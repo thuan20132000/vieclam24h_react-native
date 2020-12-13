@@ -24,7 +24,7 @@ import CustomerHomeScreen from './screens/CustomerHomeScreen';
 import CollaboratorHomeScreen from './screens/CollaboratorHomeScreen';
 import CustomerJobScreen from './screens/CustomerJobScreen';
 import JobCollaboratorScreen from './screens/JobCollaboratorScreen';
-import ChatScreen from './screens/ChatScreen';
+import ChatScreen from './screens/Messages/ChatScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import JobListScreen from './screens/JobListScreen';
@@ -39,6 +39,7 @@ import CommonColors from './constants/CommonColors';
 import CollaboratorListScreen from './screens/CollaboratorListScreen';
 import CollaboratorDetailScreen from './screens/CollaboratorDetailScreen';
 import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
+import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 
 /**
  * Authentication Stack
@@ -186,10 +187,28 @@ function CustomerHomeStack() {
     )
 }
 
+
+
+const ChatStackNavigator = createStackNavigator();
+function ChatStack(){
+    return (
+        <ChatStackNavigator.Navigator>
+            <ChatStackNavigator.Screen
+                name="ChatHome"
+                component={ChatScreen}
+            />
+              <ChatStackNavigator.Screen
+                name="ChatLive"
+                component={ChatLiveScreen}
+            />
+        </ChatStackNavigator.Navigator>
+    )
+}
+
+
 /**
  * Customer's Job Stack
  */
-
 const CustomerJobStackNavigator = createStackNavigator();
 function CustomerJobStack() {
     return (
@@ -315,7 +334,7 @@ function TabNavigator(props) {
 
 
 
-            <BottomTabNavigator.Screen name="Messages" component={ChatScreen} />
+            <BottomTabNavigator.Screen name="Messages" component={ChatStack} />
             <BottomTabNavigator.Screen name="Accounts" component={AccountStack} />
         </BottomTabNavigator.Navigator>
     );
