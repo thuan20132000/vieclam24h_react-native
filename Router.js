@@ -53,7 +53,7 @@ function AuthenticationStack() {
                 name="login"
                 component={LoginScreen}
                 options={{
-                    title:"Đăng Nhập"
+                    title: "Đăng Nhập"
                 }}
             />
             <AuthenticationStackNavigator.Screen
@@ -108,6 +108,7 @@ function CollaboratorHomeStack() {
                 name="JobList"
                 component={JobListScreen}
             />
+
         </CollaboratorHomeStackNavigator.Navigator>
     )
 }
@@ -169,19 +170,23 @@ function CustomerHomeStack() {
                 name="CollaboratorList"
                 component={CollaboratorListScreen}
                 options={{
-                    title:"Danh Sách Ứng Viên"
+                    title: "Danh Sách Ứng Viên"
                 }}
             />
             <CustomerHomeStackNavigator.Screen
                 name="CollaboratorDetail"
                 component={CollaboratorDetailScreen}
                 options={{
-                    title:"Thông tin ứng viên"
+                    title: "Thông tin ứng viên"
                 }}
             />
             <CollaboratorHomeStackNavigator.Screen
                 name="Search"
                 component={SearchCollaboratorScreen}
+            />
+            <ChatStackNavigator.Screen
+                name="ChatLive"
+                component={ChatLiveScreen}
             />
         </CustomerHomeStackNavigator.Navigator>
     )
@@ -190,14 +195,14 @@ function CustomerHomeStack() {
 
 
 const ChatStackNavigator = createStackNavigator();
-function ChatStack(){
+function ChatStack() {
     return (
         <ChatStackNavigator.Navigator>
             <ChatStackNavigator.Screen
                 name="ChatHome"
                 component={ChatScreen}
             />
-              <ChatStackNavigator.Screen
+            <ChatStackNavigator.Screen
                 name="ChatLive"
                 component={ChatLiveScreen}
             />
@@ -217,7 +222,7 @@ function CustomerJobStack() {
                 name="CustomerJobList"
                 component={CustomerJobScreen}
                 options={{
-                    title:"Công Việc Đăng Tuyển"
+                    title: "Công Việc Đăng Tuyển"
                 }}
             />
             <CustomerHomeStackNavigator.Screen

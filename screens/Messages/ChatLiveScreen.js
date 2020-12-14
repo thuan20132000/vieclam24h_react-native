@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useLayoutEffect } from 'react';
 import { Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
 import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler';
@@ -7,16 +7,16 @@ import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import CommonImages from '../../constants/CommonImages';
 
+import { useSelector } from 'react-redux';
 
 
-
-const MessageChatitem = ({ isMine }) => {
+const MessageChatitem = ({ isMine,message }) => {
     return (
-        <View style={[styles.messageItemWrap, { 
-                alignItems: 'flex-end',
-            
-            },
-            isMine?{justifyContent:'flex-end'}:{justifyContent:'flex-start'}
+        <View style={[styles.messageItemWrap, {
+            alignItems: 'flex-end',
+
+        },
+        isMine ? { justifyContent: 'flex-end' } : { justifyContent: 'flex-start' }
         ]}
         >
             {
@@ -28,7 +28,7 @@ const MessageChatitem = ({ isMine }) => {
                 />
             }
             <View style={[{
-                backgroundColor: !isMine?'#dcdcdc':'coral',
+                backgroundColor: !isMine ? '#dcdcdc' : 'coral',
                 padding: 6,
                 borderRadius: 12,
                 margin: 6,
@@ -40,7 +40,7 @@ const MessageChatitem = ({ isMine }) => {
                 }]}
 
                 >
-                    dsfsd dsds vsdvdsvd dsvsdvsd dsfsd dsds vsdvdsvdvsdvdsvdvsdvdsvdvsdvdsvdvsdvdsvdvsdvdsvd dsvsdvsd v v
+                {message}    
                 </Text>
                 <Text style={[styles.messageDatetime, { textAlign: 'right', fontWeight: '300', fontStyle: "italic" }]}>12:00 12/12/2020</Text>
             </View>
@@ -51,39 +51,56 @@ const MessageChatitem = ({ isMine }) => {
 
 const ChatLiveScreen = (props) => {
 
-    let messageSample = [
-        {
-            id:1,
-            text:"Hello",
-            isMine:false
-        },
-        {
-            id:1,
-            text:"Hello",
-            isMine:true
-        },
-        {
-            id:1,
-            text:"Hello",
-            isMine:true
-        },
-        {
-            id:1,
-            text:"Hello",
-            isMine:false
-        },
-        {
-            id:1,
-            text:"Hello",
-            isMine:false
-        }
-    ]
+
+
+    const { userInformation } = useSelector(state => state.authentication);
+
+
+    // console.warn(userInformation);
+
+    // let messageSample = [
+    //     {
+    //         id:1,
+    //         text:"Hello",
+    //         isMine:false
+    //     },
+    //     {
+    //         id:1,
+    //         text:"Hello",
+    //         isMine:true
+    //     },
+    //     {
+    //         id:1,
+    //         text:"Hello",
+    //         isMine:true
+    //     },
+    //     {
+    //         id:1,
+    //         text:"Hello",
+    //         isMine:false
+    //     },
+    //     {
+    //         id:1,
+    //         text:"Hello",
+    //         isMine:false
+    //     }
+    // ]
 
     const messageChatItems = Array(12).fill({});
+    const [wsSocket, setWsSocket] = useState('');
 
+
+    const [recipient, setRecipient] = useState();
+    const { user } = props.route.params;
+
+    // console.warn(user);
 
     useEffect(() => {
-        setMessageArr(messageSample);
+        if (user) {
+            console.warn(user);
+            setRecipient(user);
+
+        }
     }, [])
 
     useLayoutEffect(() => {
@@ -99,6 +116,7 @@ const ChatLiveScreen = (props) => {
             props.navigation.dangerouslyGetParent().setOptions({
                 tabBarVisible: true
             });
+
         }
 
     }, []);
@@ -108,9 +126,52 @@ const ChatLiveScreen = (props) => {
     const [sendValue, setSendValue] = useState('');
 
 
+
+
+    useMemo(() => {
+        const socket = new WebSocket(`wss://damp-stream-67132.herokuapp.com/${userInformation.id}`);
+        setWsSocket(socket)
+
+    }, []);
+
+    wsSocket.onmessage = async (msg) => {
+        let message = JSON.parse(msg.data);
+
+        console.warn(message);
+        // let newMessage = {
+        //     "from": { "email": "", "id": message.from, "name": "" },
+        //     "message": message.message,
+        // }
+        // console.warn('message: ',message);
+        // setMessageRealTime(message);
+
+    }
+    useEffect(() => {
+
+    }, []);
+
+
     const _onSendMessage = async () => {
-        setMessageArr([...messageArr, sendValue]);
+
+
+        let sendData = {
+            "from": {
+                "id": userInformation.id,
+                "name": userInformation.name
+            },
+            "to": {
+                "id": recipient.id,
+                "name": recipient.attributes?.name
+            },
+            "type": "message",
+            "message": sendValue
+        }
+
+        setMessageArr([...messageArr, sendData]);
         setSendValue('');
+        if (wsSocket.readyState === WebSocket.OPEN) {
+            wsSocket.send(JSON.stringify(sendData));
+        }
     }
 
     return (
@@ -125,6 +186,7 @@ const ChatLiveScreen = (props) => {
                         <MessageChatitem
                             key={index.toString()}
                             isMine={e.isMine}
+                            message={e.message}
                         />
                     )
                 }
@@ -182,7 +244,7 @@ const styles = StyleSheet.create({
         borderRadius: 22,
         display: 'flex',
         flexDirection: 'row',
-        width: deviceWidth-100,
+        width: deviceWidth - 100,
         alignItems: 'center',
 
 

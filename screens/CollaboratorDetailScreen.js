@@ -39,6 +39,13 @@ const CollaboratorDetailScreen = (props) => {
 
     }, [])
 
+
+    const _onNavigateToChat = () => {
+        props.navigation.navigate('ChatLive',{
+            user:collaborator
+        });
+    }
+
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
@@ -50,10 +57,11 @@ const CollaboratorDetailScreen = (props) => {
                 onPress={() => setIsFavorite(!isFavorite)}
             />
 
-            <View style={[styles.sectionWrap,styles.topBannerCard]}>
+
+            <View style={[styles.sectionWrap, styles.topBannerCard]}>
 
                 <Avatar.Image size={84} source={{
-                    uri:collaborator?.attributes.profile_image ||  CommonImages.avatar
+                    uri: collaborator?.attributes.profile_image || CommonImages.avatar
                 }} />
                 <View style={styles.userInfo}>
                     <Text style={styles.textTitle}>{collaborator && collaborator.attributes.name}</Text>
@@ -62,10 +70,16 @@ const CollaboratorDetailScreen = (props) => {
                     <Text style={styles.textDescription}>{collaborator && collaborator.attributes.address}</Text>
 
                 </View>
+                <IconButton style={{ position: 'absolute', zIndex: 999, right: 1 }}
+                    icon={CommonIcons.messages}
+                    color={'gold'}
+                    size={34}
+                    onPress={_onNavigateToChat}
+                />
             </View>
 
             <View style={[styles.sectionWrap]}>
-                <Text style={[styles.sectionTitle,{}]} >Nghề nghiệp chuyên môn: </Text>
+                <Text style={[styles.sectionTitle, {}]} >Nghề nghiệp chuyên môn: </Text>
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
                         collaboratorOccupations &&
@@ -101,10 +115,10 @@ const CollaboratorDetailScreen = (props) => {
                             }
 
                         </View> :
-                        <View style={{padding:6,marginVertical:22}}>
-                            <Text style={{fontStyle:'italic',fontSize:12}}>Chưa có hình ảnh hoạt động</Text>
+                        <View style={{ padding: 6, marginVertical: 22 }}>
+                            <Text style={{ fontStyle: 'italic', fontSize: 12 }}>Chưa có hình ảnh hoạt động</Text>
                         </View>
-                
+
                 }
 
             </View>
@@ -114,20 +128,20 @@ const CollaboratorDetailScreen = (props) => {
 
                 {
                     collaborator?.reviews.length > 0 ?
-                    <>
-                        {
-                            collaborator?.reviews?.map((e,index) =>
-                                <CardReview 
-                                    key={index.toString()}
-                                    review={e}
-                                />
+                        <>
+                            {
+                                collaborator?.reviews?.map((e, index) =>
+                                    <CardReview
+                                        key={index.toString()}
+                                        review={e}
+                                    />
 
-                            )
-                        }
-                    </>:
-                    <View>
-                        <Text>Chưa có đánh giá nào từ khách hàng.</Text>
-                    </View>
+                                )
+                            }
+                        </> :
+                        <View>
+                            <Text>Chưa có đánh giá nào từ khách hàng.</Text>
+                        </View>
                 }
 
             </View>
@@ -165,15 +179,15 @@ const styles = StyleSheet.create({
         height: 100,
         margin: 6
     },
-    sectionWrap:{
-        backgroundColor:'white',
-        margin:12,
-        borderRadius:12,
-        padding:6
+    sectionWrap: {
+        backgroundColor: 'white',
+        margin: 12,
+        borderRadius: 12,
+        padding: 6
     },
-    sectionTitle:{
-        fontSize:16,
-        color:'grey',
-        fontWeight:'400'
+    sectionTitle: {
+        fontSize: 16,
+        color: 'grey',
+        fontWeight: '400'
     }
 })
