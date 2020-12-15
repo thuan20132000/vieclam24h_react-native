@@ -1002,3 +1002,161 @@ export const deleteJobByAuthor = async (author_id, job_id) => {
 
     }
 }
+
+
+
+
+/**
+ * author:thuantruong
+ * created_at:15/12/2020
+ * description: Get all client that connected to user
+ * @param {*} user_id 
+ */
+export const getUserChatConnections = async (user_id) => {
+
+    try {
+        let url = serverConfig.url_chatlive;
+        let dataFetch = await fetch(`${url}/user/${user_id}/connection`);
+
+        if (!dataFetch.ok) {
+            return {
+                data: [],
+                message: "failed " + dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.status) {
+            return {
+                data: dataRes.data,
+                message: "success",
+                status: true
+            }
+        } else {
+            return {
+                data: [],
+                message: "failed 404",
+                status: false
+            }
+        }
+
+
+
+    } catch (error) {
+        return {
+            data: [],
+            message: "failed 404",
+            status: false
+        }
+    }
+}
+
+
+
+/**
+ * author:thuantruong
+ * created_at:15/12/2020
+ * description: Check whereas User is connected to client
+ *              -> if not connected
+ *              -> else do nothing
+ * @param {*} user_id 
+ * @param {*} from 
+ * @param {*} to 
+ * @param {*} user_image 
+ */
+export const checkToConnectToUserChat = async (user_id,from,to,user_image) => {
+    try {
+        let url = serverConfig.url_chatlive;
+
+        let conversation_id = `${from}-${to}`;
+
+        let dataFetch = await fetch(`${url}/connection/${user_id}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "conversation_id":conversation_id,
+                "from": from,
+                "to": to,
+                "user_image": user_image
+            })
+
+        });
+
+        if (!dataFetch.ok) {
+            return {
+                data: [],
+                message: "failed " + dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.status) {
+            return {
+                data: dataRes.data,
+                message: "User was exists",
+                status: true
+            }
+        } else {
+            return {
+                data: dataRes.data,
+                message: "failed 404",
+                status: false
+            }
+        }
+
+
+
+
+
+    } catch (error) {
+
+    }
+}
+
+
+
+
+export const getUserConversation = async (conversation_id,limit=12,pagenext=10,sortby='asc') => {
+
+
+
+    try {       
+        let url = serverConfig.url_chatlive;
+        let dataFetch = await fetch(`${url}/conversations/${conversation_id}?limit=${limit}&pagenext=${pagenext}&sortby=${sortby}`);
+        if (!dataFetch.ok) {
+            return {
+                data: [],
+                message: "failed " + dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.status) {
+            return {
+                data: dataRes,
+                message: "success",
+                status: true
+            }
+        } else {
+            return {
+                data: [],
+                message: "failed 404",
+                status: false
+            }
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: "failed 404",
+            status: false
+        }
+    }
+}
+

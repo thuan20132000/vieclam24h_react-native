@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useLayoutEffect } from 'react';
-import { Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, View, RefreshControl } from 'react-native'
 import { FlatList, ScrollView, TextInput } from 'react-native-gesture-handler';
-import { IconButton } from 'react-native-paper';
+import { ActivityIndicator, IconButton } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import CommonImages from '../../constants/CommonImages';
 
 import { useSelector } from 'react-redux';
+import { getUserConversation } from '../../utils/serverApi';
 
+const MessageChatitem = ({ isMine, message }) => {
 
-const MessageChatitem = ({ isMine,message }) => {
     return (
         <View style={[styles.messageItemWrap, {
             alignItems: 'flex-end',
@@ -40,7 +41,7 @@ const MessageChatitem = ({ isMine,message }) => {
                 }]}
 
                 >
-                {message}    
+                    {message}
                 </Text>
                 <Text style={[styles.messageDatetime, { textAlign: 'right', fontWeight: '300', fontStyle: "italic" }]}>12:00 12/12/2020</Text>
             </View>
@@ -54,7 +55,6 @@ const ChatLiveScreen = (props) => {
 
 
     const { userInformation } = useSelector(state => state.authentication);
-
 
     // console.warn(userInformation);
 
@@ -97,7 +97,7 @@ const ChatLiveScreen = (props) => {
 
     useEffect(() => {
         if (user) {
-            console.warn(user);
+            console.warn('recipient user: ', user);
             setRecipient(user);
 
         }
@@ -126,8 +126,6 @@ const ChatLiveScreen = (props) => {
     const [sendValue, setSendValue] = useState('');
 
 
-
-
     useMemo(() => {
         const socket = new WebSocket(`wss://damp-stream-67132.herokuapp.com/${userInformation.id}`);
         setWsSocket(socket)
@@ -137,7 +135,13 @@ const ChatLiveScreen = (props) => {
     wsSocket.onmessage = async (msg) => {
         let message = JSON.parse(msg.data);
 
-        console.warn(message);
+        console.warn('socket message: ', message);
+        if (message.connection == recipient._id) {
+
+            setMessageArr([...messageArr, message]);
+
+        };
+
         // let newMessage = {
         //     "from": { "email": "", "id": message.from, "name": "" },
         //     "message": message.message,
@@ -146,51 +150,138 @@ const ChatLiveScreen = (props) => {
         // setMessageRealTime(message);
 
     }
-    useEffect(() => {
 
-    }, []);
 
 
     const _onSendMessage = async () => {
 
-
+        console.warn(recipient._id);
         let sendData = {
+            "connection": recipient._id,
+            "conversation_id": recipient.conversation_id,
             "from": {
                 "id": userInformation.id,
                 "name": userInformation.name
             },
             "to": {
-                "id": recipient.id,
-                "name": recipient.attributes?.name
+                "id": recipient.id || 40,
+                "name": recipient.attributes?.name || "Anonimous"
             },
             "type": "message",
-            "message": sendValue
+            "message": sendValue,
+            "isMine": true
         }
 
-        setMessageArr([...messageArr, sendData]);
+        //setMessageArr([...messageArr, sendData]);
         setSendValue('');
         if (wsSocket.readyState === WebSocket.OPEN) {
             wsSocket.send(JSON.stringify(sendData));
         }
     }
 
+
+    const [nextPageNumber, setNextPageNumber] = useState(0);
+    const _onGetUserConversation = async () => {
+
+        let userConversationsRes = await getUserConversation(user._id, 12,nextPageNumber);
+
+        if (userConversationsRes.status) {
+            setMessageArr(userConversationsRes.data.data);
+        } else {
+            setMessageArr([]);
+        }
+    }
+
+
+    useEffect(() => {
+
+        _onGetUserConversation();
+
+        setNextPageNumber(0);
+    }, []);
+
+
+    // const _onLoadMoreUserConversation = async () => {
+    //     let userConversationsRes = await getUserConversation(user._id, 12, nextPageNumber + 12);
+    //     console.warn('get res: ', userConversationsRes.data.data);
+
+    //     setMessageArr(messageArr.concat(userConversationsRes.data.data));
+    //     // if(userConversationsRes.status){
+    //     //     setMessageArr(userConversationsRes.data);
+    //     // }else{
+    //     //     setMessageArr([]);
+    //     // }
+    // }
+
+    const [refreshing, setRefreshing] = useState(false);
+    // const onRefresh = React.useCallback(() => {
+    //     setRefreshing(true);
+
+    //     setTimeout(() => {
+    //         _onLoadMoreUserConversation();
+    //         setRefreshing(false)
+    //     }, 2000);
+    // }, []);
+
+
+
+    const onRefreshOldMessage = async () => {
+        setRefreshing(true);
+
+        try {
+            let userConversationsRes = await getUserConversation(user._id, 12, nextPageNumber);
+
+            setMessageArr(prev => {
+                return [...userConversationsRes.data.data,...prev];
+            })
+
+            setNextPageNumber(nextPageNumber+12);
+            setRefreshing(false);
+
+        } catch (error) {
+            setRefreshing(false);
+        }
+
+    }
+
+
+
     return (
 
         <>
 
-            <ScrollView
 
-            >
-                {
-                    messageArr.map((e, index) =>
-                        <MessageChatitem
-                            key={index.toString()}
-                            isMine={e.isMine}
-                            message={e.message}
-                        />
-                    )
-                }
-            </ScrollView>
+
+            <FlatList style={{ flex: 1, zIndex: -1 }}
+                // inverted={-1}
+                data={messageArr}
+               // refreshing={refreshNewMessage}
+               refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={onRefreshOldMessage}
+                />
+              }
+              onEndReached={this.handleLoadMore}
+              onEndReachedThreshold={0.1}
+                // onEndReached={onRefresh}
+                // onEndReachedThreshold={0.5}
+                // ListFooterComponent={<ActivityIndicator animating={onRefreshOldMessage} color={CommonColors.accent} />}
+                onRefresh={onRefreshOldMessage}
+                refreshing={true}
+
+                renderItem={({ item, index }) => (
+                    <MessageChatitem
+                        key={index.toString()}
+                        isMine={item.from.id == userInformation.id ? true : false}
+                        message={item.message}
+
+                    />
+                )}
+                keyExtractor={(item) => item.id}
+            />
+
+
             <KeyboardAvoidingView
                 behavior={'padding'}
                 keyboardVerticalOffset={86}

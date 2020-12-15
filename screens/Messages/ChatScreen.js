@@ -3,20 +3,19 @@ import { AppState, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import { ActivityIndicator } from 'react-native-paper'
 import CardUserMessageItem from '../../components/Card/CardUserMessageItem'
+import {getUserChatConnections} from '../../utils/serverApi';
+import { useSelector } from 'react-redux';
+
+
 
 const ChatScreen = (props) => {
     const [refreshing, setRefreshing] = React.useState(false);
+    const { userInformation } = useSelector(state => state.authentication);
 
 
-    const itemChat = Array(18).fill({});
-    const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1000);
-    }, []);
-
+    //const itemChat = Array(18).fill({});
+    const [userChatConnections,setUserChatConnections] = useState([]);
+  
     const FooterList = () => {
         return (
             <ActivityIndicator
@@ -28,7 +27,7 @@ const ChatScreen = (props) => {
 
     const _onNavigateToChatLive = (item) => {
         props.navigation.navigate('ChatLive',{
-            user:41
+            user:item
         });
     }
 
@@ -80,12 +79,37 @@ const ChatScreen = (props) => {
         console.log("AppState", appState.current);
     };
 
+
+    const _onGetUserChatConnection = async () => {
+        let userChatConnectionRes = await getUserChatConnections(userInformation.id);
+        console.warn(userChatConnectionRes.data);
+        setUserChatConnections(userChatConnectionRes.data);
+    }
+
+    useEffect(() => {
+        
+        
+
+        _onGetUserChatConnection();
+
+    }, [])
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+
+        setTimeout(() => {
+            _onGetUserChatConnection();
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+
+
     return (
         <View>
 
             <FlatList
                 showsVerticalScrollIndicator={false}
-                data={itemChat}
+                data={userChatConnections}
                 renderItem={({ item, index }) => (
                     <CardUserMessageItem
                         customStyle={{
@@ -93,6 +117,9 @@ const ChatScreen = (props) => {
                             marginBottom: 12
                         }}
                         onItemPress={() => _onNavigateToChatLive(item)}
+                        title={item.conversation_id}
+                        subTitle={item?.conversations[0]?.message}
+                        imageUrl={item.user_image}
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}

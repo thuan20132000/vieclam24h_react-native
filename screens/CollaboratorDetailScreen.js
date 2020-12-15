@@ -6,11 +6,14 @@ import CardReview from '../components/Card/CardReview'
 import ReviewStar from '../components/Review/ReviewStar'
 import CommonIcons from '../constants/CommonIcons'
 import CommonImages from '../constants/CommonImages'
+import { useSelector } from 'react-redux';
 
 
-import { getCollaboratorDetail } from '../utils/serverApi';
+
+import { getCollaboratorDetail,checkToConnectToUserChat } from '../utils/serverApi';
 
 const CollaboratorDetailScreen = (props) => {
+    const { userInformation } = useSelector(state => state.authentication);
 
 
     const occupationsArr = Array(5).fill({});
@@ -40,7 +43,18 @@ const CollaboratorDetailScreen = (props) => {
     }, [])
 
 
-    const _onNavigateToChat = () => {
+    const _onNavigateToChat = async () => {
+
+        let checkUserIsConnected = await checkToConnectToUserChat(
+            userInformation.id,
+            userInformation.id,
+            collaborator_id,
+            collaborator?.attributes.profile_image || ""
+        );
+
+        console.log(checkUserIsConnected);
+
+
         props.navigation.navigate('ChatLive',{
             user:collaborator
         });

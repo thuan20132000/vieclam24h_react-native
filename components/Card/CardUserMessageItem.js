@@ -8,6 +8,10 @@ import CommonIcons from '../../constants/CommonIcons';
 import CommonColors from '../../constants/CommonColors';
 
 const CardUserMessageItem = ({title,subTitle,datetime,imageUrl,customStyle,onItemPress}) => {
+    
+    
+   // console.warn(item.conversation_id);
+    
     return (
         <TouchableOpacity style={[styles.cardContainer,customStyle]}
             onPress={onItemPress}
@@ -16,24 +20,25 @@ const CardUserMessageItem = ({title,subTitle,datetime,imageUrl,customStyle,onIte
                     style={{
                         width:60,
                         height:60,
-                        flex:1
+                        flex:1,
+                        borderRadius:30
                     }}
                     source={{
-                        uri:CommonImages.avatar
+                        uri: imageUrl || CommonImages.avatar
                     }}
                 />
                 <View style={[styles.cardBody]}>
                     <Text style={[styles.textTitle,]}>
-                        Name
+                        {title}
                     </Text>
                     <Text 
                         style={[styles.textSubTitle]}
                         numberOfLines={2}    
                     >
-                        Response
+                        {subTitle}
                     </Text>
                     <Text style={[styles.textDate]}>
-                       9:20 13/12/2020
+                       {datetime}
                     </Text>
                 </View>
                 <View style={[styles.status]}>
