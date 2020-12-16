@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, Headline, IconButton, TextInput, Snackbar } from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
@@ -11,7 +11,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import { useSelector } from 'react-redux';
 
 import { getJobDetail, applyJob } from '../utils/serverApi';
-import {formatCash} from '../utils/helper';
+import { formatCash } from '../utils/helper';
 
 
 const JobDetailScreen = (props) => {
@@ -41,6 +41,35 @@ const JobDetailScreen = (props) => {
     const [jobDetail, setJobDetail] = useState();
 
 
+
+
+    const [errorMessagage, setErrorMessage] = useState({
+        status: false,
+        message: ''
+    });
+    // const [showError,setShowError] = useState(false);
+
+
+    const _onCheckValidateApply = async () => {
+
+        if ((jobApplyData.expected_price > jobDetail.attributes.suggestion_price * 2) || jobApplyData.expected_price < 0) {
+            setErrorMessage({
+                status: true,
+                message: `Mức giá đưa ra không hợp lý`
+            });
+            return false;
+        } else if ((!jobApplyData.description || jobApplyData.description == "")) {
+            setErrorMessage({
+                status: true,
+                message: `Vui lòng nhập lời nhắn`
+            });
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
     const _applyJob = async () => {
 
         try {
@@ -52,8 +81,22 @@ const JobDetailScreen = (props) => {
 
             if (checkValidated) {
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
-                console.warn('apply: ', applyRes);
-                refRBSheet_applyJob.current.close();
+                if (!applyRes?.data?.status) {
+                    Alert.alert("Thất bại", "Công việc đã có đủ ứng viên");
+                    setTimeout(() => {
+                        refRBSheet_applyJob.current.close();
+
+                    }, 2500);
+                } else {
+                    Alert.alert("Thành công", "Ứng tuyển thành công, vui lòng chờ người tuyển dụng xác nhận.");
+                    console.warn(applyRes);
+                    setTimeout(() => {
+                        refRBSheet_applyJob.current.close();
+
+                    }, 2500);
+                }
+
+
 
             }
 
@@ -68,32 +111,6 @@ const JobDetailScreen = (props) => {
         }
     }
 
-    const [errorMessagage, setErrorMessage] = useState({
-        status: false,
-        message: ''
-    });
-    // const [showError,setShowError] = useState(false);
-
-
-    const _onCheckValidateApply = async () => {
-
-        if ((jobApplyData.expected_price > jobDetail.attributes.suggestion_price) || jobApplyData.expected_price <0) {
-            setErrorMessage({
-                status: true,
-                message: `Mức giá đưa ra không hợp lý`
-            });
-            return false;
-        } else {
-            setErrorMessage({
-                status: false,
-                message: `Mức giá đưa ra không hợp lý`
-            });
-            return true;
-        }
-
-
-    }
-
     const [expectedPrice, setExpectedPrice] = useState('');
     const [jobMessage, setJobMessage] = useState('');
 
@@ -101,7 +118,6 @@ const JobDetailScreen = (props) => {
     const _getJobDetail = async () => {
         setIsLoading(true);
         let job = await getJobDetail(job_id);
-        console.warn(job);
         if (job.data) {
             setJobDetail(job.data);
         }
@@ -111,6 +127,10 @@ const JobDetailScreen = (props) => {
     useEffect(() => {
         _getJobDetail();
 
+        props.navigation.setOptions({
+            title:"Chi tiết công việc",
+            headerBackTitleVisible:false
+        })
 
     }, [])
 
@@ -163,11 +183,11 @@ const JobDetailScreen = (props) => {
                     {/* Description */}
                     <View style={styles.jobDescriptionsContainer}>
                         <Text style={styles.jobTitle}>{jobDetail.attributes.name}</Text>
-                        <Text style={styles.jobPrice}>Giá đưa ra : 
+                        <Text style={styles.jobPrice}>Giá đưa ra :
                             <Text style={{ fontSize: 18, color: CommonColors.primary }}>
                                 {formatCash(jobDetail.attributes?.suggestion_price)} vnd
                             </Text>
-                            </Text>
+                        </Text>
                         <View style={styles.jobDescriptionWrap}>
                             <Text style={styles.jobDescriptionText}>
                                 {jobDetail.attributes.description}
@@ -197,17 +217,17 @@ const JobDetailScreen = (props) => {
                                 value={jobApplyData.expected_price}
                                 onChangeText={text => setJobApplyData({ ...jobApplyData, expected_price: text })}
                                 keyboardType={'number-pad'}
-                                error={errorMessagage.status?true:false}
+                                error={errorMessagage.status ? true : false}
                             />
 
                             <Text style={{
                                 paddingHorizontal: 18,
                                 color: 'coral',
-                                fontSize:12,
-                                fontWeight:'300',
-                                fontStyle:'italic'
+                                fontSize: 12,
+                                fontWeight: '300',
+                                fontStyle: 'italic'
                             }}>
-                                Ngân sách đưa ra : { jobDetail?.attributes.suggestion_price} VND
+                                Ngân sách đưa ra : {formatCash(jobDetail?.attributes?.suggestion_price)} VND
                             </Text>
                             <TextInput style={[styles.input, { height: 160 }]}
                                 label="Lời nhắn"
@@ -227,16 +247,16 @@ const JobDetailScreen = (props) => {
                             </Button>
                             {
                                 errorMessagage.status &&
-                                <Snackbar style={{ backgroundColor: 'coral',position:'relative',top:60 }}
+                                <Snackbar style={{ backgroundColor: 'coral', position: 'relative', top: 60 }}
                                     visible={errorMessagage.status}
                                     onDismiss={() => setErrorMessage({
                                         status: false
                                     })}
                                     action={{
                                         label: 'cancel',
-                                        onPress: () => setErrorMessage({status:false})
+                                        onPress: () => setErrorMessage({ status: false })
                                     }}
-                                 >
+                                >
                                     {errorMessagage.message}
                                 </Snackbar>
                             }

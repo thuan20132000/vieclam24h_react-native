@@ -20,7 +20,7 @@ const SelectRole = ({ selectRoleVisible, setSelectRoleVisible, roleSelected, set
 
     const _onConfirm = () => {
         setRoleSelected({
-            name: roleSelected == 'isCustomer' ? 'Tôi là khách hàng' : 'Tôi là cộng tác viên',
+            name: roleSelected == 'isCustomer' ? 'Tôi là nhà tuyển dụng' : 'Tôi là người tìm việc',
             value: roleSelected == 'isCustomer'?3:2
         });
         setSelectRoleVisible(false);
@@ -34,13 +34,13 @@ const SelectRole = ({ selectRoleVisible, setSelectRoleVisible, roleSelected, set
                     <Dialog.Content>
                         <RadioButton.Group onValueChange={newValue => setValue(newValue)} value={value}>
                             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <Text>Tôi là khách hàng</Text>
+                                <Text>Tôi là nhà tuyển dụng</Text>
                                 <RadioButton
                                     value="isCustomer"
                                 />
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} >
-                                <Text>Tôi là cộng tác viên</Text>
+                                <Text>Tôi là người tìm việc</Text>
                                 <RadioButton
                                     value="isCollaborator"
                                 />
@@ -139,6 +139,7 @@ const RegisterScreen = (props) => {
 
             Alert.alert("Failed",errors);
         }else{
+            Alert.alert("Thành Công","Vui lòng xác nhận Email để đăng nhập vào hệ thống.");
             setIsLoading(false);
             props.navigation.navigate('login');
         }

@@ -45,7 +45,6 @@ const CollaboratorHomeScreen = (props) => {
         setIsLoading(true);
         setRefreshing(true);
         let data = await getJobs('',8);
-        console.warn(data);
         if (data.data.length > 0) {
             setJobs(data.data);
         }else{
@@ -60,7 +59,7 @@ const CollaboratorHomeScreen = (props) => {
 
 
     const _navigateToJobList = async (item) => {
-        props.navigation.navigate('JobList', { category_id: item.id });
+        props.navigation.navigate('JobList', { category: item });
     }
 
     useEffect(() => {
@@ -81,7 +80,7 @@ const CollaboratorHomeScreen = (props) => {
 
                     <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500', marginHorizontal: 22 }}>Viec Lam 24H</Text>
                 </View>
-            )
+            ),
         })
 
 
@@ -118,6 +117,7 @@ const CollaboratorHomeScreen = (props) => {
                             item={e}
                             {...props}
                             onItemPress={() => _navigateToJobList(e)}
+                            key={index.toString()}
                         />)
                 }
             </View>

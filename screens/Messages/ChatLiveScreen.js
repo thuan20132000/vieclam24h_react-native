@@ -7,12 +7,12 @@ import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import CommonImages from '../../constants/CommonImages';
 
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
 import { getUserConversation } from '../../utils/serverApi';
 import {formatDateTime} from '../../utils/helper';
+import {subcribe} from '../../store/actions/websocketActions';
 
-
-const MessageChatitem = ({ isMine, message,date }) => {
+const MessageChatitem = ({ isMine, message,date,profileImage }) => {
 
     return (
         <View style={[styles.messageItemWrap, {
@@ -26,7 +26,7 @@ const MessageChatitem = ({ isMine, message,date }) => {
                 !isMine &&
                 <Image style={[styles.userImage]}
                     source={{
-                        uri: CommonImages.avatar
+                        uri: profileImage || CommonImages.avatar
                     }}
                 />
             }
@@ -60,7 +60,7 @@ const MessageChatitem = ({ isMine, message,date }) => {
 
 const ChatLiveScreen = (props) => {
 
-
+    const dispatch = useDispatch();
 
     const { userInformation } = useSelector(state => state.authentication);
 
@@ -143,6 +143,8 @@ const ChatLiveScreen = (props) => {
     wsSocket.onmessage = async (msg) => {
         let message = JSON.parse(msg.data);
 
+        dispatch(subcribe(message));
+
         console.warn('socket message: ', message);
         if (message.connection == recipient._id) {
 
@@ -181,7 +183,7 @@ const ChatLiveScreen = (props) => {
             "date":Date.now()
         }
 
-        //setMessageArr([...messageArr, sendData]);
+        // setMessageArr([...messageArr, sendData]);
         setSendValue('');
         if (wsSocket.readyState === WebSocket.OPEN) {
             wsSocket.send(JSON.stringify(sendData));
@@ -257,23 +259,13 @@ const ChatLiveScreen = (props) => {
     return (
 
         <>
-
-
-
             <FlatList style={{ flex: 1, zIndex: -1 }}
                 inverted={-1}
                 data={messageArr}
-               // refreshing={refreshNewMessage}
-            //    refreshControl={
-            //     <RefreshControl
-            //       refreshing={refreshing}
-            //       onRefresh={onRefreshOldMessage}
-            //     />
-            //   }
+        
               onEndReachedThreshold={0.1}
                 onEndReached={onRefreshOldMessage}
                 onEndReachedThreshold={0.5}
-                // ListFooterComponent={<ActivityIndicator animating={onRefreshOldMessage} color={CommonColors.accent} />}
                 onRefresh={onRefreshOldMessage}
                 refreshing={true}
 
@@ -283,10 +275,12 @@ const ChatLiveScreen = (props) => {
                         isMine={item.from.id == userInformation.id ? true : false}
                         message={item.message}
                         date={item.date}
+                        profileImage={user.user_image}
+                        
 
                     />
                 )}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => index.toString()}
             />
 
 
@@ -321,7 +315,6 @@ const ChatLiveScreen = (props) => {
                     />
                 </View>
             </KeyboardAvoidingView>
-
         </>
     )
 }

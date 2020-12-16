@@ -16,6 +16,7 @@ import { generateCode } from '../utils/helper';
 
 import { useDispatch } from 'react-redux';
 import * as userActions from '../store/actions/authenticationActions';
+import OccupationSelection from '../components/Selection/OccupationSelection';
 
 const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelected, selectLocationType }) => {
     const [visible, setVisible] = React.useState(false);
@@ -68,8 +69,9 @@ const CollaboratorProfileScreen = (props) => {
         district: '',
         subdistrict: '',
         address: '',
-        profile_image: ''
+        profile_image: '',
     });
+    const [userOccupations,setUserOccupations] = useState([]);
 
     useEffect(() => {
         if (userInformation) {
@@ -151,7 +153,8 @@ const CollaboratorProfileScreen = (props) => {
             locationSelected.province_code,
             locationSelected.district_code,
             locationSelected.subdistrict_code,
-            image_update
+            image_update,
+            userOccupations
         )
 
         if (!userRes.status) {
@@ -205,7 +208,15 @@ const CollaboratorProfileScreen = (props) => {
         props.navigation.setOptions({
             title: "Thông Tin Cá Nhân"
         })
-    }, [])
+    }, []);
+
+
+    const [occupationSelected,setOccupationSelected] = useState([]);
+    useEffect(() => {
+        let occupation_ids = [];
+        occupationSelected.map(e => occupation_ids.push(e.id));
+        setUserOccupations(occupation_ids);
+    }, [occupationSelected])
 
     return (
 
@@ -246,6 +257,24 @@ const CollaboratorProfileScreen = (props) => {
                     value={userProfile.phoneNumber}
                     onChangeText={text => setUserProfile({ ...userProfile, phoneNumber: text })}
                 />
+
+
+                <OccupationSelection
+                    itemSelected={occupationSelected}
+                    setItemSelected={setOccupationSelected}
+                    title={"Chọn lĩnh vực công việc"}
+                />
+                <View>
+                    {
+                        occupationSelected.map((e,index) => 
+                            <View key={index.toString()}>
+                                <Text>{e.attributes.name}</Text>
+                            </View>
+                        )
+                    }
+                </View>
+
+
                 <TextInput style={styles.input}
                     label="Chứng minh nhân dân"
                     value={userProfile.idCard}
@@ -273,6 +302,8 @@ const CollaboratorProfileScreen = (props) => {
                     multiline={true}
                     onChangeText={text => setUserProfile({ ...userProfile, address: text })}
                 />
+
+                
 
 
                 <Button style={{

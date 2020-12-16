@@ -22,8 +22,10 @@ import ReduxThunk from 'redux-thunk';
 import Router from './Router';
 
 import AutheticationReducer from './store/reducer/authenticationReducer';
+import SocketSubcribe from './store/reducer/websocketReducer';
 const rootReducer = combineReducers({
-  authentication: AutheticationReducer
+  authentication: AutheticationReducer,
+  socketSubcribe: SocketSubcribe
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

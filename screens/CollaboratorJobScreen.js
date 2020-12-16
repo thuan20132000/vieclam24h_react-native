@@ -137,7 +137,7 @@ const ConfirmJob = ({ user_id, status = 4 }) => {
 
 
 
-const CollaboratorJobScreen = () => {
+const CollaboratorJobScreen = (props) => {
     const [index, setIndex] = React.useState(0);
 
     const { userInformation } = useSelector(state => state.authentication);
@@ -178,6 +178,13 @@ const CollaboratorJobScreen = () => {
             }}
         />
     );
+
+
+    useEffect(() => {
+        props.navigation.setOptions({
+            title:"Ứng tuyển"
+        })
+    }, [])
 
     return (
         <TabView

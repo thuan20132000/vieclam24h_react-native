@@ -8,12 +8,15 @@ import RBSheet from "react-native-raw-bottom-sheet";
 import CollaboratorInformation from '../components/BottomSheet/CollaboratorInformation'
 import {
     selectCandidate,
-    confirmFinishedJob
+    confirmFinishedJob,
+    checkToConnectToUserChat
 } from '../utils/serverApi';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import SimpleBottomSheet from '../components/BottomSheet/SimpleBottomSheet'
 import ReviewSatisfationLevel from '../components/Review/ReviewSatisfationLevel'
+import {useSelector} from 'react-redux';
+
 
 
 const JobInidicatorItem = ({
@@ -21,10 +24,12 @@ const JobInidicatorItem = ({
     job_id,
     pressSelect,
     onNavigateToCollaboratorDetail,
-    onConfirmJob
+    onConfirmJob,
+    navigation
 
 }) => {
 
+    const { userInformation } = useSelector(state => state.authentication);
 
     const _refCollaboratorInformation = useRef();
     const _refConfirmFinishedJobBottomSheet = useRef();
@@ -85,15 +90,35 @@ const JobInidicatorItem = ({
                 confirmedJobInfo.message
             );
 
-            if(confirmRes.status){
+            if (confirmRes.status) {
                 Alert.alert('Thành công');
                 _refConfirmFinishedJobBottomSheet.current.close();
 
             }
 
-        }else{
+        } else {
             setShowErrorMessage(true);
         }
+    }
+
+    const _onNavigateToChat = async () => {
+
+       // console.warn(userInformation);
+      // console.warn(item);
+
+        let checkUserIsConnected = await checkToConnectToUserChat(
+            userInformation.id,
+            userInformation.id,
+            item.id,
+            item?.profile_image || ""
+        );
+
+
+
+        navigation.navigate('ChatLive', {
+            user: item
+        });
+
     }
 
 
@@ -102,7 +127,7 @@ const JobInidicatorItem = ({
             style={[styles.jobIndicatorItem, item.job_collaborator_status == 3 ? { backgroundColor: CommonColors.secondary } : { backgroundColor: 'white' }]}
         >
             <Avatar.Image size={84} source={{
-                uri:item.profile_image || "https://ict-imgs.vgcloud.vn/2020/09/01/19/huong-dan-tao-facebook-avatar.jpg"
+                uri: item.profile_image || "https://ict-imgs.vgcloud.vn/2020/09/01/19/huong-dan-tao-facebook-avatar.jpg"
             }} />
             <View style={{
                 display: 'flex',
@@ -164,7 +189,7 @@ const JobInidicatorItem = ({
                     icon={CommonIcons.messages}
                     color={CommonColors.primary}
                     size={22}
-                    onPress={() => console.log('Pressed')}
+                    onPress={_onNavigateToChat}
                 />
                 <IconButton
                     icon={CommonIcons.phone}
@@ -249,7 +274,7 @@ const JobInidicatorItem = ({
                     // errorMessage.status &&
                     <Snackbar style={{ backgroundColor: 'coral' }}
                         visible={showErrorMessage}
-                        onDismiss={()=>setShowErrorMessage(false)}
+                        onDismiss={() => setShowErrorMessage(false)}
                         action={{
                             label: 'Undo',
                             onPress: () => console.warn('dsds')
@@ -301,6 +326,7 @@ const JobCollaboratorScreen = (props) => {
 
 
     const _navigateToCollaboratorDetail = async (item) => {
+
         props.navigation.navigate('CollaboratorDetail', { collaborator_id: item.id });
     }
 
@@ -370,6 +396,7 @@ const JobCollaboratorScreen = (props) => {
                             job_id={jobId}
                             pressSelect={() => _onSelecteCandidate(e)}
                             onNavigateToCollaboratorDetail={() => _navigateToCollaboratorDetail(e)}
+                            navigation={props.navigation}
                         />
                     )
                 }

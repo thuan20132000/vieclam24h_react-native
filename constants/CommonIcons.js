@@ -30,6 +30,7 @@ export default {
     mapCheck:'map-marker-check',
 
     fileLink:'file-link',
-    send:'send'
+    send:'send',
+    person:"google-street-view"
 
 }

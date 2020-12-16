@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import { StyleSheet, Text, View,Image } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import CommonImages from '../../constants/CommonImages'
@@ -7,11 +7,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CommonIcons from '../../constants/CommonIcons';
 import CommonColors from '../../constants/CommonColors';
 
-const CardUserMessageItem = ({title,subTitle,datetime,imageUrl,customStyle,onItemPress}) => {
+const CardUserMessageItem = ({title,subTitle,datetime,imageUrl,customStyle,onItemPress,socketResponseData}) => {
     
     
    // console.warn(item.conversation_id);
     
+    const [messageRealtime,setMessageRealtime] = useState('');
+   useEffect(() => {
+       setMessageRealtime(socketResponseData);
+   }, [socketResponseData])
+
     return (
         <TouchableOpacity style={[styles.cardContainer,customStyle]}
             onPress={onItemPress}
@@ -35,7 +40,7 @@ const CardUserMessageItem = ({title,subTitle,datetime,imageUrl,customStyle,onIte
                         style={[styles.textSubTitle]}
                         numberOfLines={2}    
                     >
-                        {subTitle}
+                        {messageRealtime?.message || subTitle}
                     </Text>
                     <Text style={[styles.textDate]}>
                        {datetime}

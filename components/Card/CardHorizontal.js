@@ -13,8 +13,9 @@ import CommonColors from '../../constants/CommonColors';
 
 const CardHorizontal = ({ index, item, onPress }) => {
 
+    let candidateNumber =   item.relationships?.candidates?.length;
 
-    console.warn(item);
+
     return (
         <TouchableOpacity style={styles.cardContainer}
             onPress={() => onPress(item?.id)}
@@ -68,7 +69,22 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     </Caption>
 
                 </View>
+                <View style={{
+                    position:'absolute',
+                    right:40,
+                    backgroundColor:'coral',
+                    display:'flex',
+                    flexDirection:'row',
+                    padding:4
 
+                }}>
+                    <MaterialCommunityIcons
+                        name={CommonIcons.person}
+                        size={16}
+                        color={'white'}
+                    />
+                    <Text style={{color:'white'}}>{candidateNumber}</Text>
+                </View>
             </Card.Content>
         </TouchableOpacity>
 

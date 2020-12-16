@@ -293,10 +293,16 @@ function TabNavigator(props) {
                     <BottomTabNavigator.Screen
                         name="HomeStack"
                         component={CollaboratorHomeStack}
+                        options={{
+                            tabBarLabel:"Trang Chủ"
+                        }}
                     />
                     <BottomTabNavigator.Screen
                         name="MyJobs"
                         component={CollaboratorJobStack}
+                        options={{
+                            tabBarLabel:"Ứng tuyển"
+                        }}
                     />
 
                 </>
@@ -310,6 +316,9 @@ function TabNavigator(props) {
                     <BottomTabNavigator.Screen
                         name="HomeStack"
                         component={CustomerHomeStack}
+                        options={{
+                            tabBarLabel:"Trang Chủ"
+                        }}
                     />
                     <BottomTabNavigator.Screen
                         name="CustomerJobList"
@@ -339,8 +348,20 @@ function TabNavigator(props) {
 
 
 
-            <BottomTabNavigator.Screen name="Messages" component={ChatStack} />
-            <BottomTabNavigator.Screen name="Accounts" component={AccountStack} />
+            <BottomTabNavigator.Screen 
+                name="Messages" 
+                component={ChatStack} 
+                options={{
+                    tabBarLabel:"Tin nhắn"
+                }}
+            />
+            <BottomTabNavigator.Screen 
+                name="Accounts" 
+                component={AccountStack} 
+                options={{
+                    tabBarLabel:"Tài khoản"
+                }}
+            />
         </BottomTabNavigator.Navigator>
     );
 }

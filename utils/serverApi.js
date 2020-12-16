@@ -918,7 +918,7 @@ export const confirmFinishedJob = async (job_collaborator_id, job_id, confirmed_
  * @param {*} subdistrict 
  * @param {*} profile_image 
  */
-export const updateUser = async (user_id, username, phonenumber, idcard, address, province, district, subdistrict, profile_image) => {
+export const updateUser = async (user_id, username, phonenumber, idcard, address, province, district, subdistrict, profile_image,occupations=[]) => {
 
 
     try {
@@ -937,7 +937,8 @@ export const updateUser = async (user_id, username, phonenumber, idcard, address
                 "province": province,
                 "district": district,
                 "subdistrict": subdistrict,
-                "profile_image": profile_image
+                "profile_image": profile_image,
+                "occupations":occupations
             })
         });
 

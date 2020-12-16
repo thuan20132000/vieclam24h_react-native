@@ -45,7 +45,7 @@ const OccupationItem = ({ isSelectOne = false, item, itemSelected, setItemSelect
     )
 }
 
-const OccupationSelection = ({ title = "Show Dialog", itemSelected, setItemSelected, isSelectOne = false }) => {
+const OccupationSelection = ({ title = "Show Dialog", itemSelected, setItemSelected, isSelectOne = false,containerStyle }) => {
 
     const [visible, setVisible] = React.useState(false);
 
@@ -67,7 +67,7 @@ const OccupationSelection = ({ title = "Show Dialog", itemSelected, setItemSelec
 
 
     return (
-        <View style={[styles.container, {}]}>
+        <View style={[styles.container, containerStyle]}>
             <Button onPress={showDialog}>{title}</Button>
             <Portal >
                 <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialogWrap}
@@ -115,6 +115,7 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
+        marginVertical:10
     },
     dialogWrap:{
         backgroundColor:'aliceblue',

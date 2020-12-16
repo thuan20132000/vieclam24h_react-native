@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 const ChatScreen = (props) => {
     const [refreshing, setRefreshing] = React.useState(false);
     const { userInformation } = useSelector(state => state.authentication);
-
+    const socketResponse = useSelector(state => state.socketSubcribe.responseData);
 
     //const itemChat = Array(18).fill({});
     const [userChatConnections,setUserChatConnections] = useState([]);
@@ -26,6 +26,8 @@ const ChatScreen = (props) => {
     }
 
     const _onNavigateToChatLive = (item) => {
+
+        // console.warn(item._i);
         props.navigation.navigate('ChatLive',{
             user:item
         });
@@ -82,15 +84,16 @@ const ChatScreen = (props) => {
 
     const _onGetUserChatConnection = async () => {
         let userChatConnectionRes = await getUserChatConnections(userInformation.id);
-        console.warn(userChatConnectionRes.data);
         setUserChatConnections(userChatConnectionRes.data);
     }
 
-    useEffect(() => {
-        
+    useEffect(() => {        
+        _onGetUserChatConnection();
         
 
-        _onGetUserChatConnection();
+        props.navigation.setOptions({
+            title:"Tin Nhắn"
+        })
 
     }, [])
 
@@ -102,6 +105,12 @@ const ChatScreen = (props) => {
             setRefreshing(false);
         }, 2000);
     }, []);
+
+
+    const [socketResponseData,setSocketResponseData] = useState();
+    useEffect(() => {
+        setSocketResponseData(socketResponse)
+    }, [socketResponse])
 
 
     return (
@@ -120,6 +129,8 @@ const ChatScreen = (props) => {
                         title={item.conversation_id}
                         subTitle={item?.conversations[0]?.message}
                         imageUrl={item.user_image}
+                        key={index.toString()}
+                        socketResponseData={socketResponseData.connection == item._id && socketResponseData}
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}

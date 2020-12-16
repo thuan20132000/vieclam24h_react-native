@@ -14,12 +14,12 @@ const JobListScreen = (props) => {
     const [jobs, setJobs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [perPage, setPerPage] = useState(5);
+    let { category } = props.route.params;
 
     const _getJobs = async () => {
         setIsLoading(true);
-        let { category_id } = props.route.params;
 
-        let data = await getJobs(category_id, perPage);
+        let data = await getJobs(category.id, perPage);
         if (data.data.length > 0) {
             setJobs(data.data);
         }
@@ -35,6 +35,10 @@ const JobListScreen = (props) => {
         props.navigation.dangerouslyGetParent().setOptions({
             tabBarVisible:false
         });
+
+        props.navigation.setOptions({
+            title:`${category.name}`
+        })
 
         return ()=>{
             props.navigation.dangerouslyGetParent().setOptions({
