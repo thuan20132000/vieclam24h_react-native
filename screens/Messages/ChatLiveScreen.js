@@ -9,8 +9,10 @@ import CommonImages from '../../constants/CommonImages';
 
 import { useSelector } from 'react-redux';
 import { getUserConversation } from '../../utils/serverApi';
+import {formatDateTime} from '../../utils/helper';
 
-const MessageChatitem = ({ isMine, message }) => {
+
+const MessageChatitem = ({ isMine, message,date }) => {
 
     return (
         <View style={[styles.messageItemWrap, {
@@ -43,7 +45,13 @@ const MessageChatitem = ({ isMine, message }) => {
                 >
                     {message}
                 </Text>
-                <Text style={[styles.messageDatetime, { textAlign: 'right', fontWeight: '300', fontStyle: "italic" }]}>12:00 12/12/2020</Text>
+                <Text style={[styles.messageDatetime, { textAlign: 'right', fontWeight: '300', fontStyle: "italic" }]}>
+                    {
+                        date &&
+                        formatDateTime(date)
+                    }
+                    
+                </Text>
             </View>
         </View>
     )
@@ -138,7 +146,7 @@ const ChatLiveScreen = (props) => {
         console.warn('socket message: ', message);
         if (message.connection == recipient._id) {
 
-            setMessageArr([...messageArr, message]);
+            setMessageArr([message,...messageArr]);
 
         };
 
@@ -169,7 +177,8 @@ const ChatLiveScreen = (props) => {
             },
             "type": "message",
             "message": sendValue,
-            "isMine": true
+            "isMine": true,
+            "date":Date.now()
         }
 
         //setMessageArr([...messageArr, sendData]);
@@ -183,7 +192,7 @@ const ChatLiveScreen = (props) => {
     const [nextPageNumber, setNextPageNumber] = useState(0);
     const _onGetUserConversation = async () => {
 
-        let userConversationsRes = await getUserConversation(user._id, 12,nextPageNumber);
+        let userConversationsRes = await getUserConversation(user._id, 12,nextPageNumber,'desc');
 
         if (userConversationsRes.status) {
             setMessageArr(userConversationsRes.data.data);
@@ -197,7 +206,6 @@ const ChatLiveScreen = (props) => {
 
         _onGetUserConversation();
 
-        setNextPageNumber(0);
     }, []);
 
 
@@ -229,13 +237,13 @@ const ChatLiveScreen = (props) => {
         setRefreshing(true);
 
         try {
-            let userConversationsRes = await getUserConversation(user._id, 12, nextPageNumber);
+            let userConversationsRes = await getUserConversation(user._id, 12, nextPageNumber,'desc');
 
             setMessageArr(prev => {
-                return [...userConversationsRes.data.data,...prev];
+                return [...prev,...userConversationsRes.data.data];
             })
 
-            setNextPageNumber(nextPageNumber+12);
+            setNextPageNumber(nextPageNumber+5);
             setRefreshing(false);
 
         } catch (error) {
@@ -253,19 +261,18 @@ const ChatLiveScreen = (props) => {
 
 
             <FlatList style={{ flex: 1, zIndex: -1 }}
-                // inverted={-1}
+                inverted={-1}
                 data={messageArr}
                // refreshing={refreshNewMessage}
-               refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefreshOldMessage}
-                />
-              }
-              onEndReached={this.handleLoadMore}
+            //    refreshControl={
+            //     <RefreshControl
+            //       refreshing={refreshing}
+            //       onRefresh={onRefreshOldMessage}
+            //     />
+            //   }
               onEndReachedThreshold={0.1}
-                // onEndReached={onRefresh}
-                // onEndReachedThreshold={0.5}
+                onEndReached={onRefreshOldMessage}
+                onEndReachedThreshold={0.5}
                 // ListFooterComponent={<ActivityIndicator animating={onRefreshOldMessage} color={CommonColors.accent} />}
                 onRefresh={onRefreshOldMessage}
                 refreshing={true}
@@ -275,6 +282,7 @@ const ChatLiveScreen = (props) => {
                         key={index.toString()}
                         isMine={item.from.id == userInformation.id ? true : false}
                         message={item.message}
+                        date={item.date}
 
                     />
                 )}

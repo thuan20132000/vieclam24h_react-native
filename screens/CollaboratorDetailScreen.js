@@ -52,7 +52,6 @@ const CollaboratorDetailScreen = (props) => {
             collaborator?.attributes.profile_image || ""
         );
 
-        console.log(checkUserIsConnected);
 
 
         props.navigation.navigate('ChatLive',{
