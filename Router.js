@@ -33,12 +33,12 @@ import CustomerHomeScreen from './screens/Customers/CustomerHomeScreen';
 import CustomerJobCreationScreen from './screens/Customers/CustomerJobCreationScreen';
 import CustomerJobScreen from './screens/Customers/CustomerJobScreen';
 import JobCollaboratorScreen from './screens/Customers/JobCollaboratorScreen';
+import CollaboratorListScreen from './screens/Customers/CollaboratorListScreen';
 
 
 // reducer
 import * as userActions from './store/actions/authenticationActions';
 import CommonColors from './constants/CommonColors';
-import CollaboratorListScreen from './screens/Collaborators/CollaboratorListScreen';
 import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
 import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View,Image } from 'react-native'
+import { StyleSheet, Text, View, Image, RefreshControl } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Subheading } from 'react-native-paper'
 import HomeContent from '../../components/Body/HomeContent'
@@ -32,8 +32,11 @@ const CustomerHomeScreen = (props) => {
     const _getCollaborators = async () => {
         setIsLoading(true);
         let data = await getCollaborator();
-        if (data.data.length > 0) {
-            setCollaborators(data.data);
+
+        console.warn(data);
+
+        if (data.data.data.length > 0) {
+            setCollaborators(data.data.data);
         }
         setIsLoading(false);
     }
@@ -41,11 +44,19 @@ const CustomerHomeScreen = (props) => {
 
 
     const _navigateToCollaboratorList = (e) => {
-        props.navigation.navigate('CollaboratorList',{
-            category:e
+        props.navigation.navigate('CollaboratorList', {
+            category: e
         });
     }
 
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        _getCategory();
+        _getCollaborators();
+
+    }, []);
 
 
 
@@ -73,9 +84,14 @@ const CustomerHomeScreen = (props) => {
 
     const menuItems = Array(6).fill({});
 
+
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollView}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
         >
             <SearchButton
                 onPress={_onSearchPress}
@@ -91,7 +107,18 @@ const CustomerHomeScreen = (props) => {
                             item={e}
                             key={index.toString()}
                             navigation={props.navigation}
-                            onItemPress={()=>_navigateToCollaboratorList(e)}
+                            onItemPress={() => _navigateToCollaboratorList(e)}
+                            label={e.name}
+                            image={e.image}
+                            labelStyle={{
+                                fontSize:11,
+                                fontWeight:'500',
+                                
+                            }}
+                            containerStyle={{
+                                width:80
+                            }}
+
                         />
                     )
                 }
@@ -143,7 +170,7 @@ const styles = StyleSheet.create({
 
     },
     vericleListContainer: {
-        marginTop: 22,
+        marginTop: 12,
 
     }
 })

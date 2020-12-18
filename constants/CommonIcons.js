@@ -28,9 +28,10 @@ export default {
     removeTrash:'trash-can',
     tagPrice:"tag-text",
     mapCheck:'map-marker-check',
-
+    mapMarker:'map-marker',
     fileLink:'file-link',
     send:'send',
-    person:"google-street-view"
+    person:"google-street-view",
+    
 
 }

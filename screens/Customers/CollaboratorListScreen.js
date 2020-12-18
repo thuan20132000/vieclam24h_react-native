@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import CollaboratorCard from '../../components/Card/CollaboratorCard'
 import FilterBar from '../../components/Filter/FilterBar'
@@ -9,7 +9,7 @@ const CollaboratorListScreen = (props) => {
 
     const [collaborators, setCollaborators] = useState([]);
 
-    const {category} = props.route.params;
+    const { category } = props.route.params;
 
     const _getCollaborators = async () => {
         setIsLoading(true);
@@ -24,16 +24,19 @@ const CollaboratorListScreen = (props) => {
         _getCollaborators();
 
         props.navigation.setOptions({
-            title:`Ứng Viên ${category.name} `,
-            headerTitleStyle:{
-                fontSize:14
+            title: `Ứng Viên ${category.name} `,
+            headerTitleStyle: {
+                fontSize: 14
             },
         })
 
     }, []);
 
     return (
-        <View style={{display:'flex',flex:1}}>
+        <View style={{
+            display: 'flex', 
+            flex: 1, paddingTop: 10
+        }}>
             <FlatList style={{ flex: 1, zIndex: -1 }}
                 showsVerticalScrollIndicator={false}
                 data={collaborators}
@@ -43,7 +46,7 @@ const CollaboratorListScreen = (props) => {
                         navigation={props.navigation}
                     />
                 )}
-                keyExtractor={(item,index) => index.toString()}
+                keyExtractor={(item, index) => index.toString()}
             // extraData={selectedId}
             // onEndReached={_loadMoreJobs}
             // ListFooterComponent={() => <FooterList />}

@@ -1,8 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity,Image } from 'react-native'
 import { IconButton } from 'react-native-paper'
+import CommonImages from '../../constants/CommonImages'
 
-const MenuItem = ({ index, item,navigation,onItemPress }) => {
+const MenuItem = ({ index, item,navigation,onItemPress,containerStyle,labelStyle,label,image }) => {
 
 
     // const _onNavigateToJobList = () => {
@@ -12,17 +13,21 @@ const MenuItem = ({ index, item,navigation,onItemPress }) => {
 
     return (
         <TouchableOpacity key={index}
-            style={styles.menuItem}
+            style={[styles.menuItem,containerStyle]}
             onPress={onItemPress}
         >
             <Image
-                style={{width:60,height:60}}
+                style={{width:40,height:40}}
                 source={{
-                    uri: item?.image,
+                    uri: image || CommonImages.notFound,
                 }}
             />
 
-            <Text style={{ fontSize: 11 }}>{item?.name}</Text>
+            <Text style={[styles.label,labelStyle]}
+                numberOfLines={2}
+            >
+                {label}
+            </Text>
         </TouchableOpacity>
     )
 }
@@ -34,6 +39,9 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        margin:8
+        margin:6
+    },
+    label:{
+        fontSize:16
     }
 })

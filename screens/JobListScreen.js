@@ -71,13 +71,14 @@ const JobListScreen = (props) => {
             style={{
                 flex:1,
                 justifyContent:'center',
-                alignItems:'center'
+                alignItems:'center',
             }}
         >
             
             {/*  */}
             <FlatList style={{ flex: 1,zIndex:-1 }}
                 showsVerticalScrollIndicator={false}
+               
                 data={jobs}
                 renderItem={({ item, index }) => (
                     <CardHorizontal

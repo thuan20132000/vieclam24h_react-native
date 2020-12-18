@@ -580,10 +580,10 @@ export const searchCandidates = async (query = null, district = null, limit = 6)
  * description:Get all collaborators or collaborator by category
  * @param {*} by_category 
  */
-export const getCollaborator = async (by_category = '') => {
+export const getCollaborator = async (by_category = '',perpage=10) => {
     try {
         let url = serverConfig.url;
-        let datafetch = await fetch(`${url}/collaborators?category=${by_category}`);
+        let datafetch = await fetch(`${url}/collaborators?category=${by_category}&perpage=${perpage}`);
         if (!datafetch.ok) {
             console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
 
@@ -597,7 +597,7 @@ export const getCollaborator = async (by_category = '') => {
         let dataRes = await datafetch.json();
 
         return {
-            data: dataRes.data,
+            data: dataRes,
             message: 'success',
             status: true
         }
