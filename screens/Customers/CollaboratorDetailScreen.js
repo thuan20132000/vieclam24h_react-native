@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { Alert, StyleSheet, Text, View, Image } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Avatar, Caption, Chip, IconButton } from 'react-native-paper'
-import CardReview from '../components/Card/CardReview'
-import ReviewStar from '../components/Review/ReviewStar'
-import CommonIcons from '../constants/CommonIcons'
-import CommonImages from '../constants/CommonImages'
+import CardReview from '../../components/Card/CardReview'
+import ReviewStar from '../../components/Review/ReviewStar'
+import CommonIcons from '../../constants/CommonIcons'
+import CommonImages from '../../constants/CommonImages'
 import { useSelector } from 'react-redux';
 
 
 
-import { getCollaboratorDetail,checkToConnectToUserChat } from '../utils/serverApi';
+import { getCollaboratorDetail,checkToConnectToUserChat } from '../../utils/serverApi';
 
 const CollaboratorDetailScreen = (props) => {
     const { userInformation } = useSelector(state => state.authentication);

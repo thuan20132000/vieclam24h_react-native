@@ -3,7 +3,7 @@ import { AppState, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { FlatList } from 'react-native-gesture-handler'
 import { ActivityIndicator } from 'react-native-paper'
 import CardUserMessageItem from '../../components/Card/CardUserMessageItem'
-import {getUserChatConnections} from '../../utils/serverApi';
+import { getUserChatConnections } from '../../utils/serverApi';
 import { useSelector } from 'react-redux';
 
 
@@ -14,8 +14,8 @@ const ChatScreen = (props) => {
     const socketResponse = useSelector(state => state.socketSubcribe.responseData);
 
     //const itemChat = Array(18).fill({});
-    const [userChatConnections,setUserChatConnections] = useState([]);
-  
+    const [userChatConnections, setUserChatConnections] = useState([]);
+
     const FooterList = () => {
         return (
             <ActivityIndicator
@@ -28,8 +28,8 @@ const ChatScreen = (props) => {
     const _onNavigateToChatLive = (item) => {
 
         // console.warn(item._i);
-        props.navigation.navigate('ChatLive',{
-            user:item
+        props.navigation.navigate('ChatLive', {
+            user: item
         });
     }
 
@@ -87,27 +87,49 @@ const ChatScreen = (props) => {
         setUserChatConnections(userChatConnectionRes.data);
     }
 
-    useEffect(() => {        
-        _onGetUserChatConnection();
-        
-
-        props.navigation.setOptions({
-            title:"Tin Nhắn"
-        })
-
-    }, [])
-
+    let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        setTimeout(() => {
+        timeoutEvent = setTimeout(() => {
             _onGetUserChatConnection();
             setRefreshing(false);
         }, 2000);
     }, []);
 
+    useEffect(() => {
 
-    const [socketResponseData,setSocketResponseData] = useState();
+        _onGetUserChatConnection();
+
+
+        props.navigation.setOptions({
+            title: "Tin Nhắn"
+        })
+
+
+        return () => {
+            clearTimeout(timeoutEvent);
+        }
+
+    }, []);
+
+
+    React.useEffect(() => {
+        const unsubscribe = props.navigation.addListener('focus', () => {
+            // The screen is focused
+            // Call any action
+            _onGetUserChatConnection();
+
+        });
+
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
+    }, [props.navigation]);
+
+
+
+
+    const [socketResponseData, setSocketResponseData] = useState();
     useEffect(() => {
         setSocketResponseData(socketResponse)
     }, [socketResponse])

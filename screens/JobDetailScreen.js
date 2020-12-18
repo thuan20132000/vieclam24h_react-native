@@ -81,20 +81,38 @@ const JobDetailScreen = (props) => {
 
             if (checkValidated) {
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
-                if (!applyRes?.data?.status) {
-                    Alert.alert("Thất bại", "Công việc đã có đủ ứng viên");
+                console.warn(applyRes);
+                if (!applyRes.status) {
+
+                    Alert.alert("Thất bại", `${applyRes.data.message}`);
                     setTimeout(() => {
                         refRBSheet_applyJob.current.close();
 
                     }, 2500);
-                } else {
+
+
+                }else{
                     Alert.alert("Thành công", "Ứng tuyển thành công, vui lòng chờ người tuyển dụng xác nhận.");
-                    console.warn(applyRes);
                     setTimeout(() => {
                         refRBSheet_applyJob.current.close();
 
                     }, 2500);
                 }
+
+                // if (applyRes?.message != "success") {
+                //     Alert.alert("Thất bại", "Công việc đã có đủ ứng viên");
+                //     setTimeout(() => {
+                //         refRBSheet_applyJob.current.close();
+
+                //     }, 2500);
+                // } else {
+                //     Alert.alert("Thành công", "Ứng tuyển thành công, vui lòng chờ người tuyển dụng xác nhận.");
+                //     console.warn(applyRes);
+                //     setTimeout(() => {
+                //         refRBSheet_applyJob.current.close();
+
+                //     }, 2500);
+                // }
 
 
 
@@ -128,8 +146,8 @@ const JobDetailScreen = (props) => {
         _getJobDetail();
 
         props.navigation.setOptions({
-            title:"Chi tiết công việc",
-            headerBackTitleVisible:false
+            title: "Chi tiết công việc",
+            headerBackTitleVisible: false
         })
 
     }, [])

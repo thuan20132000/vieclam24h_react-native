@@ -26,5 +26,6 @@ export const formatDateTime = (timestring) => {
 
 
 export const formatCash = (str) => {
-    return str.replace(/\B(?=(\d{3})+(?!\d))/g, ',')  
+    let convertToString = String(str);
+    return convertToString.replace(/\B(?=(\d{3})+(?!\d))/g, ',')  
 }

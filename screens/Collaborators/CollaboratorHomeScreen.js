@@ -1,24 +1,31 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View,Image } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
-import { Subheading } from 'react-native-paper'
-import HomeContent from '../components/Body/HomeContent'
-import CardHorizontal from '../components/Card/CardHorizontal'
-import CollaboratorCard from '../components/Card/CollaboratorCard'
-import MenuItem from '../components/Menu/MenuItem'
-import SearchButton from '../components/Search/SearchButton'
+import { StyleSheet, Text, View, TextInput, Image, RefreshControl } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { Subheading, Button } from 'react-native-paper'
+import CardHorizontal from '../../components/Card/CardHorizontal'
+import MenuItem from '../../components/Menu/MenuItem'
+import SearchButton from '../../components/Search/SearchButton'
 
-import { getCategory, getCollaborator } from '../utils/serverApi';
+import { getCategory, getJobs } from '../../utils/serverApi';
+import CommonColors from '../../constants/CommonColors'
 
-const CustomerHomeScreen = (props) => {
+const CollaboratorHomeScreen = (props) => {
+
+    const menuItems = Array(6).fill({});
+    const [categories, setCategories] = useState([]);
+    const [jobs, setJobs] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = React.useState(false);
+
+
+    const {
+        navigation
+    } = props;
+
 
     const _onSearchPress = () => {
-        props.navigation.navigate('Search');
+        navigation.navigate('Search');
     }
-
-    const [isLoading, setIsLoading] = useState(false);
-    const [categories, setCategories] = useState([]);
-    const [collaborators, setCollaborators] = useState([]);
 
     const _getCategory = async () => {
         setIsLoading(true);
@@ -29,29 +36,30 @@ const CustomerHomeScreen = (props) => {
         setIsLoading(false);
     }
 
-    const _getCollaborators = async () => {
+    const _getJobs = async () => {
         setIsLoading(true);
-        let data = await getCollaborator();
+        setRefreshing(true);
+        let data = await getJobs('',8);
         if (data.data.length > 0) {
-            setCollaborators(data.data);
+            setJobs(data.data);
+        }else{
+            setJobs([]);
         }
         setIsLoading(false);
+        setRefreshing(false);
+    }
+    const _navigateToJobDetail = async (job_id) => {
+        props.navigation.navigate('JobDetail', { job_id: job_id })
     }
 
 
-
-    const _navigateToCollaboratorList = (e) => {
-        props.navigation.navigate('CollaboratorList',{
-            category:e
-        });
+    const _navigateToJobList = async (item) => {
+        props.navigation.navigate('JobList', { category: item });
     }
-
-
-
 
     useEffect(() => {
         _getCategory();
-        _getCollaborators();
+        _getJobs();
 
 
         props.navigation.setOptions({
@@ -67,15 +75,28 @@ const CustomerHomeScreen = (props) => {
 
                     <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500', marginHorizontal: 22 }}>Viec Lam 24H</Text>
                 </View>
-            )
+            ),
         })
-    }, [])
 
-    const menuItems = Array(6).fill({});
+
+    }, [props.navigation]);
+
+
+    const onRefresh = React.useCallback(() => {
+         _getCategory();
+         _getJobs();
+
+    }, []);
+
 
     return (
         <ScrollView
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollView}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+
         >
             <SearchButton
                 onPress={_onSearchPress}
@@ -84,34 +105,34 @@ const CustomerHomeScreen = (props) => {
 
 
             <View style={styles.menuContainer}>
-                {
+                {categories &&
                     categories.map((e, index) =>
                         <MenuItem
                             index={index}
                             item={e}
+                            {...props}
+                            onItemPress={() => _navigateToJobList(e)}
                             key={index.toString()}
-                            navigation={props.navigation}
-                            onItemPress={()=>_navigateToCollaboratorList(e)}
-                        />
-                    )
+                        />)
                 }
             </View>
 
             {/* End Menu */}
 
-
             {/* Job List */}
             <View style={styles.vericleListContainer}>
-                <Subheading style={{ paddingHorizontal: 12 }}>Ứng viên được đánh giá cao</Subheading>
+                <Subheading style={{ paddingHorizontal: 12 }}>Việc làm dành cho bạn</Subheading>
 
                 {
-                    collaborators.map((e, index) =>
-                        <CollaboratorCard
+                    jobs &&
+                    jobs.map((e, index) =>
+                        <CardHorizontal
+                            index={index}
                             item={e}
+                            {...props}
                             key={index.toString()}
-                            navigation={props.navigation}
-                        />
-                    )
+                            onPress={_navigateToJobDetail}
+                        />)
                 }
             </View>
 
@@ -119,7 +140,7 @@ const CustomerHomeScreen = (props) => {
     )
 }
 
-export default CustomerHomeScreen
+export default CollaboratorHomeScreen
 
 const styles = StyleSheet.create({
     menuContainer: {

@@ -145,7 +145,7 @@ const ChatLiveScreen = (props) => {
 
         dispatch(subcribe(message));
 
-        console.warn('socket message: ', message);
+        // console.warn('socket message: ', message);
         if (message.connection == recipient._id) {
 
             setMessageArr([message,...messageArr]);
@@ -165,9 +165,9 @@ const ChatLiveScreen = (props) => {
 
     const _onSendMessage = async () => {
 
-        console.warn(recipient._id);
+     //   console.warn(recipient);
         let sendData = {
-            "connection": recipient._id,
+            "connection": recipient.id || recipient._id,
             "conversation_id": recipient.conversation_id,
             "from": {
                 "id": userInformation.id,

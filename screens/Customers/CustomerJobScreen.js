@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Dimensions, Image, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { ActivityIndicator, Badge, Caption, IconButton, Paragraph, Title } from 'react-native-paper';
-import CardHorizontal from '../components/Card/CardHorizontal';
+import CardHorizontal from '../../components/Card/CardHorizontal';
 import { useSelector } from 'react-redux';
 import {
     getCustomerJobs,
@@ -10,14 +10,14 @@ import {
     getUserApprovedJobs,
     getUserConfirmedJobs,
     deleteJobByAuthor
-} from '../utils/serverApi';
+} from '../../utils/serverApi';
 
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-import { formatDateTime, formatCash } from '../utils/helper';
-import CardJobConfirm from '../components/Card/CardJobConfirm';
-import CommonColors from '../constants/CommonColors';
-import CommonIcons from '../constants/CommonIcons';
+import { formatDateTime, formatCash } from '../../utils/helper';
+import CardJobConfirm from '../../components/Card/CardJobConfirm';
+import CommonColors from '../../constants/CommonColors';
+import CommonIcons from '../../constants/CommonIcons';
 
 
 
@@ -60,6 +60,7 @@ const CustomerJobItem = ({ _onPress, item, _onDelete }) => {
                 <View>
                     <Text>Giá đưa ra: <Text style={{ color: 'red' }}>{formatCash(jobItem.suggestion_price)} vnđ</Text></Text>
                 </View>
+
 
                 <View style={[{ display: 'flex', flexDirection: 'row' }]}>
                     {

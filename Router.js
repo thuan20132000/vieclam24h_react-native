@@ -13,31 +13,32 @@ import { useSelector } from 'react-redux';
 
 
 // Screen
-import HomeScreen from './screens/CollaboratorHomeScreen';
-import CollaboratorHome from './screens/CollaboratorHomeScreen';
-import JobDetailScreen from './screens/JobDetailScreen';
-import CollaboratorJobScreen from './screens/CollaboratorJobScreen';
-import AccountScreen from './screens/AccountScreen';
-import CollaboratorProfileScreen from './screens/CollaboratorProfileScreen';
-import SearchScreen from './screens/SearchScreen';
-import CustomerHomeScreen from './screens/CustomerHomeScreen';
-import CollaboratorHomeScreen from './screens/CollaboratorHomeScreen';
-import CustomerJobScreen from './screens/CustomerJobScreen';
-import JobCollaboratorScreen from './screens/JobCollaboratorScreen';
 import ChatScreen from './screens/Messages/ChatScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import JobListScreen from './screens/JobListScreen';
+import SearchScreen from './screens/SearchScreen';
+import AccountScreen from './screens/AccountScreen';
+
+//Collaborator Screen
+import JobDetailScreen from './screens/JobDetailScreen';
+import CollaboratorJobScreen from './screens/Collaborators/CollaboratorJobScreen';
+import CollaboratorProfileScreen from './screens/Collaborators/CollaboratorProfileScreen';
+import CollaboratorHomeScreen from './screens/Collaborators/CollaboratorHomeScreen';
+import CollaboratorDetailScreen from './screens/Customers/CollaboratorDetailScreen';
 
 
+//Customer Screen
+import CustomerHomeScreen from './screens/Customers/CustomerHomeScreen';
+import CustomerJobCreationScreen from './screens/Customers/CustomerJobCreationScreen';
+import CustomerJobScreen from './screens/Customers/CustomerJobScreen';
+import JobCollaboratorScreen from './screens/Customers/JobCollaboratorScreen';
 
 
 // reducer
 import * as userActions from './store/actions/authenticationActions';
-import CustomerJobCreationScreen from './screens/CustomerJobCreationScreen';
 import CommonColors from './constants/CommonColors';
-import CollaboratorListScreen from './screens/CollaboratorListScreen';
-import CollaboratorDetailScreen from './screens/CollaboratorDetailScreen';
+import CollaboratorListScreen from './screens/Collaborators/CollaboratorListScreen';
 import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
 import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 
@@ -67,22 +68,6 @@ function AuthenticationStack() {
 
 
 
-
-
-
-/**
- * Home Stack
- */
-const StackNavigator = createStackNavigator();
-function HomeStackNavigator() {
-    return (
-        <StackNavigator.Navigator>
-            <StackNavigator.Screen
-                name="Home" component={HomeScreen}
-            />
-        </StackNavigator.Navigator>
-    )
-}
 
 
 /**

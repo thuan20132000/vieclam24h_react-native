@@ -5,14 +5,14 @@ import CommonIcons from '../../constants/CommonIcons'
 
 
 
-const ReviewStar = () => {
+const ReviewStar = ({iconSize=24,iconColor='gold'}) => {
     return (
         <View>
 
             <MaterialCommunityIcons
                 name={CommonIcons.star}
-                size={24}
-                color={'gold'}
+                size={iconSize}
+                color={iconColor}
             />
             
         </View>

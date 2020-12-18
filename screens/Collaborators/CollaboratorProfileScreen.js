@@ -2,21 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { Alert, KeyboardAvoidingView, StyleSheet, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Dialog, Portal, Text, TextInput, Menu, Button, Divider, Title, Drawer, ActivityIndicator, Avatar, IconButton } from 'react-native-paper';
-import CommonColors from '../constants/CommonColors';
+import CommonColors from '../../constants/CommonColors';
 import { useSelector } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 
-import { getProvince, getDistrict, getSubdistrict } from './../utils/locationApi';
-import { updateUser } from './../utils/serverApi';
-import CommonImages from '../constants/CommonImages';
+import { getProvince, getDistrict, getSubdistrict } from '../../utils/locationApi';
+import { updateUser } from '../../utils/serverApi';
+import CommonImages from '../../constants/CommonImages';
 import storage from '@react-native-firebase/storage';
 import { utils } from '@react-native-firebase/app';
 
-import { generateCode } from '../utils/helper';
+import { generateCode } from '../../utils/helper';
 
 import { useDispatch } from 'react-redux';
-import * as userActions from '../store/actions/authenticationActions';
-import OccupationSelection from '../components/Selection/OccupationSelection';
+import * as userActions from '../../store/actions/authenticationActions';
+import OccupationSelection from '../../components/Selection/OccupationSelection';
 
 const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelected, selectLocationType }) => {
     const [visible, setVisible] = React.useState(false);

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity, Alert } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import MultipleImagePicker from '../components/ImagePicker/MultipleImagePicker'
-import LocationPicker from '../components/LocationPicker/LocationPicker'
-import OccupationSelection from '../components/Selection/OccupationSelection'
-import CommonColors from '../constants/CommonColors'
+import MultipleImagePicker from '../../components/ImagePicker/MultipleImagePicker'
+import LocationPicker from '../../components/LocationPicker/LocationPicker'
+import OccupationSelection from '../../components/Selection/OccupationSelection'
+import CommonColors from '../../constants/CommonColors'
 import { useSelector } from 'react-redux'
 
-import { createJob } from '../utils/serverApi';
+import { createJob } from '../../utils/serverApi';
 import { ActivityIndicator, HelperText } from 'react-native-paper';
 
 import storage from '@react-native-firebase/storage';
 import { utils } from '@react-native-firebase/app';
-import { generateCode } from '../utils/helper';
+import { generateCode } from '../../utils/helper';
 
 const CustomerJobCreationScreen = (props) => {
 

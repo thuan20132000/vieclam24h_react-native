@@ -330,19 +330,35 @@ export const applyJob = async (user_id, job_id, expected_price, description = ""
         if (!dataFetch.ok) {
             return {
                 data: null,
-                message: dataFetch
+                message: dataFetch,
+                status: false
             }
         }
 
         let dataRes = await dataFetch.json();
-        return {
-            data: dataRes,
-            message: 'success'
+
+        if (dataRes?.data?.status) {
+            return {
+                data: dataRes,
+                message: 'success',
+                status: true
+            }
+        } else {
+
+            return {
+                data: dataRes,
+                message: 'failed',
+                status: false
+            }
+
         }
+
+
     } catch (error) {
         return {
             data: null,
-            message: 'error ' + error
+            message: 'error ' + error,
+            status: false
         }
     }
 
@@ -918,7 +934,7 @@ export const confirmFinishedJob = async (job_collaborator_id, job_id, confirmed_
  * @param {*} subdistrict 
  * @param {*} profile_image 
  */
-export const updateUser = async (user_id, username, phonenumber, idcard, address, province, district, subdistrict, profile_image,occupations=[]) => {
+export const updateUser = async (user_id, username, phonenumber, idcard, address, province, district, subdistrict, profile_image, occupations = []) => {
 
 
     try {
@@ -938,7 +954,7 @@ export const updateUser = async (user_id, username, phonenumber, idcard, address
                 "district": district,
                 "subdistrict": subdistrict,
                 "profile_image": profile_image,
-                "occupations":occupations
+                "occupations": occupations
             })
         });
 
@@ -1066,7 +1082,7 @@ export const getUserChatConnections = async (user_id) => {
  * @param {*} to 
  * @param {*} user_image 
  */
-export const checkToConnectToUserChat = async (user_id,from,to,user_image) => {
+export const checkToConnectToUserChat = async (user_id, from, to, user_image) => {
     try {
         let url = serverConfig.url_chatlive;
 
@@ -1079,7 +1095,7 @@ export const checkToConnectToUserChat = async (user_id,from,to,user_image) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "conversation_id":conversation_id,
+                "conversation_id": conversation_id,
                 "from": from,
                 "to": to,
                 "user_image": user_image
@@ -1122,11 +1138,11 @@ export const checkToConnectToUserChat = async (user_id,from,to,user_image) => {
 
 
 
-export const getUserConversation = async (conversation_id,limit=12,pagenext=10,sortby='asc') => {
+export const getUserConversation = async (conversation_id, limit = 12, pagenext = 10, sortby = 'asc') => {
 
 
 
-    try {       
+    try {
         let url = serverConfig.url_chatlive;
         let dataFetch = await fetch(`${url}/conversations/${conversation_id}?limit=${limit}&pagenext=${pagenext}&sortby=${sortby}`);
         if (!dataFetch.ok) {

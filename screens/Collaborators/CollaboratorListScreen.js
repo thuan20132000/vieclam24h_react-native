@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
-import CollaboratorCard from '../components/Card/CollaboratorCard'
-import FilterBar from '../components/Filter/FilterBar'
-import { getCollaborator } from '../utils/serverApi'
+import CollaboratorCard from '../../components/Card/CollaboratorCard'
+import FilterBar from '../../components/Filter/FilterBar'
+import { getCollaborator } from '../../utils/serverApi'
 
 const CollaboratorListScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);

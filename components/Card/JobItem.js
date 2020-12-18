@@ -6,7 +6,7 @@ import CommonIcons from '../../constants/CommonIcons';
 import CommonImages from '../../constants/CommonImages';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { formatCash,formatDateTime } from '../../utils/helper';
+import { formatCash, formatDateTime } from '../../utils/helper';
 
 const JobItem = ({ job }) => {
 
@@ -17,16 +17,16 @@ const JobItem = ({ job }) => {
 
     return (
         <Card style={styles.cardContainer}>
-      
-                <Text style={{
-                    color:'grey',
-                    fontSize:12,
-                    fontStyle:'italic',
-                    textAlign:'right',
-                    margin:4
-                }}>
-                    Xác nhận lúc: {formatDateTime(job.attributes.updated_at)}
-                </Text>
+
+            <Text style={{
+                color: 'grey',
+                fontSize: 12,
+                fontStyle: 'italic',
+                textAlign: 'right',
+                margin: 4
+            }}>
+                Xác nhận lúc: {formatDateTime(job.attributes.updated_at)}
+            </Text>
             <View style={{ margin: 6 }}>
                 <Text style={{
                     fontSize: 16,
@@ -103,15 +103,20 @@ const JobItem = ({ job }) => {
             >
                 {
                     apply_job.images.map((e, index) =>
-                        <Image style={{
-                            width: 70,
-                            height: 70,
-                            margin: 2
-                        }}
-                            source={{
-                                uri: e.image_url || CommonImages.notFound
+                        <View
+                            key={index.toString()}
+                        >
+                            <Image style={{
+                                width: 70,
+                                height: 70,
+                                margin: 2
                             }}
-                        />
+                                source={{
+                                    uri: e.image_url || CommonImages.notFound
+                                }}
+                            />
+                        </View>
+
                     )
                 }
 

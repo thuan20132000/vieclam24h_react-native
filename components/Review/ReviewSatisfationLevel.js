@@ -76,6 +76,7 @@ const ReviewSatisfationLevel = ({onSelected}) => {
                 reviewLevelData.map((e, index) =>
                     <TouchableOpacity style={styles.reviewItem}
                         onPress={() => _onSelectLevel(e)}
+                        key={index.toString()}
                     >
                         {
                             e.status ?

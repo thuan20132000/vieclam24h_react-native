@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Dimensions, RefreshControl, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
-import { TabView, SceneMap,TabBar } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useSelector } from 'react-redux';
-import JobItem from '../components/Card/JobItem';
-import CommonColors from '../constants/CommonColors';
+import JobItem from '../../components/Card/JobItem';
+import CommonColors from '../../constants/CommonColors';
 
-import { getCollaboratorJobs } from '../utils/serverApi';
+import { getCollaboratorJobs } from '../../utils/serverApi';
 
 
 
@@ -24,10 +24,12 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
         }
     }
 
+
+    let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        setTimeout(() => {
+        timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
         }, 2000);
@@ -35,18 +37,28 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
 
     useEffect(() => {
         _getCollaboratorJobs();
+
+        return ()=>{
+            clearTimeout(timeoutEvent);
+        }
+
     }, [])
 
     return (
-        <ScrollView 
-            tyle={[styles.scene, { backgroundColor: 'white' }]} 
+        <ScrollView
+            tyle={[styles.scene, { backgroundColor: 'white' }]}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 
             }
         >
             {
-                collaboratorJobs.map((e, index) => <JobItem key={index.toString()} job={e} />)
+                collaboratorJobs.map((e, index) =>
+                    <JobItem
+                        key={index.toString()}
+                        job={e}
+                    />
+                )
             }
         </ScrollView>
     )
@@ -64,10 +76,12 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
         }
     }
 
+
+    let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        setTimeout(() => {
+        timeoutEvent =  setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
         }, 2000);
@@ -75,18 +89,27 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
 
     useEffect(() => {
         _getCollaboratorJobs();
+        return () => {
+            clearTimeout(timeoutEvent);
+        }
+
     }, [])
 
     return (
-        <ScrollView 
-            style={[styles.scene, { backgroundColor: 'white' }]} 
+        <ScrollView
+            style={[styles.scene, { backgroundColor: 'white' }]}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 
-            }    
+            }
         >
             {
-                collaboratorJobs.map((e, index) => <JobItem job={e} key={index.toString()} />)
+                collaboratorJobs.map((e, index) =>
+                    <JobItem
+                        job={e}
+                        key={index.toString()}
+                    />
+                )
             }
         </ScrollView>
     );
@@ -105,6 +128,8 @@ const ConfirmJob = ({ user_id, status = 4 }) => {
         }
     }
 
+
+    let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
@@ -117,18 +142,27 @@ const ConfirmJob = ({ user_id, status = 4 }) => {
 
     useEffect(() => {
         _getCollaboratorJobs();
+
+        return () => {
+            clearTimeout(timeoutEvent);
+        }
     }, [])
 
     return (
-        <ScrollView 
-            style={[styles.scene, { backgroundColor: 'white' }]} 
+        <ScrollView
+            style={[styles.scene, { backgroundColor: 'white' }]}
             refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
 
             }
         >
             {
-                collaboratorJobs.map((e, index) => <JobItem job={e} key={index.toString()} />)
+                collaboratorJobs.map((e, index) =>
+                    <JobItem
+                        job={e}
+                        key={index.toString()}
+                    />
+                )
             }
         </ScrollView>
     );
@@ -174,7 +208,7 @@ const CollaboratorJobScreen = (props) => {
             style={{ backgroundColor: CommonColors.primary }}
             labelStyle={{
                 fontWeight: '500',
-                fontSize:12
+                fontSize: 12
             }}
         />
     );
@@ -182,7 +216,7 @@ const CollaboratorJobScreen = (props) => {
 
     useEffect(() => {
         props.navigation.setOptions({
-            title:"Ứng tuyển"
+            title: "Ứng tuyển"
         })
     }, [])
 

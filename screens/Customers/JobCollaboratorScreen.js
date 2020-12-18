@@ -2,19 +2,19 @@ import React, { useRef, useEffect, useState } from 'react'
 import { Dimensions, Linking, StyleSheet, Text, View, TextInput, Alert } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { ActivityIndicator, Avatar, Chip, IconButton, Snackbar } from 'react-native-paper'
-import CommonColors from '../constants/CommonColors'
-import CommonIcons from '../constants/CommonIcons'
+import CommonColors from '../../constants/CommonColors'
+import CommonIcons from '../../constants/CommonIcons'
 import RBSheet from "react-native-raw-bottom-sheet";
-import CollaboratorInformation from '../components/BottomSheet/CollaboratorInformation'
+import CollaboratorInformation from '../../components/BottomSheet/CollaboratorInformation'
 import {
     selectCandidate,
     confirmFinishedJob,
     checkToConnectToUserChat
-} from '../utils/serverApi';
+} from '../../utils/serverApi';
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import SimpleBottomSheet from '../components/BottomSheet/SimpleBottomSheet'
-import ReviewSatisfationLevel from '../components/Review/ReviewSatisfationLevel'
+import SimpleBottomSheet from '../../components/BottomSheet/SimpleBottomSheet'
+import ReviewSatisfationLevel from '../../components/Review/ReviewSatisfationLevel'
 import {useSelector} from 'react-redux';
 
 
@@ -106,14 +106,13 @@ const JobInidicatorItem = ({
        // console.warn(userInformation);
       // console.warn(item);
 
+        console.warn(item);
         let checkUserIsConnected = await checkToConnectToUserChat(
             userInformation.id,
             userInformation.id,
             item.id,
             item?.profile_image || ""
         );
-
-
 
         navigation.navigate('ChatLive', {
             user: item
