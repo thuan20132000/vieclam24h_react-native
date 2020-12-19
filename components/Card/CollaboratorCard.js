@@ -11,7 +11,7 @@ import TagSimple from '../Tag/TagSimple';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-const CollaboratorCard = ({ item, navigation }) => {
+const CollaboratorCard = ({ item, navigation,containerStyle }) => {
 
 
     let collaborators_review = item?.reviews;
@@ -32,7 +32,7 @@ const CollaboratorCard = ({ item, navigation }) => {
 
 
     return (
-        <TouchableOpacity style={[styles.cardContainer, { zIndex: -1 }]}
+        <TouchableOpacity style={[styles.cardContainer, { zIndex: -1 },containerStyle]}
             onPress={() => navigation.navigate('CollaboratorDetail', { collaborator_id: item.id })}
         >
 
@@ -102,6 +102,7 @@ const CollaboratorCard = ({ item, navigation }) => {
                         //     {e.name}
                         // </Chip>
                         <TagSimple
+                            key={index.toString()}
                             containerStyle={{
                                 borderRadius: 12,
                                 marginHorizontal: 4,

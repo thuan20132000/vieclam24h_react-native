@@ -580,10 +580,110 @@ export const searchCandidates = async (query = null, district = null, limit = 6)
  * description:Get all collaborators or collaborator by category
  * @param {*} by_category 
  */
-export const getCollaborator = async (by_category = '',perpage=10) => {
+export const getCollaborator = async (by_category = null,byTopRating=null,district=492,perpage=10,postnumber=0) => {
     try {
         let url = serverConfig.url;
-        let datafetch = await fetch(`${url}/collaborators?category=${by_category}&perpage=${perpage}`);
+        let url_with_params;
+
+        if(by_category){
+           url_with_params = `${url}/collaborators?category=${by_category}&perpage=${perpage}&postnumber=${postnumber}`;
+        }
+        
+
+        let datafetch = await fetch(url_with_params);
+        console.warn(url_with_params);
+
+        
+        if (!datafetch.ok) {
+            console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await datafetch.json();
+        console.warn(dataRes);
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+/**
+ * author:thuantruong
+ * created_at:19/12/2020
+ * 
+ * @param {*} by_category 
+ * @param {*} perpage 
+ * @param {*} postnumber 
+ */
+export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnumber=0) => {
+    try {
+        let url = serverConfig.url;
+       
+        let url_with_params = `${url}/collaborators?category=${by_category}&perpage=${perpage}&postnumber=${postnumber}`;
+        
+        
+        let datafetch = await fetch(url_with_params);
+
+        
+        if (!datafetch.ok) {
+            console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await datafetch.json();
+        console.warn(dataRes);
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+/**
+ * author:thuantruong
+ * created_at:19/12/2020
+ * @param {*} district_id 
+ * @param {*} perpage 
+ * @param {*} postnumber 
+ */
+export const getCollaboratorByDistrict = async (district_id=1,perpage=10,postnumber=0) => {
+    try {
+        let url = serverConfig.url;
+       
+        let url_with_params = `${url}/collaborators?sortbynearbydistrict=${district_id}&perpage=${perpage}&postnumber=${postnumber}`;
+        console.warn(url_with_params);
+        let datafetch = await fetch(url_with_params);
+
+        
         if (!datafetch.ok) {
             console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
 
@@ -609,6 +709,7 @@ export const getCollaborator = async (by_category = '',perpage=10) => {
         }
     }
 }
+
 
 
 

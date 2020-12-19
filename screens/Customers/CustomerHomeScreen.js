@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, RefreshControl } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Subheading } from 'react-native-paper'
+import { useSelector } from 'react-redux'
 import HomeContent from '../../components/Body/HomeContent'
 import CardHorizontal from '../../components/Card/CardHorizontal'
 import CollaboratorCard from '../../components/Card/CollaboratorCard'
 import MenuItem from '../../components/Menu/MenuItem'
 import SearchButton from '../../components/Search/SearchButton'
 
-import { getCategory, getCollaborator } from '../../utils/serverApi';
+import { getCategory, getCollaborator, getCollaboratorByDistrict } from '../../utils/serverApi';
 
 const CustomerHomeScreen = (props) => {
 
@@ -16,9 +17,13 @@ const CustomerHomeScreen = (props) => {
         props.navigation.navigate('Search');
     }
 
-    const [isLoading, setIsLoading] = useState(false);
+    const { userInformation } = useSelector(state => state.authentication);
+    ; const [isLoading, setIsLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [collaborators, setCollaborators] = useState([]);
+
+
+    const [collaboratorsByDistrict, setCollaboratorsByDistrict] = useState([]);
 
     const _getCategory = async () => {
         setIsLoading(true);
@@ -28,26 +33,43 @@ const CustomerHomeScreen = (props) => {
         }
         setIsLoading(false);
     }
-
-    const _getCollaborators = async () => {
-        setIsLoading(true);
-        let data = await getCollaborator();
-
-        console.warn(data);
-
-        if (data.data.data.length > 0) {
-            setCollaborators(data.data.data);
-        }
-        setIsLoading(false);
-    }
-
-
-
     const _navigateToCollaboratorList = (e) => {
         props.navigation.navigate('CollaboratorList', {
             category: e
         });
     }
+
+    const _getCollaborators = async () => {
+        setIsLoading(true);
+        let dataRes = await getCollaborator();
+
+        // console.warn(data);
+
+        if (dataRes.data?.data?.length > 0) {
+            setCollaborators(dataRes.data?.data);
+        } else {
+            setCollaborators([]);
+        }
+        setIsLoading(false);
+    }
+
+    const _getCollaboratorByTopRating = async () => {
+    }
+
+
+    const _onGetCollaboratorsByDistrict = async () => {
+        let dataRes = await getCollaboratorByDistrict(userInformation.attributes?.district);
+        console.warn(dataRes);
+        if (dataRes?.data.status == true) {
+            setCollaboratorsByDistrict(dataRes?.data.data);
+        } else {
+            setCollaboratorsByDistrict([]);
+        }
+    }
+
+
+
+
 
 
     const [refreshing, setRefreshing] = React.useState(false);
@@ -63,6 +85,8 @@ const CustomerHomeScreen = (props) => {
     useEffect(() => {
         _getCategory();
         _getCollaborators();
+
+        _onGetCollaboratorsByDistrict();
 
 
         props.navigation.setOptions({
@@ -111,12 +135,12 @@ const CustomerHomeScreen = (props) => {
                             label={e.name}
                             image={e.image}
                             labelStyle={{
-                                fontSize:11,
-                                fontWeight:'500',
-                                
+                                fontSize: 11,
+                                fontWeight: '500',
+
                             }}
                             containerStyle={{
-                                width:80
+                                width: 80
                             }}
 
                         />
@@ -126,13 +150,36 @@ const CustomerHomeScreen = (props) => {
 
             {/* End Menu */}
 
+            <View style={[]}>
+                <Text style={[styles.textTitle]}>
+                    Ứng viên được đánh giá cao
+                </Text>
+                <ScrollView>
+                    {
+                        collaboratorsByDistrict.map((e,index) => 
+                            <CollaboratorCard
+                                item={e}
+                                containerStyle={{
+                                    width:190,
+                                    height:180
+                                }}
+                            />
+                        )
+                    }
+                </ScrollView>
+
+                
+            </View>
+
 
             {/* Job List */}
             <View style={styles.vericleListContainer}>
-                <Subheading style={{ paddingHorizontal: 12 }}>Ứng viên được đánh giá cao</Subheading>
+                <Text style={[styles.textTitle]}>
+                    Ứng viên cần việc làm gần bạn
+                </Text>
 
                 {
-                    collaborators.map((e, index) =>
+                    collaboratorsByDistrict.map((e, index) =>
                         <CollaboratorCard
                             item={e}
                             key={index.toString()}
@@ -141,6 +188,7 @@ const CustomerHomeScreen = (props) => {
                     )
                 }
             </View>
+
 
         </ScrollView>
     )
@@ -172,5 +220,21 @@ const styles = StyleSheet.create({
     vericleListContainer: {
         marginTop: 12,
 
+    },
+    textTitle: {
+        fontSize: 18,
+        fontWeight: '500',
+        marginHorizontal: 12,
+        marginVertical: 12,
+        color: "grey"
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+
+    },
+    column: {
+        display: 'flex',
+        flexDirection: 'column'
     }
 })

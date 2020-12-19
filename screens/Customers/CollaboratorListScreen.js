@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import CollaboratorCard from '../../components/Card/CollaboratorCard'
 import FilterBar from '../../components/Filter/FilterBar'
-import { getCollaborator } from '../../utils/serverApi'
+import {  getCollaboratorByCategory } from '../../utils/serverApi'
 
 const CollaboratorListScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -11,17 +11,17 @@ const CollaboratorListScreen = (props) => {
 
     const { category } = props.route.params;
 
-    const _getCollaborators = async () => {
+    const _onGetCollaboratorByCategory = async () => {
         setIsLoading(true);
-        let data = await getCollaborator(category.id);
-        if (data.data.length > 0) {
-            setCollaborators(data.data);
+        let dataRes = await getCollaboratorByCategory(category.id);
+        if (dataRes.data.data.length > 0) {
+            setCollaborators(dataRes.data.data);
         }
         setIsLoading(false);
     }
 
     useEffect(() => {
-        _getCollaborators();
+        _onGetCollaboratorByCategory();
 
         props.navigation.setOptions({
             title: `Ứng Viên ${category.name} `,
