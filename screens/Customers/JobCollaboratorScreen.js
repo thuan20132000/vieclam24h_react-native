@@ -78,7 +78,6 @@ const JobInidicatorItem = ({
     }
 
     const _onConfirmFinishedJob = async () => {
-        // console.warn('confirmed: ',item);
         let checkValidation = _onCheckValidationConfirm();
 
         if (checkValidation) {
@@ -89,11 +88,13 @@ const JobInidicatorItem = ({
                 confirmedJobInfo.satisfationLevel,
                 confirmedJobInfo.message
             );
-
+            
             if (confirmRes.status) {
-                Alert.alert('Thành công');
+                Alert.alert('Thành công',"Xác nhận công việc thành công");
                 _refConfirmFinishedJobBottomSheet.current.close();
 
+            }else{
+                Alert.alert("Thất bại","Xác nhận công việc thất bại")
             }
 
         } else {
@@ -106,7 +107,6 @@ const JobInidicatorItem = ({
        // console.warn(userInformation);
       // console.warn(item);
 
-        console.warn(item);
         let checkUserIsConnected = await checkToConnectToUserChat(
             userInformation.id,
             userInformation.id,

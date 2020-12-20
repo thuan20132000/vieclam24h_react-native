@@ -630,7 +630,7 @@ export const getCollaborator = async (by_category = null,byTopRating=null,distri
  * @param {*} perpage 
  * @param {*} postnumber 
  */
-export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnumber=0) => {
+export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnumber=0,) => {
     try {
         let url = serverConfig.url;
        
@@ -651,7 +651,6 @@ export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnum
         }
 
         let dataRes = await datafetch.json();
-        console.warn(dataRes);
 
         return {
             data: dataRes,
@@ -675,11 +674,49 @@ export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnum
  * @param {*} perpage 
  * @param {*} postnumber 
  */
-export const getCollaboratorByDistrict = async (district_id=1,perpage=10,postnumber=0) => {
+export const getCollaboratorsByDistrict = async (district_id=1,perpage=10,postnumber=0) => {
     try {
         let url = serverConfig.url;
        
-        let url_with_params = `${url}/collaborators?sortbynearbydistrict=${district_id}&perpage=${perpage}&postnumber=${postnumber}`;
+        let url_with_params = `${url}/collaborators?district=${district_id}&perpage=${perpage}&postnumber=${postnumber}`;
+        let datafetch = await fetch(url_with_params);
+
+        
+        if (!datafetch.ok) {
+            console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await datafetch.json();
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+    } catch (error) {
+        return {
+            data: [],
+            message: error,
+            status: false
+        }
+    }
+}
+
+
+
+/**
+ * author:thuantruong
+ */
+export const getCollaboratorsTopRating = async (perpage=10,postnumber=0) => {
+    try {
+        let url = serverConfig.url;
+       
+        let url_with_params = `${url}/collaborators?sortbytoprating=true&perpage=${perpage}&postnumber=${postnumber}`;
         console.warn(url_with_params);
         let datafetch = await fetch(url_with_params);
 
@@ -709,7 +746,6 @@ export const getCollaboratorByDistrict = async (district_id=1,perpage=10,postnum
         }
     }
 }
-
 
 
 
@@ -932,6 +968,7 @@ export const getUserConfirmedJobs = async (author_id) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/job/${author_id}/status/confirmed`);
+        
         if (!dataFetch.ok) {
             console.warn("ERROT AT GET CUSTOMER CONFIRMED JOBS");
 
@@ -943,7 +980,6 @@ export const getUserConfirmedJobs = async (author_id) => {
         }
 
         let dataRes = await dataFetch.json();
-
         return {
             data: dataRes.data,
             message: 'success',
@@ -1242,7 +1278,6 @@ export const checkToConnectToUserChat = async (user_id, from, to, user_image) =>
 export const getUserConversation = async (conversation_id, limit = 12, pagenext = 10, sortby = 'asc') => {
 
 
-
     try {
         let url = serverConfig.url_chatlive;
         let dataFetch = await fetch(`${url}/conversations/${conversation_id}?limit=${limit}&pagenext=${pagenext}&sortby=${sortby}`);
@@ -1277,4 +1312,8 @@ export const getUserConversation = async (conversation_id, limit = 12, pagenext 
         }
     }
 }
+
+
+
+
 

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { ActivityIndicator } from 'react-native-paper'
 import CollaboratorCard from '../../components/Card/CollaboratorCard'
 import FilterBar from '../../components/Filter/FilterBar'
-import {  getCollaboratorByCategory } from '../../utils/serverApi'
+import { getCollaboratorByCategory } from '../../utils/serverApi'
 
 const CollaboratorListScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -10,15 +11,6 @@ const CollaboratorListScreen = (props) => {
     const [collaborators, setCollaborators] = useState([]);
 
     const { category } = props.route.params;
-
-    const _onGetCollaboratorByCategory = async () => {
-        setIsLoading(true);
-        let dataRes = await getCollaboratorByCategory(category.id);
-        if (dataRes.data.data.length > 0) {
-            setCollaborators(dataRes.data.data);
-        }
-        setIsLoading(false);
-    }
 
     useEffect(() => {
         _onGetCollaboratorByCategory();
@@ -32,26 +24,72 @@ const CollaboratorListScreen = (props) => {
 
     }, []);
 
+
+
+    const [postnumber, setPostnumber] = useState(0);
+    const [perpage, setPerpage] = useState(8);
+    const [isTopRating,setIsTopRating] = useState(false);
+
+    const _onGetCollaboratorByCategory = async () => {
+        setIsLoading(true);
+        let dataRes = await getCollaboratorByCategory(category.id, perpage, postnumber);
+
+        console.warn(dataRes);
+        if (dataRes.data.data.length > 0) {
+            setCollaborators(dataRes.data.data);
+        }
+        setIsLoading(false);
+    }
+
+
+    const _onLoadMore = async () => {
+        setIsLoading(true);
+
+        let postnumberIndex = postnumber + perpage;
+        setPostnumber(postnumberIndex);
+        let dataRes = await getCollaboratorByCategory(category.id, perpage, postnumberIndex);
+
+        if (dataRes.data?.data?.length > 0) {
+            setTimeout(() => {
+                setCollaborators([...collaborators, ...dataRes.data.data]);
+                setIsLoading(false);
+
+            }, 1200);
+        }else{
+            setIsLoading(false);
+
+        }
+
+    }
+
     return (
         <View style={{
-            display: 'flex', 
+            display: 'flex',
             flex: 1, paddingTop: 10
         }}>
-            <FlatList style={{ flex: 1, zIndex: -1 }}
-                showsVerticalScrollIndicator={false}
-                data={collaborators}
-                renderItem={({ item, index }) => (
-                    <CollaboratorCard
-                        item={item}
-                        navigation={props.navigation}
-                    />
-                )}
-                keyExtractor={(item, index) => index.toString()}
-            // extraData={selectedId}
-            // onEndReached={_loadMoreJobs}
-            // ListFooterComponent={() => <FooterList />}
-            />
-
+            {
+                collaborators.length > 0 &&
+                <FlatList style={{ flex: 1, zIndex: -1 }}
+                    showsVerticalScrollIndicator={true}
+                    data={collaborators}
+                    renderItem={({ item, index }) => (
+                        <CollaboratorCard
+                            item={item}
+                            navigation={props.navigation}
+                        />
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListFooterComponent={
+                        <ActivityIndicator
+                            size={'small'}
+                            color={'red'}   
+                            animating={isLoading ?true:false} 
+                        />
+                    }
+                    onEndReachedThreshold={0.2}
+                    onEndReached={_onLoadMore}
+                />
+            }
         </View>
     )
 }

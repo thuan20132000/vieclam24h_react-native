@@ -14,31 +14,37 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
 
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 2);
-        if (collaboratorJobRes.status) {
-            setCollaboratorJob(collaboratorJobRes.data);
-        } else {
-            setCollaboratorJob([]);
-        }
+            let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 2);
+
+            if (collaboratorJobRes.status) {
+                setCollaboratorJob(collaboratorJobRes.data);
+            } else {
+                setCollaboratorJob([]);
+            }
+        
+
     }
 
 
     let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-
+        setIsLoading(true);
         timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
+            
         }, 2000);
     }, []);
 
     useEffect(() => {
         _getCollaboratorJobs();
+    
 
-        return ()=>{
+        return () => {
             clearTimeout(timeoutEvent);
         }
 
@@ -81,7 +87,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        timeoutEvent =  setTimeout(() => {
+        timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
         }, 2000);
@@ -133,7 +139,7 @@ const ConfirmJob = ({ user_id, status = 4 }) => {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        setTimeout(() => {
+        timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
         }, 2000);

@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View,Button } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { Button, Headline, IconButton, TextInput, Snackbar } from 'react-native-paper';
+import { Headline, IconButton, TextInput, Snackbar } from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
 import CardItem from '../components/Card/CardItem';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -71,7 +71,7 @@ const JobDetailScreen = (props) => {
     }
 
     const _applyJob = async () => {
-
+        console.warn('ds');
         try {
             setIsLoading(true);
             setIsDisabling(true);
@@ -91,7 +91,7 @@ const JobDetailScreen = (props) => {
                     }, 2500);
 
 
-                }else{
+                } else {
                     Alert.alert("Thành công", "Ứng tuyển thành công, vui lòng chờ người tuyển dụng xác nhận.");
                     setTimeout(() => {
                         refRBSheet_applyJob.current.close();
@@ -177,17 +177,14 @@ const JobDetailScreen = (props) => {
                             <Text style={styles.jobAddress}>{jobDetail.relationships?.author?.address}</Text>
                         </View>
                         <View style={styles.jobControl}>
-                            <Button
-                                mode={'outlined'}
-                                onPress={() => refRBSheet_applyJob.current.open()}
-                                style={{
-                                    justifyContent: 'center',
-                                    backgroundColor: CommonColors.primary
-                                }}
+           
 
-                            >
-                                Ứng tuyển vị trí
-                    </Button>
+                            <Button
+                                onPress={() => refRBSheet_applyJob.current.open()}
+                                title="Ứng tuyển vị trí"
+                                color="#841584"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
                             <IconButton
                                 icon={CommonIcons.chatMessage}
                                 color={CommonColors.primary}
@@ -255,14 +252,23 @@ const JobDetailScreen = (props) => {
                                 multiline={true}
 
                             />
-                            <Button style={{ marginVertical: 16, width: 160, alignSelf: 'center', backgroundColor: CommonColors.primary }}
+                            {/* <Button style={{ marginVertical: 16, width: 160, alignSelf: 'center', backgroundColor: CommonColors.primary }}
                                 mode="contained"
                                 onPress={_applyJob}
                                 loading={isLoading}
-                                disabled={isDisabling}
+                                disabled={isLoading}
                             >
                                 Ứng Tuyển
-                            </Button>
+                            </Button> */}
+
+                            <Button
+                                onPress={_applyJob}
+                                title="Ứng Tuyến"
+                                color="#841584"
+                                accessibilityLabel="Learn more about this purple button"
+                            />
+
+
                             {
                                 errorMessagage.status &&
                                 <Snackbar style={{ backgroundColor: 'coral', position: 'relative', top: 60 }}

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, RefreshControl } from 'react-native'
+import React, { useState, useEffect,useRef } from 'react'
+import { StyleSheet, Text, View, Image, RefreshControl, Dimensions } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { Subheading } from 'react-native-paper'
 import { useSelector } from 'react-redux'
@@ -8,22 +8,26 @@ import CardHorizontal from '../../components/Card/CardHorizontal'
 import CollaboratorCard from '../../components/Card/CollaboratorCard'
 import MenuItem from '../../components/Menu/MenuItem'
 import SearchButton from '../../components/Search/SearchButton'
+import Carousel from 'react-native-snap-carousel';
 
-import { getCategory, getCollaborator, getCollaboratorByDistrict } from '../../utils/serverApi';
+import { getCategory, getCollaborator, getCollaboratorsByDistrict, getCollaboratorsTopRating } from '../../utils/serverApi';
 
 const CustomerHomeScreen = (props) => {
 
     const _onSearchPress = () => {
         props.navigation.navigate('Search');
     }
+    const refCarousel = useRef('carousel');
 
     const { userInformation } = useSelector(state => state.authentication);
-    ; const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [categories, setCategories] = useState([]);
     const [collaborators, setCollaborators] = useState([]);
 
 
     const [collaboratorsByDistrict, setCollaboratorsByDistrict] = useState([]);
+    const [collaboratorsTopRating, setCollaboratorsTopRating] = useState([]);
+
 
     const _getCategory = async () => {
         setIsLoading(true);
@@ -53,12 +57,21 @@ const CustomerHomeScreen = (props) => {
         setIsLoading(false);
     }
 
-    const _getCollaboratorByTopRating = async () => {
+    const _onGetCollaboratorByTopRating = async () => {
+
+        let dataRes = await getCollaboratorsTopRating();
+        if (dataRes?.data.status == true) {
+            setCollaboratorsTopRating(dataRes?.data.data);
+        } else {
+            setCollaboratorsTopRating([]);
+        }
     }
 
 
     const _onGetCollaboratorsByDistrict = async () => {
-        let dataRes = await getCollaboratorByDistrict(userInformation.attributes?.district);
+
+
+        let dataRes = await getCollaboratorsByDistrict(userInformation.attributes?.district,4,0);        
         console.warn(dataRes);
         if (dataRes?.data.status == true) {
             setCollaboratorsByDistrict(dataRes?.data.data);
@@ -87,6 +100,7 @@ const CustomerHomeScreen = (props) => {
         _getCollaborators();
 
         _onGetCollaboratorsByDistrict();
+        _onGetCollaboratorByTopRating();
 
 
         props.navigation.setOptions({
@@ -104,7 +118,7 @@ const CustomerHomeScreen = (props) => {
                 </View>
             )
         })
-    }, [])
+    }, []);
 
     const menuItems = Array(6).fill({});
 
@@ -128,7 +142,7 @@ const CustomerHomeScreen = (props) => {
                     categories.map((e, index) =>
                         <MenuItem
                             index={index}
-                            item={e}
+                            
                             key={index.toString()}
                             navigation={props.navigation}
                             onItemPress={() => _navigateToCollaboratorList(e)}
@@ -154,21 +168,26 @@ const CustomerHomeScreen = (props) => {
                 <Text style={[styles.textTitle]}>
                     Ứng viên được đánh giá cao
                 </Text>
-                <ScrollView>
-                    {
-                        collaboratorsByDistrict.map((e,index) => 
-                            <CollaboratorCard
-                                item={e}
-                                containerStyle={{
-                                    width:190,
-                                    height:180
-                                }}
-                            />
-                        )
+            
+                <Carousel
+                    ref={refCarousel}
+                    data={collaboratorsTopRating}
+                    renderItem={({ item }) =>
+                        <CollaboratorCard
+                            item={item}
+                            navigation={props.navigation}
+                            avatarSize={64}
+                            containerStyle={{
+                                minHeight:180
+                            }}
+                        />
                     }
-                </ScrollView>
+                    sliderWidth={deviceWidth}
+                    itemWidth={deviceWidth}
+                    layout={'tinder'}
+                />
 
-                
+
             </View>
 
 
@@ -183,6 +202,7 @@ const CustomerHomeScreen = (props) => {
                         <CollaboratorCard
                             item={e}
                             key={index.toString()}
+                            avatarSize={44}
                             navigation={props.navigation}
                         />
                     )
@@ -193,6 +213,9 @@ const CustomerHomeScreen = (props) => {
         </ScrollView>
     )
 }
+
+const deviceWidth = Dimensions.get('screen').width;
+const deviceHeight = Dimensions.get('screen').height;
 
 export default CustomerHomeScreen
 

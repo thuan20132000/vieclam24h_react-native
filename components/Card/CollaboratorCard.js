@@ -11,7 +11,7 @@ import TagSimple from '../Tag/TagSimple';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-const CollaboratorCard = ({ item, navigation,containerStyle }) => {
+const CollaboratorCard = ({ item, navigation,containerStyle,avatarSize=64 }) => {
 
 
     let collaborators_review = item?.reviews;
@@ -44,7 +44,6 @@ const CollaboratorCard = ({ item, navigation,containerStyle }) => {
                 right: 10,
                 top: 0,
                 backgroundColor: 'rgba(236, 121, 79, 0.7)',
-                padding: 4,
                 borderRadius: 18,
                 
                 
@@ -58,8 +57,8 @@ const CollaboratorCard = ({ item, navigation,containerStyle }) => {
                 <Text style={[styles.subtitle2,{color:'white'}]}> {review_people_number} đánh giá </Text>
             </View>
 
-            <View style={[styles.row]}>
-                <Avatar.Image size={64} source={{
+            <View style={[styles.row,{marginVertical:22}]}>
+                <Avatar.Image size={avatarSize} source={{
                     uri: item.attributes?.profile_image || CommonImages.avatar
                 }} />
                 <View style={[styles.column, { marginHorizontal: 12 }]}>

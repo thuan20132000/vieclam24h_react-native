@@ -137,10 +137,11 @@ const PendingJob = ({ navigation, userInformation }) => {
         setIsLoading(false);
     }
 
+    let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        setTimeout(() => {
+        timeoutEvent =  setTimeout(() => {
             _getPendingJobsData();
             setRefreshing(false)
         }, 2000);
@@ -148,6 +149,10 @@ const PendingJob = ({ navigation, userInformation }) => {
 
     useEffect(() => {
         _getPendingJobsData();
+
+        return ()=>{
+            clearTimeout(timeoutEvent);
+        }
     }, [])
 
 

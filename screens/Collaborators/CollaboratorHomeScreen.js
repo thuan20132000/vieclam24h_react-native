@@ -39,10 +39,10 @@ const CollaboratorHomeScreen = (props) => {
     const _getJobs = async () => {
         setIsLoading(true);
         setRefreshing(true);
-        let data = await getJobs('',8);
+        let data = await getJobs('', 8);
         if (data.data.length > 0) {
             setJobs(data.data);
-        }else{
+        } else {
             setJobs([]);
         }
         setIsLoading(false);
@@ -83,8 +83,8 @@ const CollaboratorHomeScreen = (props) => {
 
 
     const onRefresh = React.useCallback(() => {
-         _getCategory();
-         _getJobs();
+        _getCategory();
+        _getJobs();
 
     }, []);
 
@@ -108,11 +108,19 @@ const CollaboratorHomeScreen = (props) => {
                 {categories &&
                     categories.map((e, index) =>
                         <MenuItem
-                            index={index}
-                            item={e}
+                            image={e.image}
+                            label={e.name}
                             {...props}
                             onItemPress={() => _navigateToJobList(e)}
                             key={index.toString()}
+                            labelStyle={{
+                                fontSize: 11,
+                                fontWeight: '500',
+
+                            }}
+                            containerStyle={{
+                                width: 80
+                            }}
                         />)
                 }
             </View>

@@ -3,7 +3,12 @@ import { StyleSheet, Text, View, TouchableOpacity,Image } from 'react-native'
 import { IconButton } from 'react-native-paper'
 import CommonImages from '../../constants/CommonImages'
 
-const MenuItem = ({ index, item,navigation,onItemPress,containerStyle,labelStyle,label,image }) => {
+const MenuItem = ({ 
+    onItemPress,
+    containerStyle,
+    labelStyle,
+    label,
+    image }) => {
 
 
     // const _onNavigateToJobList = () => {
@@ -12,7 +17,7 @@ const MenuItem = ({ index, item,navigation,onItemPress,containerStyle,labelStyle
 
 
     return (
-        <TouchableOpacity key={index}
+        <TouchableOpacity
             style={[styles.menuItem,containerStyle]}
             onPress={onItemPress}
         >

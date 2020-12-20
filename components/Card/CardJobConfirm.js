@@ -1,11 +1,13 @@
 import React from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { Avatar } from 'react-native-paper';
+import CommonColors from '../../constants/CommonColors';
 import CommonImages from '../../constants/CommonImages';
 import {formatCash,formatDateTime} from '../../utils/helper';
+import ReviewStar from '../Review/ReviewStar';
 
 const CardJobConfirm = ({ item }) => {
-
+    
 
     return (
         <View style={styles.container}>
@@ -47,6 +49,24 @@ const CardJobConfirm = ({ item }) => {
                     </Text>
 
                 </View>
+            </View>
+            <View>
+                <View style={[{padding:4,borderRadius:12}]}>
+                    <Text style={{
+                        fontSize:14,
+                        color:'grey',
+                        fontStyle:'italic'
+                    }} >
+                        {item?.relationships?.confirm?.review_content || ""}
+                    </Text>
+                </View>
+            </View>
+            <View style={[{display:'flex',flexDirection:'row'}]}>
+                {
+                    Array(item?.relationships?.confirm?.range).fill({}).map((e,index) =>
+                        <ReviewStar/>
+                    )
+                }
             </View>
             <Text style={{
                 fontSize:12,

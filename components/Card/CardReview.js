@@ -16,6 +16,7 @@ const CardReview = ({ review }) => {
             <View style={styles.avatar}>
                 <Avatar.Image size={44} source={{ uri: review.author_image || CommonImages.avatar }} />
                 <Text style={styles.textTitle}>{review.author_name}</Text>
+                
             </View>
             {/* review body */}
             <View style={styles.triangle}></View>
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     body: {
         marginLeft: 50,
         // marginVertical: 8,
-        backgroundColor: 'coral',
+        backgroundColor: CommonColors.primary,
         padding: 12,
         borderRadius: 8,
         position: 'relative'
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 30,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        borderBottomColor: 'coral'
+        borderBottomColor: CommonColors.primary
     },
     message: {
         marginVertical: 4,

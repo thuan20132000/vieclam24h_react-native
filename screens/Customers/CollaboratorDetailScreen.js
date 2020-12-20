@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 
 
 import { getCollaboratorDetail,checkToConnectToUserChat } from '../../utils/serverApi';
+import CommonColors from '../../constants/CommonColors'
 
 const CollaboratorDetailScreen = (props) => {
     const { userInformation } = useSelector(state => state.authentication);
@@ -40,6 +41,7 @@ const CollaboratorDetailScreen = (props) => {
     useEffect(() => {
         _getCollaboratorDetail();
 
+
     }, [])
 
 
@@ -63,13 +65,14 @@ const CollaboratorDetailScreen = (props) => {
         <ScrollView
             showsVerticalScrollIndicator={false}
         >
+
+
             <IconButton style={{ position: 'absolute', zIndex: 999, right: 1 }}
                 icon={isFavorite ? CommonIcons.star : CommonIcons.starOutline}
                 color={'gold'}
                 size={34}
                 onPress={() => setIsFavorite(!isFavorite)}
             />
-
 
             <View style={[styles.sectionWrap, styles.topBannerCard]}>
 
@@ -83,12 +86,15 @@ const CollaboratorDetailScreen = (props) => {
                     <Text style={styles.textDescription}>{collaborator && collaborator.attributes.address}</Text>
 
                 </View>
-                <IconButton style={{ position: 'absolute', zIndex: 999, right: 1 }}
+
+                <IconButton 
+                    style={{ position: 'absolute', zIndex: 999, right: 0,bottom:0 }}
                     icon={CommonIcons.messages}
-                    color={'gold'}
-                    size={34}
+                    color={CommonColors.btnSubmit}
+                    size={26}
                     onPress={_onNavigateToChat}
                 />
+
             </View>
 
             <View style={[styles.sectionWrap]}>
