@@ -13,13 +13,14 @@ const JobListScreen = (props) => {
 
     const [jobs, setJobs] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [perPage, setPerPage] = useState(5);
+    const [perPage, setPerPage] = useState(6);
+    const [postnumber, setPostnumber] = useState(0);
     let { category } = props.route.params;
 
     const _getJobs = async () => {
         setIsLoading(true);
 
-        let data = await getJobs(category.id, perPage);
+        let data = await getJobs(category.id, perPage, postnumber);
         if (data.data.length > 0) {
             setJobs(data.data);
         }
@@ -33,16 +34,16 @@ const JobListScreen = (props) => {
     useEffect(() => {
         _getJobs();
         props.navigation.dangerouslyGetParent().setOptions({
-            tabBarVisible:false
+            tabBarVisible: false
         });
 
         props.navigation.setOptions({
-            title:`${category.name}`
+            title: `${category.name}`
         })
 
-        return ()=>{
+        return () => {
             props.navigation.dangerouslyGetParent().setOptions({
-                tabBarVisible:true
+                tabBarVisible: true
             });
         }
     }, []);
@@ -51,50 +52,50 @@ const JobListScreen = (props) => {
 
     const [selectedId, setSelectedId] = useState(null);
 
+    let timeoutEvent;
     const _loadMoreJobs = async () => {
-        setPerPage(perPage + 3);
-        await _getJobs();
+        setIsLoading(true);
+        let postnumberIndex = postnumber + perPage;
+        setPostnumber(postnumberIndex);
+        let dataRes = await getJobs(category.id, perPage, postnumberIndex);
+        if (dataRes.data?.length > 0) {
+            setTimeout(() => {
+                setJobs([...jobs, ...dataRes.data]);
+                setIsLoading(false);
+
+            }, 1200);
+        }else{
+            setIsLoading(false);
+        }
     }
 
-    const FooterList = () => {
-        return (
-            <ActivityIndicator
-                size={"small"}
-                animating={isLoading}
-            />
-        )
-    }
-    
+
 
     return (
-        <View
-            style={{
-                flex:1,
-                justifyContent:'center',
-                alignItems:'center',
-            }}
-        >
-            
-            {/*  */}
-            <FlatList style={{ flex: 1,zIndex:-1 }}
-                showsVerticalScrollIndicator={false}
-               
-                data={jobs}
-                renderItem={({ item, index }) => (
-                    <CardHorizontal
-                        {...props}
-                        item={item}
-                        key={index.toString()}
-                        index={index}
-                        onPress={_navigateToJobDetail}
-                    />
-                )}
-                keyExtractor={(item) => item.id}
-                extraData={selectedId}
-                onEndReached={_loadMoreJobs}
-                ListFooterComponent={() => <FooterList />}
-            />
-        </View>
+
+        <FlatList style={{ flex: 1, zIndex: -1 }}
+            showsVerticalScrollIndicator={false}
+
+            data={jobs}
+            renderItem={({ item, index }) => (
+                <CardHorizontal
+                    {...props}
+                    item={item}
+                    key={index.toString()}
+                    index={index}
+                    onPress={_navigateToJobDetail}
+                />
+            )}
+            keyExtractor={(item) => item.id}
+            extraData={selectedId}
+            onEndReachedThreshold={0.5}
+            onEndReached={_loadMoreJobs}
+            ListFooterComponent={
+                <ActivityIndicator
+                    animating={isLoading}
+                />
+            }
+        />
 
     )
 }

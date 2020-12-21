@@ -7,6 +7,7 @@ import CommonImages from '../../constants/CommonImages';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { formatCash, formatDateTime } from '../../utils/helper';
+import ReviewStar from '../Review/ReviewStar';
 
 const JobItem = ({ job }) => {
 
@@ -14,6 +15,8 @@ const JobItem = ({ job }) => {
     const apply_job = job.relationship?.job;
     const job_location = job.relationship?.job?.location;
     const job_author = job.relationship?.job_author;
+
+
 
     return (
         <Card style={styles.cardContainer}>
@@ -98,7 +101,7 @@ const JobItem = ({ job }) => {
                 display: 'flex',
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-                justifyContent: 'center'
+                justifyContent: 'flex-start'
             }}
             >
                 {
@@ -125,7 +128,8 @@ const JobItem = ({ job }) => {
                 margin: 8,
                 display: 'flex',
                 flexDirection: 'row',
-                alignItems: 'center'
+                alignItems: 'center',
+                backgroundColor:CommonColors.messagebox
             }}>
                 <Image style={{
                     width: 40,
@@ -154,9 +158,37 @@ const JobItem = ({ job }) => {
                         {job_author.phonenumber}
                     </Text>
                 </View>
-                <View>
+            </View>
+            <View style={{
+                marginHorizontal: 12,
+                display: 'flex',
+
+            }}>
+
+                <View
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row'
+                    }}
+                >
+                    {
+                        Array(job?.attributes?.range).fill({}).map((e, index) =>
+                            <ReviewStar
+                                key={index.toString()}
+                            />
+                        )
+                    }
+                </View>
+
+                <View style={{
+                    marginHorizontal: 12,
+                    marginVertical: 6
+                }}>
+                    <Text>Đánh giá từ khách hàng:  {job?.attributes?.review_content}</Text>
 
                 </View>
+
+
 
             </View>
 

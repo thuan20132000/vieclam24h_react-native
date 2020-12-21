@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Avatar, Button, Card, Title, Paragraph, Caption } from 'react-native-paper';
 import CommonImages from '../../constants/CommonImages';
 
-import { formatCash } from '../../utils/helper';
+import { formatCash, formatDateTime } from '../../utils/helper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from '../../constants/CommonIcons';
 import CommonColors from '../../constants/CommonColors';
@@ -14,7 +14,6 @@ import CommonColors from '../../constants/CommonColors';
 const CardHorizontal = ({ index, item, onPress }) => {
 
     let candidateNumber =   item.relationships?.candidates?.length;
-
 
     return (
         <TouchableOpacity style={styles.cardContainer}
@@ -33,9 +32,9 @@ const CardHorizontal = ({ index, item, onPress }) => {
             >
             </ImageBackground>
             <Card.Content style={styles.cardContent}>
-                <Title style={{ fontSize: 16 }}>
+                <Text style={{ fontSize: 14,marginRight:20 }}>
                     {item?.attributes.name}
-                </Title>
+                </Text>
                 <Paragraph
                     numberOfLines={2}
                     style={{
@@ -69,9 +68,23 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     </Caption>
 
                 </View>
+                <View style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                  
+                    <Text style={{
+                        marginHorizontal:6,
+                        fontWeight:'300',
+                        bottom:0,
+                        position:'relative',
+                        fontSize:12,
+                        color:'grey'
+                    }}>
+                        Đăng lúc : {formatDateTime(item.attributes.created_at)}
+                    </Text>
+
+                </View>
                 <View style={{
                     position:'absolute',
-                    right:40,
+                    right:26,
                     backgroundColor:'coral',
                     display:'flex',
                     flexDirection:'row',
@@ -123,6 +136,7 @@ const styles = StyleSheet.create({
     },
     cardContent: {
         width: '70%',
-        padding: 6
+        padding: 6,
+        justifyContent:'space-around'
     }
 })

@@ -27,7 +27,7 @@ const ChatScreen = (props) => {
 
     const _onNavigateToChatLive = (item) => {
 
-        // console.warn(item._i);
+        console.warn(item);
         props.navigation.navigate('ChatLive', {
             user: item
         });

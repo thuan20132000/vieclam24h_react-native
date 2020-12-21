@@ -225,14 +225,14 @@ export const getOccupations = async (category_id = '') => {
  * created_at:17/11/2020
  */
 
-export const getJobs = async (category = '', number = '') => {
+export const getJobs = async (category = '', perpage = 5,postnumber=0) => {
 
 
 
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job?category=${category}&per_page=${number}`);
+        let dataFetch = await fetch(`${url}/job?category=${category}&perpage=${perpage}&postnumber=${postnumber}`);
 
         if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH JOBS');

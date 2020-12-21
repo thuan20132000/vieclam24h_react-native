@@ -21,7 +21,7 @@ export const generateCode = async (prefix='') => {
 export const formatDateTime = (timestring) => {
     let date = new  Date(timestring);
 
-    return `${date.getHours()}:${date.getMinutes()}  ${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+    return `${date.getHours()}:${date.getMinutes()}  ${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
 }
 
 

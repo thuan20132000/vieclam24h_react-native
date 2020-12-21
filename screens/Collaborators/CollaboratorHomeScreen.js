@@ -9,6 +9,8 @@ import SearchButton from '../../components/Search/SearchButton'
 import { getCategory, getJobs } from '../../utils/serverApi';
 import CommonColors from '../../constants/CommonColors'
 
+import {useSelector} from 'react-redux';
+
 const CollaboratorHomeScreen = (props) => {
 
     const menuItems = Array(6).fill({});
@@ -17,7 +19,7 @@ const CollaboratorHomeScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
 
-
+    const {userInformation} = useSelector(state => state.authentication);
     const {
         navigation
     } = props;
@@ -86,8 +88,11 @@ const CollaboratorHomeScreen = (props) => {
         _getCategory();
         _getJobs();
 
+
+
     }, []);
 
+    console.warn(userInformation);
 
     return (
         <ScrollView
@@ -129,7 +134,7 @@ const CollaboratorHomeScreen = (props) => {
 
             {/* Job List */}
             <View style={styles.vericleListContainer}>
-                <Subheading style={{ paddingHorizontal: 12 }}>Việc làm dành cho bạn</Subheading>
+                <Subheading style={{ paddingHorizontal: 12 }}>Việc làm vừa đăng</Subheading>
 
                 {
                     jobs &&

@@ -41,6 +41,7 @@ import * as userActions from './store/actions/authenticationActions';
 import CommonColors from './constants/CommonColors';
 import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
 import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
+import CollaboratorSearchScreen from './screens/Collaborators/CollaboratorSearchScreen';
 
 /**
  * Authentication Stack
@@ -87,7 +88,7 @@ function CollaboratorHomeStack() {
             />
             <CollaboratorHomeStackNavigator.Screen
                 name="Search"
-                component={SearchScreen}
+                component={CollaboratorSearchScreen}
             />
             <CollaboratorHomeStackNavigator.Screen
                 name="JobList"

@@ -32,6 +32,8 @@ export default {
     fileLink:'file-link',
     send:'send',
     person:"google-street-view",
+
+    arrowRight:'arrow-right'
     
 
 }
