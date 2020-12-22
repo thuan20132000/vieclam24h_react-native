@@ -27,7 +27,6 @@ const ChatScreen = (props) => {
 
     const _onNavigateToChatLive = (item) => {
 
-        console.warn(item);
         props.navigation.navigate('ChatLive', {
             user: item
         });
@@ -35,27 +34,6 @@ const ChatScreen = (props) => {
 
     const [wsSocket, setWsSocket] = useState('');
 
-    // useMemo(() => {
-    //     const socket = new WebSocket(`wss://damp-stream-67132.herokuapp.com/`);
-    //     setWsSocket(socket)
-
-    // }, []);
-
-    // wsSocket.onmessage = async (msg) => {
-    //     let message = JSON.parse(msg.data);
-
-    //     console.warn(message);
-    //     // let newMessage = {
-    //     //     "from": { "email": "", "id": message.from, "name": "" },
-    //     //     "message": message.message,
-    //     // }
-    //     // console.warn('message: ',message);
-    //     // setMessageRealTime(message);
-
-    // }
-    // useEffect(() => {
-
-    // }, []);
 
     const appState = useRef(AppState.currentState);
     const [appStateVisible, setAppStateVisible] = useState(appState.current);
@@ -84,7 +62,22 @@ const ChatScreen = (props) => {
 
     const _onGetUserChatConnection = async () => {
         let userChatConnectionRes = await getUserChatConnections(userInformation.id);
+
+       
+        // function compare(a, b) {
+        //     if (a.date < b.data) {
+        //         return -1;
+        //     }
+        //     if (a.data > b.last_nom) {
+        //         return 1;
+        //     }
+        //     return 0;
+        // }
+
+        // let a = userChatConnectionRes.data.sort(compare);
+
         setUserChatConnections(userChatConnectionRes.data);
+
     }
 
     let timeoutEvent;
@@ -131,37 +124,36 @@ const ChatScreen = (props) => {
 
     const [socketResponseData, setSocketResponseData] = useState();
     useEffect(() => {
-        setSocketResponseData(socketResponse)
+        setSocketResponseData(socketResponse);
+
     }, [socketResponse])
 
 
     return (
-        <View>
+        <FlatList
+            showsVerticalScrollIndicator={false}
+            data={userChatConnections}
+            renderItem={({ item, index }) => (
+                <CardUserMessageItem
+                    customStyle={{
+                        margin: 6,
+                        marginBottom: 12
+                    }}
+                    item={item}
+                    onItemPress={() => _onNavigateToChatLive(item)}
+                    title={item.conversation_id}
+                    subTitle={item?.conversations[0]?.message}
+                    imageUrl={item.user_image}
+                    key={index.toString()}
+                    socketResponseData={socketResponseData.connection == item._id && socketResponseData}
+                />
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            onEndReachedThreshold={0.5}
+            onEndReached={onRefresh}
+            ListFooterComponent={() => <FooterList />}
 
-            <FlatList
-                showsVerticalScrollIndicator={false}
-                data={userChatConnections}
-                renderItem={({ item, index }) => (
-                    <CardUserMessageItem
-                        customStyle={{
-                            margin: 6,
-                            marginBottom: 12
-                        }}
-                        onItemPress={() => _onNavigateToChatLive(item)}
-                        title={item.conversation_id}
-                        subTitle={item?.conversations[0]?.message}
-                        imageUrl={item.user_image}
-                        key={index.toString()}
-                        socketResponseData={socketResponseData.connection == item._id && socketResponseData}
-                    />
-                )}
-                keyExtractor={(item, index) => index.toString()}
-                onEndReachedThreshold={0.5}
-                onEndReached={onRefresh}
-                ListFooterComponent={() => <FooterList />}
-
-            />
-        </View>
+        />
     )
 }
 

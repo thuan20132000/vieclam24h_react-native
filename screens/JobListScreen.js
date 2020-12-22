@@ -86,7 +86,7 @@ const JobListScreen = (props) => {
                     onPress={_navigateToJobDetail}
                 />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item,index) => index.toString()}
             extraData={selectedId}
             onEndReachedThreshold={0.5}
             onEndReached={_loadMoreJobs}

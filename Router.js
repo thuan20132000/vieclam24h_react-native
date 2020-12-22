@@ -42,6 +42,8 @@ import CommonColors from './constants/CommonColors';
 import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
 import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 import CollaboratorSearchScreen from './screens/Collaborators/CollaboratorSearchScreen';
+import CustomerStatisticScreen from './screens/Customers/CustomerStatisticScreen';
+import CollaboratorStatisticScreen from './screens/Collaborators/CollaboratorStatisticScreen';
 
 /**
  * Authentication Stack
@@ -133,6 +135,14 @@ function AccountStack() {
             <AccountStackNavigator.Screen
                 name="CollaboratorProfile"
                 component={CollaboratorProfileScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="CustomerStatistic"
+                component={CustomerStatisticScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="CollaboratorStatistic"
+                component={CollaboratorStatisticScreen}
             />
         </AccountStackNavigator.Navigator>
     )

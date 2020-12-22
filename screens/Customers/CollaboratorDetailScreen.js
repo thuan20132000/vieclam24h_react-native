@@ -23,10 +23,6 @@ const CollaboratorDetailScreen = (props) => {
     const [collaborator, setCollaborator] = useState();
     const [collaboratorOccupations, setCollaboratorOccupations] = useState([]);
 
-    const _onAddToFavoritesList = async () => {
-
-    }
-
     const _getCollaboratorDetail = async () => {
         let collaboratorData = await getCollaboratorDetail(collaborator_id);
         if (!collaboratorData.status) {
@@ -37,12 +33,10 @@ const CollaboratorDetailScreen = (props) => {
         setCollaborator(collaboratorData.data);
         setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
     }
-
     useEffect(() => {
         _getCollaboratorDetail();
 
-
-    }, [])
+    }, []);
 
 
     const _onNavigateToChat = async () => {
@@ -54,10 +48,12 @@ const CollaboratorDetailScreen = (props) => {
             collaborator?.attributes.profile_image || ""
         );
 
+      //  console.warn(checkUserIsConnected);
+
 
 
         props.navigation.navigate('ChatLive',{
-            user:collaborator
+            user:checkUserIsConnected.data
         });
     }
 

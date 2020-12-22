@@ -70,10 +70,8 @@ const CustomerHomeScreen = (props) => {
 
     const _onGetCollaboratorsByDistrict = async () => {
 
-
-        let dataRes = await getCollaboratorsByDistrict(userInformation.attributes?.district,4,0);        
-        console.warn(dataRes);
-        if (dataRes?.data.status == true) {
+        let dataRes = await getCollaboratorsByDistrict(userInformation.attributes?.district,10,0);                
+        if (dataRes?.data.data.length > 0) {
             setCollaboratorsByDistrict(dataRes?.data.data);
         } else {
             setCollaboratorsByDistrict([]);

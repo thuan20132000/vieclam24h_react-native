@@ -225,7 +225,7 @@ export const getOccupations = async (category_id = '') => {
  * created_at:17/11/2020
  */
 
-export const getJobs = async (category = '', perpage = 5,postnumber=0) => {
+export const getJobs = async (category = '', perpage = 5, postnumber = 0) => {
 
 
 
@@ -580,20 +580,19 @@ export const searchCandidates = async (query = null, district = null, limit = 6)
  * description:Get all collaborators or collaborator by category
  * @param {*} by_category 
  */
-export const getCollaborator = async (by_category = null,byTopRating=null,district=492,perpage=10,postnumber=0) => {
+export const getCollaborator = async (by_category = null, byTopRating = null, district = 492, perpage = 10, postnumber = 0) => {
     try {
         let url = serverConfig.url;
         let url_with_params;
 
-        if(by_category){
-           url_with_params = `${url}/collaborators?category=${by_category}&perpage=${perpage}&postnumber=${postnumber}`;
+        if (by_category) {
+            url_with_params = `${url}/collaborators?category=${by_category}&perpage=${perpage}&postnumber=${postnumber}`;
         }
-        
+
 
         let datafetch = await fetch(url_with_params);
-        console.warn(url_with_params);
 
-        
+
         if (!datafetch.ok) {
             console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
 
@@ -630,16 +629,15 @@ export const getCollaborator = async (by_category = null,byTopRating=null,distri
  * @param {*} perpage 
  * @param {*} postnumber 
  */
-export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnumber=0,) => {
+export const getCollaboratorByCategory = async (by_category = 1, perpage = 10, postnumber = 0,) => {
     try {
         let url = serverConfig.url;
-       
+
         let url_with_params = `${url}/collaborators?category=${by_category}&perpage=${perpage}&postnumber=${postnumber}`;
-        
-        
+
         let datafetch = await fetch(url_with_params);
 
-        
+
         if (!datafetch.ok) {
             console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
 
@@ -674,14 +672,13 @@ export const getCollaboratorByCategory = async (by_category=1,perpage=10,postnum
  * @param {*} perpage 
  * @param {*} postnumber 
  */
-export const getCollaboratorsByDistrict = async (district_id=1,perpage=10,postnumber=0) => {
+export const getCollaboratorsByDistrict = async (district_id = 1, perpage = 10, postnumber = 0) => {
     try {
         let url = serverConfig.url;
-       
-        let url_with_params = `${url}/collaborators?district=${district_id}&perpage=${perpage}&postnumber=${postnumber}`;
-        let datafetch = await fetch(url_with_params);
 
-        
+        let url_with_params = `${url}/collaborators?district=${district_id}&perpage=${perpage}&postnumber=${postnumber}`;
+
+        let datafetch = await fetch(url_with_params);
         if (!datafetch.ok) {
             console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
             return {
@@ -712,15 +709,14 @@ export const getCollaboratorsByDistrict = async (district_id=1,perpage=10,postnu
 /**
  * author:thuantruong
  */
-export const getCollaboratorsTopRating = async (perpage=10,postnumber=0) => {
+export const getCollaboratorsTopRating = async (perpage = 10, postnumber = 0) => {
     try {
         let url = serverConfig.url;
-       
+
         let url_with_params = `${url}/collaborators?sortbytoprating=true&perpage=${perpage}&postnumber=${postnumber}`;
-        console.warn(url_with_params);
         let datafetch = await fetch(url_with_params);
 
-        
+
         if (!datafetch.ok) {
             console.warn('ERROR AT GET COLLABORATOR BY CATEGORY');
 
@@ -968,7 +964,7 @@ export const getUserConfirmedJobs = async (author_id) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/job/${author_id}/status/confirmed`);
-        
+
         if (!dataFetch.ok) {
             console.warn("ERROT AT GET CUSTOMER CONFIRMED JOBS");
 
@@ -1309,6 +1305,85 @@ export const getUserConversation = async (conversation_id, limit = 12, pagenext 
             data: [],
             message: "failed 404",
             status: false
+        }
+    }
+}
+
+
+
+export const getUserDetail = async (user_id) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/user/${user_id}`);
+        if (!dataFetch.ok) {
+            return {
+                data: null,
+                message: "Error: " + dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.status) {
+            return {
+                data: dataRes.data,
+                message: "Get user success",
+                status: dataRes.status
+            }
+        } else {
+            return {
+                data: null,
+                message: "Get user failed",
+                status: false,
+            }
+        }
+
+    } catch (error) {
+        return {
+            data: null,
+            message: "Get user failed",
+            status: false,
+        }
+    }
+}
+
+
+
+
+
+export const getCollaboratorStatistic = async (collaborator_id) => {
+    
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${url}/collaborator-statistic/${collaborator_id}`);
+        if (!dataFetch.ok) {
+            return {
+                data: null,
+                message: "Error: " + dataFetch,
+                status: false,
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        if (dataRes.status) {
+            return {
+                data: dataRes.data,
+                message: "Get user success",
+                status: dataRes.status
+            }
+        } else {
+            return {
+                data: null,
+                message: "Get user failed",
+                status: false,
+            }
+        }
+
+    } catch (error) {
+        return {
+            data: null,
+            message: "Get user failed",
+            status: false,
         }
     }
 }

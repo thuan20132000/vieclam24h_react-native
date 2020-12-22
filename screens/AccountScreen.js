@@ -36,8 +36,17 @@ const AccountScreen = (props) => {
     useEffect(() => {
         let user_role = userInformation.role[0];
         setUserRole(user_role);
-        console.warn(user_role);
-    }, [])
+    }, []);
+
+
+    const _onNavigateToStatistic = async () => {
+        if(userRole.id == 3){
+            navigation.navigate('CustomerStatistic');
+        }else{
+            navigation.navigate('CollaboratorStatistic');
+        }
+    }
+
 
     return (
         <ScrollView>
@@ -67,7 +76,12 @@ const AccountScreen = (props) => {
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
                 onPress={() => navigation.navigate('CollaboratorProfile')}
             />
-          
+            <List.Item
+                title="Thống Kê"
+                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                onPress={_onNavigateToStatistic}
+            />
+
             <List.Item
                 title="Thông Báo"
                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}

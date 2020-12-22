@@ -266,9 +266,7 @@ const JobInidicatorItem = ({
                             Xác Nhận
                         </Text>
                     </TouchableOpacity>
-
                 </ScrollView>
-
                 {
                     // errorMessage.status &&
                     <Snackbar style={{ backgroundColor: 'coral' }}

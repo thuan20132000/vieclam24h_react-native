@@ -22,19 +22,31 @@ const CollaboratorListScreen = (props) => {
             },
         })
 
+
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false
+        });
+
+        return () => {
+            props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: true
+            });
+
+        }
+
+
+
     }, []);
 
 
 
     const [postnumber, setPostnumber] = useState(0);
     const [perpage, setPerpage] = useState(8);
-    const [isTopRating,setIsTopRating] = useState(false);
 
     const _onGetCollaboratorByCategory = async () => {
         setIsLoading(true);
         let dataRes = await getCollaboratorByCategory(category.id, perpage, postnumber);
 
-        console.warn(dataRes);
         if (dataRes.data.data.length > 0) {
             setCollaborators(dataRes.data.data);
         }

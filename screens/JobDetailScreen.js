@@ -10,7 +10,7 @@ import CommonColors from '../constants/CommonColors';
 import RBSheet from "react-native-raw-bottom-sheet";
 import { useSelector } from 'react-redux';
 
-import { getJobDetail, applyJob } from '../utils/serverApi';
+import { getJobDetail, applyJob,checkToConnectToUserChat } from '../utils/serverApi';
 import { formatCash } from '../utils/helper';
 
 
@@ -71,7 +71,6 @@ const JobDetailScreen = (props) => {
     }
 
     const _applyJob = async () => {
-        console.warn('ds');
         try {
             setIsLoading(true);
             setIsDisabling(true);
@@ -81,7 +80,6 @@ const JobDetailScreen = (props) => {
 
             if (checkValidated) {
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
-                console.warn(applyRes);
                 if (!applyRes.status) {
 
                     Alert.alert("Thất bại", `${applyRes.data.message}`);
@@ -150,7 +148,28 @@ const JobDetailScreen = (props) => {
             headerBackTitleVisible: false
         })
 
-    }, [])
+    }, []);
+
+
+
+
+    const _onNavigateToChat = async () => {
+        let author = jobDetail.relationships?.author;
+        // console.warn(author);
+
+        let checkUserIsConnected = await checkToConnectToUserChat(
+            userInformation.id,
+            userInformation.id,
+            author.id,
+            ""
+        );
+
+      //  console.warn(checkUserIsConnected);
+
+        props.navigation.navigate('ChatLive',{
+            user:checkUserIsConnected.data
+        });
+    }
 
     return (
         <ScrollView>
@@ -187,9 +206,9 @@ const JobDetailScreen = (props) => {
                             />
                             <IconButton
                                 icon={CommonIcons.chatMessage}
-                                color={CommonColors.primary}
-                                size={28}
-                                onPress={() => console.log('Pressed')}
+                                color={CommonColors.btnSubmit}
+                                size={32}
+                                onPress={_onNavigateToChat}
                             />
 
 

@@ -92,7 +92,6 @@ const CollaboratorHomeScreen = (props) => {
 
     }, []);
 
-    console.warn(userInformation);
 
     return (
         <ScrollView

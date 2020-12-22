@@ -55,7 +55,15 @@ const CustomerJobItem = ({ _onPress, item, _onDelete }) => {
             <TouchableOpacity style={[styles.itemContainer, { zIndex: -1 }]}
                 onPress={_onPress}
             >
-                <Title>{jobItem.title}</Title>
+                <Text style={{
+                    fontSize:16,
+                    color:'black',
+                    fontWeight:'600',
+                    width:deviceWidth/1.5
+                
+                }}>
+                    {jobItem.title}
+                </Text>
                 <Paragraph>{jobItem.description}</Paragraph>
                 <View>
                     <Text>Giá đưa ra: <Text style={{ color: 'red' }}>{formatCash(jobItem.suggestion_price)} vnđ</Text></Text>
@@ -339,7 +347,8 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                 !isLoading ?
 
                     confirmedJobsData.map((e, index) =>
-                        <CardJobConfirm key={index.toString()}
+                        <CardJobConfirm 
+                            key={index.toString()}
                             item={e}
 
                         />
@@ -442,6 +451,9 @@ const CustomerJobScreen = (props) => {
     )
 }
 
+
+const deviceWidth = Dimensions.get('screen').width;
+const deviceHeight = Dimensions.get('screen').height;
 export default CustomerJobScreen
 
 const styles = StyleSheet.create({

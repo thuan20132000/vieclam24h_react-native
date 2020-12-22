@@ -105,7 +105,6 @@ const ChatLiveScreen = (props) => {
 
     useEffect(() => {
         if (user) {
-            console.warn('recipient user: ', user);
             setRecipient(user);
 
         }
@@ -272,7 +271,7 @@ const ChatLiveScreen = (props) => {
                 renderItem={({ item, index }) => (
                     <MessageChatitem
                         key={index.toString()}
-                        isMine={item.from.id == userInformation.id ? true : false}
+                        isMine={item?.from?.id == userInformation.id ? true : false}
                         message={item.message}
                         date={item.date}
                         profileImage={user.user_image}
