@@ -49,6 +49,7 @@ const CardUserMessageItem = ({ title, subTitle, datetime, imageUrl, customStyle,
         let user_connection;
         if (userInformation.id != item.from) {
             //  console.warn(item.from);
+            console.warn(userInformation);
             user_connection = item.from;
         } else {
             user_connection = item.to;

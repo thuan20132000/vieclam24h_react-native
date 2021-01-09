@@ -6,6 +6,7 @@ export const getProvince = async () => {
         let fetchData = await fetch(url);
         if(!fetchData.ok){
             return{
+                status:false,
                 data:[],
                 message:'Error at fetch province'
             }
@@ -13,12 +14,14 @@ export const getProvince = async () => {
         let resData = await fetchData.json();
         
         return {
+            status:true,
             data:resData,
             message:'Fetch province data successfully.'
         }
         
     } catch (error) {
         return {
+            status:false,
             data:[],
             message:'Error at fetch province ' + error
         }
@@ -32,6 +35,7 @@ export const getDistrict = async (code) => {
         let fetchData = await fetch(url);
         if(!fetchData.ok){
             return {
+                status:false,
                 data:[],
                 message:'Error at fetch district.'
             }
@@ -39,6 +43,7 @@ export const getDistrict = async (code) => {
         let resData = await fetchData.json();
 
         return {
+            status:true,
             data:resData,
             message:"Error at fetch district",
         }
@@ -46,6 +51,7 @@ export const getDistrict = async (code) => {
     } catch (error) {
 
         return {
+            status:false,
             data:[],
             message:'Error at fetch district '+error
         }
@@ -61,6 +67,7 @@ export const getSubdistrict = async (code) => {
 
         if(!fetchData.ok){
             return {
+                status:false,
                 data:[],
                 message:'Error at fetch subdistrict.'
             }
@@ -68,6 +75,7 @@ export const getSubdistrict = async (code) => {
         let resData = await fetchData.json();
 
         return {
+            status:true,
             data:resData,
             message:"Error at fetch subdistrict",
         }
@@ -75,6 +83,7 @@ export const getSubdistrict = async (code) => {
     } catch (error) {
 
         return {
+            status:false,
             data:[],
             message:'Error at fetch subdistrict '+error
         }

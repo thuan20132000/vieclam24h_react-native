@@ -47,7 +47,6 @@ const CustomerHomeScreen = (props) => {
         setIsLoading(true);
         let dataRes = await getCollaborator();
 
-        // console.warn(data);
 
         if (dataRes.data?.data?.length > 0) {
             setCollaborators(dataRes.data?.data);

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Alert, KeyboardAvoidingView, StyleSheet, View } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
+import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, TextInput, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { Dialog, Portal, Text, TextInput, Menu, Button, Divider, Title, Drawer, ActivityIndicator, Avatar, IconButton } from 'react-native-paper';
+import { Dialog, Portal, Text, Menu, Button, Divider, Title, Drawer, ActivityIndicator, Avatar, IconButton } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors';
 import { useSelector } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -17,6 +17,10 @@ import { generateCode } from '../../utils/helper';
 import { useDispatch } from 'react-redux';
 import * as userActions from '../../store/actions/authenticationActions';
 import OccupationSelection from '../../components/Selection/OccupationSelection';
+import ItemSelection from '../../components/Item/ItemSelection';
+import SimpleBottomSheet from '../../components/BottomSheet/SimpleBottomSheet';
+import { RenderDistrict, RenderProvince, RenderSubDistrict } from '../../components/Render/RenderLocation';
+import CommonIcons from '../../constants/CommonIcons';
 
 const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelected, selectLocationType }) => {
     const [visible, setVisible] = React.useState(false);
@@ -52,9 +56,15 @@ const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelec
     )
 }
 
+
+
+
+
 const CollaboratorProfileScreen = (props) => {
 
     const { userInformation } = useSelector(state => state.authentication);
+
+    const _refBottomSheetLocation = useRef();
 
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
@@ -65,13 +75,16 @@ const CollaboratorProfileScreen = (props) => {
         email: '',
         phoneNumber: '',
         idCard: '',
+        province_code:'',
         province: '',
+        district_code:'',
         district: '',
+        subdistrict_code:'',
         subdistrict: '',
         address: '',
         profile_image: '',
     });
-    const [userOccupations,setUserOccupations] = useState([]);
+    const [userOccupations, setUserOccupations] = useState([]);
 
     useEffect(() => {
         if (userInformation) {
@@ -186,7 +199,7 @@ const CollaboratorProfileScreen = (props) => {
                 console.warn(error)
             )
         } catch (error) {
-            console.warn('ERRPR: ',error);
+            console.warn('ERRPR: ', error);
         }
 
 
@@ -211,23 +224,69 @@ const CollaboratorProfileScreen = (props) => {
     }, []);
 
 
-    const [occupationSelected,setOccupationSelected] = useState([]);
+    const [occupationSelected, setOccupationSelected] = useState([]);
     useEffect(() => {
         let occupation_ids = [];
         occupationSelected.map(e => occupation_ids.push(e.id));
         setUserOccupations(occupation_ids);
     }, [occupationSelected])
 
-    return (
 
-        <ScrollView>
-            <KeyboardAvoidingView
-                behavior={"padding"}
-                style={{
-                    backgroundColor: 'white', flex: 1
-                }}
-                keyboardVerticalOffset={50}
-            >
+
+    const [refBottomSheetLocation, setRefBottomSheetLocation] = useState('');
+
+    const [locationData, setLocationData] = useState([]);
+    const _onOpenLocationBottomSheet = (type) => {
+        setRefBottomSheetLocation(type);
+        _refBottomSheetLocation.current.open();
+    }
+
+
+
+    
+    const _onSelectLocation = (locationType,item) => {
+        if(locationType == 'province'){
+            setUserProfile({...userProfile,province:item.name,province_code:item.code});
+            _refBottomSheetLocation.current.close();
+        }
+
+        if(locationType == 'district'){
+            setUserProfile({...userProfile,district:item.name,district_code:item.code});
+            _refBottomSheetLocation.current.close();
+        }
+
+        if(locationType == 'subdistrict'){
+            setUserProfile({...userProfile,subdistrict:item.name,district_code:item.code});
+            _refBottomSheetLocation.current.close();
+        }
+    }
+
+    // When provine in userProfile change
+    useEffect(() => {
+        setUserProfile({
+            ...userProfile,
+            district_code:'',
+            district:''
+        })
+    }, [userProfile.province]);
+
+    //When district in userProfile change
+    useEffect(() => {
+        setUserProfile({
+            ...userProfile,
+            subdistrict:'',
+            subdistrict_code:''
+        })
+    }, [userProfile.district])
+
+
+
+
+
+    return (
+        <>
+            <ScrollView>
+
                 <View style={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
                         size={88}
@@ -242,21 +301,97 @@ const CollaboratorProfileScreen = (props) => {
                         onPress={_onOpenImagePicker}
                     />
                 </View>
-                <TextInput style={styles.input}
-                    label="Tên"
-                    value={userProfile.username}
-                    onChangeText={text => setUserProfile({ ...userProfile, username: text })}
-                />
-                <TextInput style={styles.input}
-                    label="Email"
-                    value={userProfile.email}
-                    onChangeText={text => setUserProfile({ ...userProfile, email: text })}
-                />
-                <TextInput style={styles.input}
-                    label="Số điện thoại"
-                    value={userProfile.phoneNumber}
-                    onChangeText={text => setUserProfile({ ...userProfile, phoneNumber: text })}
-                />
+                <View style={[
+                    styles.inputGroup,
+
+                ]}>
+                    <Text
+                        style={[
+                            styles.inputLabel
+                        ]}
+                    >
+                        Họ và Tên
+                </Text>
+                    <TextInput style={styles.input}
+                        label="Tên"
+                        value={userProfile.username}
+                        onChangeText={text => setUserProfile({ ...userProfile, username: text })}
+                    />
+                </View>
+
+                <View style={[
+                    styles.inputGroup
+                ]}>
+                    <Text
+                        style={[
+                            styles.inputLabel
+                        ]}
+                    >
+                        Email
+                </Text>
+                    <TextInput style={styles.input}
+                        label="Email"
+                        value={userProfile.email}
+                        onChangeText={text => setUserProfile({ ...userProfile, email: text })}
+                    />
+                </View>
+
+                <View style={[
+                    styles.inputGroup
+                ]}>
+                    <Text
+                        style={[
+                            styles.inputLabel
+                        ]}
+                    >
+                        Số điện thoại
+                </Text>
+                    <TextInput style={styles.input}
+                        label="Số điện thoại"
+                        value={userProfile.phoneNumber}
+                        onChangeText={text => setUserProfile({ ...userProfile, phoneNumber: text })}
+                    />
+
+                </View>
+
+                <View style={[
+                    styles.inputGroup
+                ]}>
+                    <Text
+                        style={[
+                            styles.inputLabel
+                        ]}
+                    >
+                        Chứng minh nhân dân / căn cước công dân
+                </Text>
+                    <TextInput style={styles.input}
+                        label="Chứng minh nhân dân"
+                        value={userProfile.idCard}
+                        onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
+                    />
+
+                </View>
+
+                <View
+                    style={[
+                        styles.inputGroup
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.inputLabel
+                        ]}
+                    >
+                        Địa chỉ
+                </Text>
+                    <TextInput style={styles.input}
+                        label="Chứng minh nhân dân"
+                        value={userProfile.idCard}
+                        onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
+                    />
+
+                </View>
+
 
 
                 <OccupationSelection
@@ -266,7 +401,7 @@ const CollaboratorProfileScreen = (props) => {
                 />
                 <View>
                     {
-                        occupationSelected.map((e,index) => 
+                        occupationSelected.map((e, index) =>
                             <View key={index.toString()}>
                                 <Text>{e.attributes.name}</Text>
                             </View>
@@ -275,27 +410,39 @@ const CollaboratorProfileScreen = (props) => {
                 </View>
 
 
-                <TextInput style={styles.input}
-                    label="Chứng minh nhân dân"
-                    value={userProfile.idCard}
-                    onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
-                />
+                <View
+                    style={[
+                        styles.inputGroup
+                    ]}
+                >
+                    <Text
+                        style={[styles.inputLabel]}
+                    >
+                        Địa chỉ
+                </Text>
+                    <ItemSelection
+                        containerStyle={styles.input}
+                        label={ userProfile.province || `Chọn tỉnh / thành phố`}
+                        labelStyle={styles.inputLabel}
+                        onItemPress={() => _onOpenLocationBottomSheet('province')}
+                    />
+                    <ItemSelection
+                        containerStyle={styles.input}
+                        label={ userProfile.district ||  `Chọn quận / huyện`}
+                        labelStyle={styles.inputLabel}
+                        onItemPress={() => _onOpenLocationBottomSheet('district')}
 
-                <Drawer.Item
-                    style={{ backgroundColor: CommonColors.primary }}
-                    label={locationSelected.province || "Chọn Tỉnh / Thành Phố"}
-                    onPress={() => _openDialogLocation('province')}
-                />
-                <Drawer.Item
-                    style={{ backgroundColor: CommonColors.primary }}
-                    label={locationSelected.district || "Chọn Quận / Huyện"}
-                    onPress={() => _openDialogLocation('district')}
-                />
-                <Drawer.Item
-                    style={{ backgroundColor: CommonColors.primary }}
-                    label={locationSelected.subdistrict || "Chọn Phường / Xã"}
-                    onPress={() => _openDialogLocation('subdistrict')}
-                />
+                    />
+                    <ItemSelection
+                        containerStyle={styles.input}
+                        label={ userProfile.subdistrict || `Chọn phường / xã`}
+                        labelStyle={styles.inputLabel}
+                        onItemPress={() => _onOpenLocationBottomSheet('subdistrict')}
+
+                    />
+                </View>
+
+
                 <TextInput style={styles.input}
                     label="Địa chỉ"
                     value={userProfile.address}
@@ -303,7 +450,7 @@ const CollaboratorProfileScreen = (props) => {
                     onChangeText={text => setUserProfile({ ...userProfile, address: text })}
                 />
 
-                
+
 
 
                 <Button style={{
@@ -322,40 +469,117 @@ const CollaboratorProfileScreen = (props) => {
                 >
                     CẬP NHẬT
             </Button>
-            </KeyboardAvoidingView>
-            <Portal>
-                <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)} style={{ flex: 1, padding: 0 }}>
-                    <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
-                        <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
-                            {
-                                isLoading ?
-                                    <ActivityIndicator /> :
-                                    dialogData.map((e, index) =>
-                                        <SelectItem
-                                            key={index.toString()}
-                                            item={e}
-                                            setDialogVisible={setDialogVisible}
-                                            setLocationSelected={setLocationSelected}
-                                            locationSelected={locationSelected}
-                                            selectLocationType={selectLocationType}
-                                        />
-                                    )
-                            }
-                        </ScrollView>
-                    </Dialog.ScrollArea>
+                <Portal>
+                    <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)} style={{ flex: 1, padding: 0 }}>
+                        <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
+                            <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
+                                {
+                                    isLoading ?
+                                        <ActivityIndicator /> :
+                                        dialogData.map((e, index) =>
+                                            <SelectItem
+                                                key={index.toString()}
+                                                item={e}
+                                                setDialogVisible={setDialogVisible}
+                                                setLocationSelected={setLocationSelected}
+                                                locationSelected={locationSelected}
+                                                selectLocationType={selectLocationType}
+                                            />
+                                        )
+                                }
+                            </ScrollView>
+                        </Dialog.ScrollArea>
 
-                </Dialog>
-            </Portal>
+                    </Dialog>
+                </Portal>
 
-        </ScrollView>
+
+
+            </ScrollView>
+
+            <SimpleBottomSheet
+                refRBSheet={_refBottomSheetLocation}
+                height={deviceHeight}
+                closeOnDragDown={false}
+                dragFromTopOnly={true}
+            >
+                <View
+                    style={[
+                        {
+                            display:'flex',
+                            flexDirection:'row',
+                            marginVertical:8
+                        }
+                    ]}
+                >
+                    <IconButton
+                        icon={CommonIcons.close}
+                        size={34}
+                        color={'black'}
+                        onPress={()=>_refBottomSheetLocation.current.close()}
+                    />
+                </View>
+                {
+                    refBottomSheetLocation == 'province' &&
+                        <RenderProvince 
+                            setSelectedItem={(item)=>_onSelectLocation('province',item)}
+                        />
+                }
+
+                {
+                    refBottomSheetLocation == 'district' &&
+                        <RenderDistrict
+                            province_code={userProfile.province_code}
+                            setSelectedItem = {(item) =>_onSelectLocation('district',item)}
+                        />    
+                }
+
+                {
+                    refBottomSheetLocation == 'subdistrict' &&
+                        <RenderSubDistrict
+                            district_code={userProfile.district_code}
+                            setSelectedItem = {(item) => _onSelectLocation('subdistrict',item)}
+                        />
+                }
+
+
+
+                
+            </SimpleBottomSheet>
+        </>
 
     )
 }
 
 export default CollaboratorProfileScreen
+const deviceWidth = Dimensions.get('screen').width;
+const deviceHeight = Dimensions.get('screen').height;
 
 const styles = StyleSheet.create({
     input: {
-        margin: 4
+        paddingHorizontal: 16,
+        marginVertical: 4,
+        paddingVertical: 4,
+        height: 40,
+        borderRadius: 8,
+        fontWeight: '500',
+        shadowColor: "#000",
+        backgroundColor: 'white',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
+    },
+    inputGroup: {
+        marginHorizontal: 12
+    },
+    inputLabel: {
+        color: 'grey',
+        fontSize: 14,
+        fontWeight: '500'
     }
 })

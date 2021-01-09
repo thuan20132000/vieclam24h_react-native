@@ -33,7 +33,9 @@ export default {
     send:'send',
     person:"google-street-view",
 
-    arrowRight:'arrow-right'
+    arrowRight:'arrow-right',
+    close:'close',
+    arrowRightChevron:'chevron-right'
     
 
 }
