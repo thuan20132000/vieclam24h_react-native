@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Alert, Dimensions, KeyboardAvoidingView, StyleSheet, TextInput, View } from 'react-native'
+import { Alert, Dimensions, KeyboardAvoidingView, Platform, StyleSheet, TextInput, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Dialog, Portal, Text, Menu, Button, Divider, Title, Drawer, ActivityIndicator, Avatar, IconButton } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors';
 import { useSelector } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 
-import { getProvince, getDistrict, getSubdistrict } from '../../utils/locationApi';
 import { updateUser } from '../../utils/serverApi';
 import CommonImages from '../../constants/CommonImages';
 import storage from '@react-native-firebase/storage';
-import { utils } from '@react-native-firebase/app';
 
 import { generateCode } from '../../utils/helper';
 
@@ -19,42 +17,10 @@ import * as userActions from '../../store/actions/authenticationActions';
 import OccupationSelection from '../../components/Selection/OccupationSelection';
 import ItemSelection from '../../components/Item/ItemSelection';
 import SimpleBottomSheet from '../../components/BottomSheet/SimpleBottomSheet';
-import { RenderDistrict, RenderProvince, RenderSubDistrict } from '../../components/Render/RenderLocation';
+import { RenderDistrict, RenderOccupationSelection, RenderProvince, RenderSubDistrict } from '../../components/Render/RenderSelection';
 import CommonIcons from '../../constants/CommonIcons';
+import ItemChip from '../../components/Item/ItemChip';
 
-const SelectItem = ({ setDialogVisible, item, setLocationSelected, locationSelected, selectLocationType }) => {
-    const [visible, setVisible] = React.useState(false);
-
-
-
-    const openMenu = () => setVisible(true);
-
-    const closeMenu = () => setVisible(false);
-
-    const _onSelectItem = async () => {
-        if (selectLocationType == 'province') {
-            setLocationSelected({ ...locationSelected, province: item.name_with_type, province_code: item.code });
-            setDialogVisible(false)
-        }
-        if (selectLocationType == 'district') {
-            setLocationSelected({ ...locationSelected, district: item.name_with_type, district_code: item.code });
-            setDialogVisible(false)
-        }
-        if (selectLocationType == 'subdistrict') {
-            setLocationSelected({ ...locationSelected, subdistrict: item.name_with_type, subdistrict_code: item.code });
-            setDialogVisible(false)
-        }
-    }
-
-    return (
-        <Drawer.Item
-            style={{ backgroundColor: 'white' }}
-            label={item.name_with_type}
-            onPress={_onSelectItem}
-        />
-
-    )
-}
 
 
 
@@ -70,40 +36,29 @@ const CollaboratorProfileScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [profileImage, setProfileImage] = useState('');
     const [userProfile, setUserProfile] = useState({
-        id: '',
-        username: '',
-        email: '',
-        phoneNumber: '',
-        idCard: '',
-        province_code:'',
-        province: '',
-        district_code:'',
-        district: '',
-        subdistrict_code:'',
-        subdistrict: '',
-        address: '',
-        profile_image: '',
+        id: userInformation.id,
+        username: userInformation.attributes?.name,
+        email: userInformation?.attributes?.email,
+        phoneNumber: userInformation?.attributes?.phonenumber,
+        idCard: userInformation?.attributes?.idcard,
+        province_code: userInformation?.attributes?.province_code,
+        province: userInformation?.attributes?.province,
+        district_code: userInformation?.attributes?.district_code,
+        district: userInformation?.attributes?.district,
+        subdistrict_code: userInformation?.attributes?.subdistrict_code,
+        subdistrict: userInformation?.attributes?.subdistrict,
+        address: userInformation?.attributes?.address,
+        profile_image: userInformation?.attributes?.profile_image,
     });
+
+
+
     const [userOccupations, setUserOccupations] = useState([]);
-
-    useEffect(() => {
-        if (userInformation) {
-            setUserProfile({
-                id: userInformation.id,
-                username: userInformation.attributes?.name,
-                email: userInformation.attributes?.email,
-                phoneNumber: userInformation.attributes?.phonenumber,
-                idCard: userInformation.attributes?.idcard,
-                address: userInformation.attributes?.address,
-                profile_image: userInformation?.attributes?.profile_image
-            });
-        }
-
-    }, [userInformation]);
-
+    const [newUserOccupations, setNewUserOccupations] = useState([]);
 
     const [dialogVisible, setDialogVisible] = useState(false);
     const [dialogData, setDialogData] = useState([]);
+
     const [locationSelected, setLocationSelected] = useState({
         province: '',
         province_code: '',
@@ -112,35 +67,7 @@ const CollaboratorProfileScreen = (props) => {
         subdistrict: '',
         subdistrict_code: '',
     });
-    const [selectLocationType, setSelectLocationType] = useState('province');
-    const _openDialogLocation = async (type) => {
-        setIsLoading(true);
-        if (type == 'province') {
-            setSelectLocationType(type);
-            let locationRes = await getProvince();
-            setDialogData(Object.values(locationRes.data));
-            setDialogVisible(true);
-        }
-        if (type == 'district') {
-            setSelectLocationType(type);
-            if (locationSelected.province_code) {
-                let locationRes = await getDistrict(locationSelected.province_code);
-                setDialogData(Object.values(locationRes.data));
-                setDialogVisible(true);
-            }
 
-        }
-        if (type == 'subdistrict') {
-            setSelectLocationType(type);
-            if (locationSelected.district_code) {
-                let locationRes = await getSubdistrict(locationSelected.district_code);
-                setDialogData(Object.values(locationRes.data));
-                setDialogVisible(true);
-            }
-        }
-        setIsLoading(false);
-
-    }
 
     const [isUpdating, setIsUpdating] = useState(false);
     const _updateUserProfile = async () => {
@@ -196,88 +123,85 @@ const CollaboratorProfileScreen = (props) => {
                 }
 
             }).catch((error) =>
-                console.warn(error)
+                console.log(error)
             )
         } catch (error) {
-            console.warn('ERRPR: ', error);
+            console.log('ERRPR: ', error);
         }
 
 
     }
 
-    useEffect(() => {
-        setLocationSelected({ ...locationSelected, district: '', district_code: '' })
-    }, [locationSelected.province]);
 
     useEffect(() => {
-        setLocationSelected({ ...locationSelected, subdistrict: '', subdistrict_code: '' })
-    }, [locationSelected.district])
+        if (userInformation.relationships?.occupations) {
+            setUserOccupations(userInformation.relationships.occupations)
 
-
-    useEffect(() => {
-
-        let user_role = userInformation.role[0];
+        }
 
         props.navigation.setOptions({
             title: "Thông Tin Cá Nhân"
-        })
+        });
+
     }, []);
 
 
     const [occupationSelected, setOccupationSelected] = useState([]);
-    useEffect(() => {
-        let occupation_ids = [];
-        occupationSelected.map(e => occupation_ids.push(e.id));
-        setUserOccupations(occupation_ids);
-    }, [occupationSelected])
 
+    const [refBottomSheetType, setRefBottomSheetType] = useState('');
 
-
-    const [refBottomSheetLocation, setRefBottomSheetLocation] = useState('');
-
-    const [locationData, setLocationData] = useState([]);
     const _onOpenLocationBottomSheet = (type) => {
-        setRefBottomSheetLocation(type);
+        setRefBottomSheetType(type);
         _refBottomSheetLocation.current.open();
     }
 
 
 
-    
-    const _onSelectLocation = (locationType,item) => {
-        if(locationType == 'province'){
-            setUserProfile({...userProfile,province:item.name,province_code:item.code});
+
+    const _onSelectLocation = (locationType, item) => {
+        if (locationType == 'province') {
+            setUserProfile({ ...userProfile, province: item.name, province_code: item.code });
             _refBottomSheetLocation.current.close();
         }
 
-        if(locationType == 'district'){
-            setUserProfile({...userProfile,district:item.name,district_code:item.code});
+        if (locationType == 'district') {
+            setUserProfile({ ...userProfile, district: item.name, district_code: item.code });
             _refBottomSheetLocation.current.close();
         }
 
-        if(locationType == 'subdistrict'){
-            setUserProfile({...userProfile,subdistrict:item.name,district_code:item.code});
+        if (locationType == 'subdistrict') {
+            setUserProfile({ ...userProfile, subdistrict: item.name, district_code: item.code });
             _refBottomSheetLocation.current.close();
         }
+    }
+
+
+    const [tempSelectedOccupations, setTempSelectedOccupations] = useState([]);
+
+    const _onConfirmSelectOccupation = () => {
+        setUserOccupations(tempSelectedOccupations);
+        setTempSelectedOccupations([]);
+        _refBottomSheetLocation.current.close();
     }
 
     // When provine in userProfile change
     useEffect(() => {
         setUserProfile({
             ...userProfile,
-            district_code:'',
-            district:''
+            district_code: '',
+            district: ''
         })
     }, [userProfile.province]);
 
     //When district in userProfile change
     useEffect(() => {
+
         setUserProfile({
             ...userProfile,
-            subdistrict:'',
-            subdistrict_code:''
+            subdistrict: '',
+            subdistrict_code: ''
         })
-    }, [userProfile.district])
+    }, [userProfile.district_code])
 
 
 
@@ -285,230 +209,276 @@ const CollaboratorProfileScreen = (props) => {
 
     return (
         <>
-            <ScrollView>
-
-                <View style={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
-                        size={88}
-                        source={{
-                            uri: userProfile.profile_image || CommonImages.avatar
-                        }}
-                    />
-                    <IconButton style={{ position: 'absolute', left: '50%', bottom: -10 }}
-                        icon={"camera"}
-                        color={CommonColors.primary}
-                        size={20}
-                        onPress={_onOpenImagePicker}
-                    />
-                </View>
-                <View style={[
-                    styles.inputGroup,
-
-                ]}>
-                    <Text
-                        style={[
-                            styles.inputLabel
-                        ]}
-                    >
-                        Họ và Tên
-                </Text>
-                    <TextInput style={styles.input}
-                        label="Tên"
-                        value={userProfile.username}
-                        onChangeText={text => setUserProfile({ ...userProfile, username: text })}
-                    />
-                </View>
-
-                <View style={[
-                    styles.inputGroup
-                ]}>
-                    <Text
-                        style={[
-                            styles.inputLabel
-                        ]}
-                    >
-                        Email
-                </Text>
-                    <TextInput style={styles.input}
-                        label="Email"
-                        value={userProfile.email}
-                        onChangeText={text => setUserProfile({ ...userProfile, email: text })}
-                    />
-                </View>
-
-                <View style={[
-                    styles.inputGroup
-                ]}>
-                    <Text
-                        style={[
-                            styles.inputLabel
-                        ]}
-                    >
-                        Số điện thoại
-                </Text>
-                    <TextInput style={styles.input}
-                        label="Số điện thoại"
-                        value={userProfile.phoneNumber}
-                        onChangeText={text => setUserProfile({ ...userProfile, phoneNumber: text })}
-                    />
-
-                </View>
-
-                <View style={[
-                    styles.inputGroup
-                ]}>
-                    <Text
-                        style={[
-                            styles.inputLabel
-                        ]}
-                    >
-                        Chứng minh nhân dân / căn cước công dân
-                </Text>
-                    <TextInput style={styles.input}
-                        label="Chứng minh nhân dân"
-                        value={userProfile.idCard}
-                        onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
-                    />
-
-                </View>
-
-                <View
-                    style={[
-                        styles.inputGroup
-                    ]}
-                >
-                    <Text
-                        style={[
-                            styles.inputLabel
-                        ]}
-                    >
-                        Địa chỉ
-                </Text>
-                    <TextInput style={styles.input}
-                        label="Chứng minh nhân dân"
-                        value={userProfile.idCard}
-                        onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
-                    />
-
-                </View>
-
-
-
-                <OccupationSelection
-                    itemSelected={occupationSelected}
-                    setItemSelected={setOccupationSelected}
-                    title={"Chọn lĩnh vực công việc"}
-                />
-                <View>
-                    {
-                        occupationSelected.map((e, index) =>
-                            <View key={index.toString()}>
-                                <Text>{e.attributes.name}</Text>
-                            </View>
-                        )
-                    }
-                </View>
-
-
-                <View
-                    style={[
-                        styles.inputGroup
-                    ]}
-                >
-                    <Text
-                        style={[styles.inputLabel]}
-                    >
-                        Địa chỉ
-                </Text>
-                    <ItemSelection
-                        containerStyle={styles.input}
-                        label={ userProfile.province || `Chọn tỉnh / thành phố`}
-                        labelStyle={styles.inputLabel}
-                        onItemPress={() => _onOpenLocationBottomSheet('province')}
-                    />
-                    <ItemSelection
-                        containerStyle={styles.input}
-                        label={ userProfile.district ||  `Chọn quận / huyện`}
-                        labelStyle={styles.inputLabel}
-                        onItemPress={() => _onOpenLocationBottomSheet('district')}
-
-                    />
-                    <ItemSelection
-                        containerStyle={styles.input}
-                        label={ userProfile.subdistrict || `Chọn phường / xã`}
-                        labelStyle={styles.inputLabel}
-                        onItemPress={() => _onOpenLocationBottomSheet('subdistrict')}
-
-                    />
-                </View>
-
-
-                <TextInput style={styles.input}
-                    label="Địa chỉ"
-                    value={userProfile.address}
-                    multiline={true}
-                    onChangeText={text => setUserProfile({ ...userProfile, address: text })}
-                />
-
-
-
-
-                <Button style={{
-                    backgroundColor: 'coral',
-                    alignSelf: 'center',
-                    borderRadius: 12,
-                    width: 220,
-                    marginVertical: 18
+            <KeyboardAvoidingView
+                style={{
+                    flex: 1
                 }}
-                    labelStyle={{
-                        color: 'white'
-                    }}
-                    onPress={_updateUserProfile}
-                    loading={isUpdating}
-                    disabled={isUpdating}
+                enabled={true}
+                behavior={'padding'}
+                keyboardVerticalOffset={64}
+            >
+                <ScrollView
+                    keyboardShouldPersistTaps={'handled'}
                 >
-                    CẬP NHẬT
-            </Button>
-                <Portal>
-                    <Dialog visible={dialogVisible} onDismiss={() => setDialogVisible(false)} style={{ flex: 1, padding: 0 }}>
-                        <Dialog.ScrollArea style={{ paddingHorizontal: 0 }}>
-                            <ScrollView contentContainerStyle={{ paddingHorizontal: 0 }}>
+
+
+
+                    <View style={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
+                            size={88}
+                            source={{
+                                uri: userProfile.profile_image || CommonImages.avatar
+                            }}
+                        />
+                        <IconButton style={{ position: 'absolute', left: '50%', bottom: -10 }}
+                            icon={"camera"}
+                            color={CommonColors.primary}
+                            size={20}
+                            onPress={_onOpenImagePicker}
+                        />
+                    </View>
+                    <View style={[
+                        styles.inputGroup,
+
+                    ]}>
+                        <Text
+                            style={[
+                                styles.inputLabel
+                            ]}
+                        >
+                            Họ và Tên
+                </Text>
+                        <TextInput style={styles.input}
+                            label="Tên"
+                            value={userProfile.username}
+                            onChangeText={text => setUserProfile({ ...userProfile, username: text })}
+                        />
+                    </View>
+
+                    <View style={[
+                        styles.inputGroup
+                    ]}>
+                        <Text
+                            style={[
+                                styles.inputLabel
+                            ]}
+                        >
+                            Email
+                </Text>
+                        <TextInput style={styles.input}
+                            label="Email"
+                            value={userProfile.email}
+                            onChangeText={text => setUserProfile({ ...userProfile, email: text })}
+                        />
+                    </View>
+
+                    <View style={[
+                        styles.inputGroup
+                    ]}>
+                        <Text
+                            style={[
+                                styles.inputLabel
+                            ]}
+                        >
+                            Số điện thoại
+                </Text>
+                        <TextInput style={styles.input}
+                            label="Số điện thoại"
+                            value={userProfile.phoneNumber}
+                            onChangeText={text => setUserProfile({ ...userProfile, phoneNumber: text })}
+                        />
+
+                    </View>
+
+                    <View style={[
+                        styles.inputGroup
+                    ]}>
+                        <Text
+                            style={[
+                                styles.inputLabel
+                            ]}
+                        >
+                            Chứng minh nhân dân / căn cước công dân
+                </Text>
+                        <TextInput style={styles.input}
+                            label="Chứng minh nhân dân"
+                            value={userProfile.idCard}
+                            onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
+                        />
+
+                    </View>
+
+                    <View
+                        style={[
+                            styles.inputGroup
+                        ]}
+                    >
+                        <Text
+                            style={[
+                                styles.inputLabel
+                            ]}
+                        >
+                            Địa chỉ
+                </Text>
+                        <TextInput style={styles.input}
+                            label="Chứng minh nhân dân"
+                            value={userProfile.idCard}
+                            onChangeText={text => setUserProfile({ ...userProfile, idCard: text })}
+                        />
+
+                    </View>
+                    <View>
+                        {
+                            occupationSelected.map((e, index) =>
+                                <View key={index.toString()}>
+                                    <Text>{e.attributes.name}</Text>
+                                </View>
+                            )
+                        }
+                    </View>
+
+
+                    <View
+                        style={[
+                            styles.inputGroup
+                        ]}
+                    >
+                        <Text
+                            style={[styles.inputLabel]}
+                        >
+                            Địa chỉ
+                </Text>
+                        <ItemSelection
+                            containerStyle={styles.input}
+                            label={userProfile.province || `Chọn tỉnh / thành phố`}
+                            labelStyle={styles.inputLabel}
+                            onItemPress={() => _onOpenLocationBottomSheet('province')}
+                        />
+                        <ItemSelection
+                            containerStyle={styles.input}
+                            label={userProfile.district || `Chọn quận / huyện`}
+                            labelStyle={styles.inputLabel}
+                            onItemPress={() => _onOpenLocationBottomSheet('district')}
+
+                        />
+                        <ItemSelection
+                            containerStyle={styles.input}
+                            label={userProfile.subdistrict || `Chọn phường / xã`}
+                            labelStyle={styles.inputLabel}
+                            onItemPress={() => _onOpenLocationBottomSheet('subdistrict')}
+
+                        />
+                    </View>
+
+                    <View
+                        style={[
+                            styles.inputGroup
+                        ]}
+                    >
+                        <TextInput style={styles.input}
+                            label="Địa chỉ"
+                            value={userProfile.address}
+                            placeholder={`Nhập tên đường`}
+                            multiline={true}
+                            onChangeText={text => setUserProfile({ ...userProfile, address: text })}
+                        />
+                    </View>
+
+
+                    {/* if user is collaborator then show select occupations */}
+                    {
+                        userInformation.role[0].id == 2 &&
+                        <View
+                            style={[
+                                styles.inputGroup
+                            ]}
+                        >
+                            <Text style={[
+                                styles.inputLabel
+                            ]}>
+                                Lĩnh vực hoạt động
+                        </Text>
+                            <TouchableOpacity
+                                style={[styles.input, {
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignContent: 'center',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height:30,
+                                    // alignSelf:'center',
+
+                                }]}
+
+                                onPress={() => _onOpenLocationBottomSheet('occupations')}
+                            >
+                                <Text
+                                    style={[
+                                        {
+                                            fontSize: 14,
+                                            fontWeight: '400'
+                                        }
+                                    ]}
+                                >
+                                    Thêm
+                            </Text>
+                            </TouchableOpacity>
+                            <View>
                                 {
-                                    isLoading ?
-                                        <ActivityIndicator /> :
-                                        dialogData.map((e, index) =>
-                                            <SelectItem
-                                                key={index.toString()}
-                                                item={e}
-                                                setDialogVisible={setDialogVisible}
-                                                setLocationSelected={setLocationSelected}
-                                                locationSelected={locationSelected}
-                                                selectLocationType={selectLocationType}
-                                            />
-                                        )
+
+                                    userOccupations.map((e, index) =>
+                                        <ItemChip
+                                            label={e.name || e.attributes?.name}
+                                            close={false}
+                                        />
+                                    )
                                 }
-                            </ScrollView>
-                        </Dialog.ScrollArea>
-
-                    </Dialog>
-                </Portal>
 
 
+                            </View>
 
-            </ScrollView>
+                        </View>
+                    }
 
+
+
+
+
+                    <Button style={{
+                        backgroundColor: 'coral',
+                        alignSelf: 'center',
+                        borderRadius: 12,
+                        width: 220,
+                        marginVertical: 18
+                    }}
+                        labelStyle={{
+                            color: 'white'
+                        }}
+                        onPress={_updateUserProfile}
+                        loading={isUpdating}
+                        disabled={isUpdating}
+                    >
+                        CẬP NHẬT
+            </Button>
+                </ScrollView>
+            </KeyboardAvoidingView>
             <SimpleBottomSheet
                 refRBSheet={_refBottomSheetLocation}
                 height={deviceHeight}
                 closeOnDragDown={false}
                 dragFromTopOnly={true}
+
+
             >
                 <View
                     style={[
                         {
-                            display:'flex',
-                            flexDirection:'row',
-                            marginVertical:8
+                            display: 'flex',
+                            flexDirection: 'row',
+                            marginVertical: 8,
+                            position: 'relative',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
                         }
                     ]}
                 >
@@ -516,37 +486,65 @@ const CollaboratorProfileScreen = (props) => {
                         icon={CommonIcons.close}
                         size={34}
                         color={'black'}
-                        onPress={()=>_refBottomSheetLocation.current.close()}
+                        onPress={() => _refBottomSheetLocation.current.close()}
+
                     />
+                    <TouchableOpacity
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            marginHorizontal: 18
+                        }}
+                        onPress={_onConfirmSelectOccupation}
+                    >
+                        <Text style={{
+                            fontSize: 18,
+                            fontWeight: '600',
+                            color: 'blue'
+                        }}>
+                            Xong
+                        </Text>
+                    </TouchableOpacity>
+
+
                 </View>
                 {
-                    refBottomSheetLocation == 'province' &&
-                        <RenderProvince 
-                            setSelectedItem={(item)=>_onSelectLocation('province',item)}
-                        />
+                    refBottomSheetType == 'province' &&
+                    <RenderProvince
+                        setSelectedItem={(item) => _onSelectLocation('province', item)}
+                    />
                 }
 
                 {
-                    refBottomSheetLocation == 'district' &&
-                        <RenderDistrict
-                            province_code={userProfile.province_code}
-                            setSelectedItem = {(item) =>_onSelectLocation('district',item)}
-                        />    
+                    refBottomSheetType == 'district' &&
+                    <RenderDistrict
+                        province_code={userProfile.province_code}
+                        setSelectedItem={(item) => _onSelectLocation('district', item)}
+                    />
                 }
 
                 {
-                    refBottomSheetLocation == 'subdistrict' &&
-                        <RenderSubDistrict
-                            district_code={userProfile.district_code}
-                            setSelectedItem = {(item) => _onSelectLocation('subdistrict',item)}
-                        />
+                    refBottomSheetType == 'subdistrict' &&
+                    <RenderSubDistrict
+                        district_code={userProfile.district_code}
+                        setSelectedItem={(item) => _onSelectLocation('subdistrict', item)}
+                    />
+                }
+
+                {
+                    refBottomSheetType == 'occupations' &&
+                    <RenderOccupationSelection
+                        setSelectedItems={(e) => setTempSelectedOccupations([...tempSelectedOccupations, e])}
+                    />
+
                 }
 
 
 
-                
+
             </SimpleBottomSheet>
-        </>
+        </ >
 
     )
 }
@@ -579,7 +577,9 @@ const styles = StyleSheet.create({
     },
     inputLabel: {
         color: 'grey',
-        fontSize: 14,
-        fontWeight: '500'
+        fontSize: 12,
+        fontWeight: '500',
+        marginTop: 8
+
     }
 })

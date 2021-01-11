@@ -196,6 +196,7 @@ export const getOccupations = async (category_id = '') => {
             console.warn('ERROR AT FETCH JOBS');
 
             return {
+                status: false,
                 data: [],
                 message: 'error'
             }
@@ -203,6 +204,7 @@ export const getOccupations = async (category_id = '') => {
         let dataRes = await dataFetch.json();
 
         return {
+            status: true,
             data: dataRes.data,
             message: 'success'
         }
@@ -210,6 +212,7 @@ export const getOccupations = async (category_id = '') => {
 
     } catch (error) {
         return {
+            status: false,
             data: [],
             message: 'error ' + error
         }
@@ -1352,7 +1355,7 @@ export const getUserDetail = async (user_id) => {
 
 
 export const getCollaboratorStatistic = async (collaborator_id) => {
-    
+
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${url}/collaborator-statistic/${collaborator_id}`);

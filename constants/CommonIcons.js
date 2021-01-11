@@ -35,7 +35,11 @@ export default {
 
     arrowRight:'arrow-right',
     close:'close',
-    arrowRightChevron:'chevron-right'
+    arrowRightChevron:'chevron-right',
+
+    checkboxCircleBlank:'checkbox-blank-circle-outline',
+    checkboxCircleMark:'checkbox-marked-circle-outline',
+    plusThick:'plus-thick'
     
 
 }
