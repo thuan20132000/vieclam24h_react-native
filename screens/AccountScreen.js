@@ -17,7 +17,7 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 const IS_IPHONE_X = SCREEN_HEIGHT === 812 || SCREEN_HEIGHT === 896;
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 44 : 20) : 0;
-const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 74) : 74;
+const HEADER_HEIGHT = Platform.OS === 'ios' ? (IS_IPHONE_X ? 88 : 114) : 114;
 const NAV_BAR_HEIGHT = HEADER_HEIGHT - STATUS_BAR_HEIGHT;
 
 
@@ -27,7 +27,6 @@ const RenderNavbar = ({
     userAttributes
 }) => (
     <View style={[styles.userCardContainer, {
-        paddingVertical: 30
     }]}>
 
 
@@ -36,51 +35,43 @@ const RenderNavbar = ({
             <Subheading>{userAttributes?.address}</Subheading>
             <Caption>{userAttributes?.idcard}</Caption>
         </View>
+
     </View>
 );
 
-const RenderContent = () => {
-
-
-    return (
-        <View style={styles.body}>
-            {Array.from(Array(30).keys()).map((i) => (
-                <View
-                    key={i}
-                    style={{ padding: 15, alignItems: 'center', justifyContent: 'center' }}>
-                    <Text>Item {i + 1}</Text>
-                </View>
-            ))}
-        </View>
-    );
-};
 
 const RenderTitle = ({
     userInformation,
     userAttributes
 }) => {
     return (
-        <View style={[
-            styles.body,
-            {
-                display: 'flex',
-                flexDirection: 'row',
-                alignContent: 'center',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-                width: deviceWidth
-            }
-        ]}>
-            <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
-                size={54}
-                source={{
-                    uri: userInformation?.attributes?.profile_image || CommonImages.avatar
-                }}
-            />
-            <Text style={{ color: 'white', fontSize: 25 }}>
-                {userAttributes?.name}
-            </Text>
-        </View>
+        <>
+          
+            <View style={[
+                styles.body,
+                {
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+
+                    width: deviceWidth,
+
+                }
+            ]}>
+
+                <Avatar.Image style={{ zIndex: -1, position: 'relative' }}
+                    size={54}
+                    source={{
+                        uri: userInformation?.attributes?.profile_image || CommonImages.avatar
+                    }}
+                />
+                <Text style={{ color: 'white', fontSize: 18 }}>
+                    {userAttributes?.name}
+                </Text>
+
+
+            </View>
+        </>
     );
 };
 
@@ -140,8 +131,8 @@ const AccountScreen = (props) => {
             <StatusBar barStyle="dark-content" />
             <ReactNativeParallaxHeader
                 headerMinHeight={HEADER_HEIGHT}
-                headerMaxHeight={150}
-                extraScrollHeight={20}
+                headerMaxHeight={120}
+                extraScrollHeight={120}
                 navbarColor="coral"
                 titleStyle={styles.titleStyle}
                 title={<RenderTitle userInformation={userInformation} userAttributes={userAttributes} />}
@@ -222,7 +213,6 @@ const styles = StyleSheet.create({
     userCardContainer: {
         display: 'flex',
         flexDirection: 'row',
-        margin: 12
     },
     userInfor: {
         justifyContent: 'center',
