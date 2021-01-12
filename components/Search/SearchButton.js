@@ -4,10 +4,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from '../../constants/CommonIcons';
 
-const SearchButton = (props) => {
-    const {
-        onPress
-    } = props;
+const SearchButton = ({
+    onPress,
+    placeholderText
+}) => {
+    
     return (
         <TouchableOpacity style={{
             height: 36,
@@ -36,7 +37,7 @@ const SearchButton = (props) => {
             />
             <TextInput
                 style={{ height: 40, borderColor: 'gray', width:'100%' }}
-                placeholder={`Tìm kiếm...`}
+                placeholder={placeholderText}
                 onFocus={onPress}
 
             />

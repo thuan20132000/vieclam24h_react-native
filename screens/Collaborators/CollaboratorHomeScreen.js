@@ -12,6 +12,8 @@ import CommonColors from '../../constants/CommonColors'
 import { useSelector } from 'react-redux';
 import MultipleLanguage from '../../components/Dialog/MultipleLanguage'
 
+import { Translate } from '../../locales/index';
+
 const CollaboratorHomeScreen = (props) => {
 
     const menuItems = Array(6).fill({});
@@ -25,6 +27,8 @@ const CollaboratorHomeScreen = (props) => {
         navigation
     } = props;
 
+
+    const language = useSelector(state => state.language);
 
     const _onSearchPress = () => {
         navigation.navigate('Search');
@@ -92,17 +96,33 @@ const CollaboratorHomeScreen = (props) => {
                         style={{
                             marginTop: 10, height: 70, display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', padding: 0
                         }}
-                        onPress={()=>setMultipleLanguageSelection(true)}
+                        onPress={() => setMultipleLanguageSelection(true)}
                     >
-                        <Image
-                            source={
-                                require('../../assets/images/vn_flag.png')
-                            }
-                            style={{
-                                width: 40,
-                                height: 20
-                            }}
-                        />
+
+                        {
+                            language.current_language == 'vi' ?
+                            <Image
+                                source={
+                                    require('../../assets/images/vn_flag.png')
+                                }
+                                style={{
+                                    width: 40,
+                                    height: 20
+                                }}
+                            />:
+                            <Image
+                                source={
+                                    require('../../assets/images/en_flag.png')
+                                }
+                                style={{
+                                    width: 40,
+                                    height: 20
+                                }}
+                            />
+                        }
+
+
+
                     </TouchableOpacity>
                 </View>
             ),
@@ -110,9 +130,9 @@ const CollaboratorHomeScreen = (props) => {
         })
 
 
-    }, [props.navigation]);
+    }, [language.current_language]);
 
-    const [multipleLanguageSelection,setMultipleLanguageSelection] = useState(false);
+    const [multipleLanguageSelection, setMultipleLanguageSelection] = useState(false);
 
     const onRefresh = React.useCallback(() => {
         _getCategory();
@@ -135,6 +155,7 @@ const CollaboratorHomeScreen = (props) => {
             >
                 <SearchButton
                     onPress={_onSearchPress}
+                    placeholderText={Translate.search}
                 />
                 {/* Menu */}
 
@@ -164,7 +185,7 @@ const CollaboratorHomeScreen = (props) => {
 
                 {/* Job List */}
                 <View style={styles.vericleListContainer}>
-                    <Subheading style={{ paddingHorizontal: 12 }}>Việc làm mới nhất</Subheading>
+                    <Subheading style={{ paddingHorizontal: 12 }}>{Translate.new_jobs}</Subheading>
 
                     {
                         jobs &&

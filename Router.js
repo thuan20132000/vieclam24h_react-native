@@ -7,6 +7,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from './constants/CommonIcons';
 
+
+// Multiple Language
+import {Translate} from './locales/index';
+
+
 //redux
 import { useSelector } from 'react-redux';
 
@@ -252,6 +257,29 @@ function TabNavigator(props) {
     }, [userRole]);
 
 
+
+    const { current_language } = useSelector(state => state.language);
+
+    const [tabbarTitle, settabbarTitle] = React.useState({
+        home: Translate.home,
+        apply: Translate.apply,
+        messages: Translate.messages,
+        account: Translate.account
+    })
+
+    useEffect(() => {
+        // console.warn(Translate.home);
+
+        settabbarTitle({
+            home: Translate.home,
+            apply: Translate.apply,
+            messages: Translate.messages,
+            account: Translate.account
+        })
+
+    }, [current_language]);
+
+
     return (
         <BottomTabNavigator.Navigator
             screenOptions={({ route }) => ({
@@ -290,14 +318,14 @@ function TabNavigator(props) {
                         name="HomeStack"
                         component={CollaboratorHomeStack}
                         options={{
-                            tabBarLabel:"Trang Chủ"
+                            tabBarLabel:tabbarTitle.home
                         }}
                     />
                     <BottomTabNavigator.Screen
                         name="MyJobs"
                         component={CollaboratorJobStack}
                         options={{
-                            tabBarLabel:"Ứng tuyển"
+                            tabBarLabel:tabbarTitle.apply
                         }}
                     />
 
@@ -313,7 +341,7 @@ function TabNavigator(props) {
                         name="HomeStack"
                         component={CustomerHomeStack}
                         options={{
-                            tabBarLabel:"Trang Chủ"
+                            tabBarLabel:tabbarTitle.home
                         }}
                     />
                     <BottomTabNavigator.Screen
@@ -348,14 +376,14 @@ function TabNavigator(props) {
                 name="Messages" 
                 component={ChatStack} 
                 options={{
-                    tabBarLabel:"Tin nhắn"
+                    tabBarLabel:tabbarTitle.messages
                 }}
             />
             <BottomTabNavigator.Screen 
                 name="Accounts" 
                 component={AccountStack} 
                 options={{
-                    tabBarLabel:"Tài khoản"
+                    tabBarLabel:tabbarTitle.account
                 }}
             />
         </BottomTabNavigator.Navigator>

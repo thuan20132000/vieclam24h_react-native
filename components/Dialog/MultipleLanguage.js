@@ -3,15 +3,23 @@ import { StyleSheet, Text, View ,Image} from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Paragraph, Dialog, Portal } from 'react-native-paper';
 
+import {useDispatch} from 'react-redux';
+
+import * as languageActions from '../../store/actions/languageActions';
+
+import {Translate} from '../../locales/index';
+
 const MultipleLanguage = ({
     visible=false,
     setVisible
 }) => {
 
+    const dispatch = useDispatch();
 
     const _onSelectLanguage = (language) => {
-        console.warn(language);
-
+        
+        dispatch(languageActions.setLanguage(language));
+        Translate.setLanguage(language);
 
         if(typeof setVisible === 'function'){
             setVisible(false);

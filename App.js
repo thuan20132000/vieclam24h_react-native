@@ -23,11 +23,18 @@ import Router from './Router';
 
 import AutheticationReducer from './store/reducer/authenticationReducer';
 import SocketSubcribe from './store/reducer/websocketReducer';
+import LanguageReducer from './store/reducer/languageReducer';
+
+import {Translate} from './locales/index';
+
 const rootReducer = combineReducers({
   authentication: AutheticationReducer,
-  socketSubcribe: SocketSubcribe
+  socketSubcribe: SocketSubcribe,
+  language:LanguageReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+
+
 
 
 const App = () => {
@@ -60,6 +67,10 @@ const App = () => {
       },
     },
   };
+
+
+
+
 
   return (
     <StoreProvider store={store}>
