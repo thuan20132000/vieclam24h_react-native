@@ -158,7 +158,10 @@ export const RenderDistrict = ({
                 }}
             >
                 <LoadingSimple />
-                <Text>Vui lòng chọn tỉnh thành</Text>
+                <Text
+                >
+                    Vui lòng chọn tỉnh thành
+                </Text>
             </View>
 
         )

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View, Button, Image, ImageBackground } from 'react-native'
+import { Alert, Dimensions, StyleSheet, Text, View, Button, Image, ImageBackground, Modal } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { Headline, IconButton, TextInput, Snackbar } from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
@@ -16,6 +16,12 @@ import { formatCash } from '../utils/helper';
 import { JOB_DATA } from '../utils/SampleData';
 import LoadingSimple from '../components/Loading/LoadingSimple';
 
+import ImageViewer from 'react-native-image-zoom-viewer';
+import CommonImages from '../constants/CommonImages';
+
+
+
+
 
 const JobDetailScreen = (props) => {
     const { userInformation } = useSelector(state => state.authentication);
@@ -28,6 +34,39 @@ const JobDetailScreen = (props) => {
     const refRBSheet_applyJob = useRef();
     const [isLoading, setIsLoading] = useState(false);
     const [isDisabling, setIsDisabling] = useState(false);
+    const [galleryVisible, setGalleryVisible] = useState(false);
+
+
+    // Gallery images
+    const images = [{
+        // Simplest usage.
+        url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460',
+
+        // width: number
+        // height: number
+        // Optional, if you know the image size, you can set the optimization performance
+
+        // You can pass props to <Image />.
+        props: {
+            // headers: ...
+        }
+    }, {
+        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtt716Ot-mm3fMbISo19RrwLY94wlLocE0Sw&usqp=CAU'
+    }];
+
+    //const [galleryImages,setGalleryImages] = useState([]);
+
+    const [galleryImages, setGalleryImages] = useState([]);
+    const _onOpenPhotoGallery = async () => {
+
+
+        let images = JOB_DATA.map((e) => {
+            return { url: e.image_url }
+        })
+        setGalleryImages(images);
+        setGalleryVisible(true);
+    }
+
 
     const [jobApplyData, setJobApplyData] = useState({
         expected_price: '',
@@ -53,7 +92,7 @@ const JobDetailScreen = (props) => {
     // const [showError,setShowError] = useState(false);
 
 
-    const _onCheckValidateApply = async () => {
+    const _onCheckValidateApply =  () => {
 
         if ((jobApplyData.expected_price > jobDetail.attributes.suggestion_price * 2) || jobApplyData.expected_price < 0) {
             setErrorMessage({
@@ -79,7 +118,9 @@ const JobDetailScreen = (props) => {
             setIsDisabling(true);
 
 
-            let checkValidated = await _onCheckValidateApply();
+            let checkValidated =  _onCheckValidateApply();
+
+         
 
             if (checkValidated) {
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
@@ -99,24 +140,6 @@ const JobDetailScreen = (props) => {
 
                     }, 2500);
                 }
-
-                // if (applyRes?.message != "success") {
-                //     Alert.alert("Thất bại", "Công việc đã có đủ ứng viên");
-                //     setTimeout(() => {
-                //         refRBSheet_applyJob.current.close();
-
-                //     }, 2500);
-                // } else {
-                //     Alert.alert("Thành công", "Ứng tuyển thành công, vui lòng chờ người tuyển dụng xác nhận.");
-                //     console.warn(applyRes);
-                //     setTimeout(() => {
-                //         refRBSheet_applyJob.current.close();
-
-                //     }, 2500);
-                // }
-
-
-
             }
 
             setIsLoading(false);
@@ -125,7 +148,7 @@ const JobDetailScreen = (props) => {
             console.warn('error: ', error);
             setIsLoading(false);
             setIsDisabling(false);
-            refRBSheet_applyJob.current.close();
+            // refRBSheet_applyJob.current.close();
 
         }
     }
@@ -184,7 +207,7 @@ const JobDetailScreen = (props) => {
 
         };
 
-    }, [])
+    }, []);
 
     if (isLoading) {
         return (
@@ -209,21 +232,18 @@ const JobDetailScreen = (props) => {
 
 
 
+
+
+
+
+
+
     return (
         <ScrollView>
             {
                 jobDetail &&
 
                 <>
-                    {/* <Carousel
-                        ref={refCarousel}
-                        data={jobDetail.attributes?.images}
-                        renderItem={({ item }) => <CardItem image_url={item.image_url} {...props} />}
-                        sliderWidth={deviceWidth}
-                        itemWidth={deviceWidth}
-                    /> */}
-
-
 
                     {/* Gallery Image */}
                     {/* Image Show */}
@@ -367,6 +387,8 @@ const JobDetailScreen = (props) => {
 
                                             }
                                         ]}
+                                        onPress={_onOpenPhotoGallery}
+
                                     >
 
                                         <ImageBackground
@@ -488,9 +510,9 @@ const JobDetailScreen = (props) => {
                     <View style={[
                         styles.jobDescriptionsContainer,
                         {
-                            backgroundColor:'white',
-                            marginHorizontal:8,
-                            borderRadius:12
+                            backgroundColor: 'white',
+                            marginHorizontal: 8,
+                            borderRadius: 12
                         }
                     ]}
                     >
@@ -583,6 +605,54 @@ const JobDetailScreen = (props) => {
                             }
                         </View>
                     </RBSheet>
+
+
+                    {/* Gallery Photo */}
+                    <Modal visible={galleryVisible} transparent={true}>
+
+                        <ImageViewer
+                            imageUrls={galleryImages}
+
+                            onSwipeDown={() => setGalleryVisible(false)}
+                            enableSwipeDown={true}
+
+
+
+                            renderFooter={() =>
+                                <View
+                         
+                                >
+                                    <ScrollView
+                                        horizontal={true}
+                                       
+                                    >
+                                        {
+                                            JOB_DATA.map((e) =>
+                                                <Image
+                                                    style={{
+                                                        width: 80,
+                                                        height: 80,
+                                                        margin:12
+                                                    }}
+
+                                                    source={{
+                                                        uri: e.image_url
+                                                    }}
+                                                />
+                                            )
+                                        }
+                                    </ScrollView>
+                                </View>
+                            }
+                            footerContainerStyle={{
+                                // backgroundColor: 'white',
+                                width: '100%',
+                                height: 100
+                            }}
+
+                        />
+                    </Modal>
+
                 </>
             }
 
