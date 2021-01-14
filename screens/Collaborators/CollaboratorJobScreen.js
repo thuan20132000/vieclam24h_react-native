@@ -4,12 +4,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useSelector } from 'react-redux';
 import JobItem from '../../components/Card/JobItem';
+import LoadingSimple from '../../components/Loading/LoadingSimple';
 import CommonColors from '../../constants/CommonColors';
 
 import { getCollaboratorJobs } from '../../utils/serverApi';
 
 
-
+/**
+ * 
+ * @param {*} param0 
+ */
 const ApplyingJob = ({ user_id, status = 2 }) => {
 
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
@@ -63,6 +67,7 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
                     <JobItem
                         key={index.toString()}
                         job={e}
+                        isConfirmed={false}
                     />
                 )
             }
@@ -71,6 +76,12 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
 }
 
 
+
+
+/**
+ * 
+ * @param {*} param0 
+ */
 const ApprovedJob = ({ user_id, status = 3 }) => {
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -101,6 +112,19 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
 
     }, [])
 
+    if(refreshing){
+        return (
+            <View
+                style={{
+                    display:'flex',
+                    flex:1 
+                }}
+            >
+                <LoadingSimple/>
+            </View>
+        )
+    }
+
     return (
         <ScrollView
             style={[styles.scene, { backgroundColor: 'white' }]}
@@ -114,6 +138,8 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
                     <JobItem
                         job={e}
                         key={index.toString()}
+                        isConfirmed={false}
+
                     />
                 )
             }
@@ -225,6 +251,8 @@ const CollaboratorJobScreen = (props) => {
             title: "Ứng tuyển"
         })
     }, [])
+
+
 
     return (
         <TabView

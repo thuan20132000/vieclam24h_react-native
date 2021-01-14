@@ -9,7 +9,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { formatCash, formatDateTime } from '../../utils/helper';
 import ReviewStar from '../Review/ReviewStar';
 
-const JobItem = ({ job }) => {
+const JobItem = ({
+    job,
+    isConfirmed = true
+}) => {
 
 
     const apply_job = job.relationship?.job;
@@ -129,7 +132,8 @@ const JobItem = ({ job }) => {
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor:CommonColors.messagebox
+                backgroundColor: 'rgba(150, 244, 247, 0.93)',
+                paddingVertical:8
             }}>
                 <Image style={{
                     width: 40,
@@ -159,38 +163,44 @@ const JobItem = ({ job }) => {
                     </Text>
                 </View>
             </View>
-            <View style={{
-                marginHorizontal: 12,
-                display: 'flex',
 
-            }}>
 
-                <View
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'row'
-                    }}
-                >
-                    {
-                        Array(job?.attributes?.range).fill({}).map((e, index) =>
-                            <ReviewStar
-                                key={index.toString()}
-                            />
-                        )
-                    }
-                </View>
-
+            {
+                isConfirmed &&
                 <View style={{
                     marginHorizontal: 12,
-                    marginVertical: 6
+                    display: 'flex',
+
                 }}>
-                    <Text>Đánh giá từ khách hàng:  {job?.attributes?.review_content}</Text>
+
+                    <View
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'row'
+                        }}
+                    >
+                        {
+                            Array(job?.attributes?.range).fill({}).map((e, index) =>
+                                <ReviewStar
+                                    key={index.toString()}
+                                />
+                            )
+                        }
+                    </View>
+
+                    <View style={{
+                        marginHorizontal: 12,
+                        marginVertical: 6
+                    }}>
+                        <Text>Đánh giá từ khách hàng:  {job?.attributes?.review_content}</Text>
+
+                    </View>
+
+
 
                 </View>
+            }
 
-
-
-            </View>
 
         </Card>
     )

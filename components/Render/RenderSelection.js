@@ -380,8 +380,8 @@ export const RenderOccupationSelection = ({
                 setOccupationSelected([occupation, ...occupationSelected]);
                 if (typeof (setSelectedItems) != 'function') {
                     return;
-                }else{
-                   setSelectedItems(occupation);
+                } else {
+                    setSelectedItems(occupation);
                 }
             } else {
                 Alert.alert("", "Chỉ được phép chọn 3 lĩnh vực hoạt động");
@@ -428,7 +428,7 @@ export const RenderOccupationSelection = ({
                     flexDirection: 'row'
                 }}
             >
-               
+
                 <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -474,3 +474,96 @@ export const RenderOccupationSelection = ({
 
 
 
+
+
+
+/**
+ * 
+ */
+export const RenderOccupations = ({
+    onItemPress,
+}) => {
+
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        let unmounted;
+
+        const fetchData = async () => {
+
+            const dataRes = await getOccupations();
+            if (dataRes.status) {
+                unmounted = setTimeout(() => {
+                    setData(Object.values(dataRes.data));
+                }, 800);
+
+            }
+
+
+        }
+        fetchData();
+
+        return () => {
+            clearTimeout(unmounted);
+        }
+
+    }, []);
+
+
+
+    const _onSelectOccupation = (occupation) => {
+       onItemPress(occupation);
+    }
+
+
+
+
+    if (data.length <= 0) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignContent: 'center',
+
+                }}
+            >
+                <LoadingSimple />
+
+            </View>
+
+        )
+    }
+
+
+
+
+
+    return (
+        <>
+            <ScrollView
+                horizontal={false}
+            >
+                {
+                    data.length > 0 &&
+                    data.map((e, index) =>
+                        <ItemSelection
+                            key={index.toString()}
+                            label={e.attributes?.name}
+                            containerStyle={[styles.selectionStyle, {
+                                paddingRight: 22
+                            }]}
+                            labelStyle={styles.selectionLabelStyle}
+                            onItemPress={() => _onSelectOccupation(e)}
+                            rightIcon={CommonIcons.plusThick}
+                            rightIconColor={CommonColors.primary}
+                        />
+                    )
+                }
+            </ScrollView>
+        </>
+    )
+}

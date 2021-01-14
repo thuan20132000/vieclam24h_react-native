@@ -627,8 +627,9 @@ const JobDetailScreen = (props) => {
                                        
                                     >
                                         {
-                                            JOB_DATA.map((e) =>
+                                            JOB_DATA.map((e,index) =>
                                                 <Image
+                                                    key={index.toString()}
                                                     style={{
                                                         width: 80,
                                                         height: 80,

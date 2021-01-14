@@ -170,7 +170,8 @@ const CollaboratorProfileScreen = (props) => {
         }
 
         if (locationType == 'subdistrict') {
-            setUserProfile({ ...userProfile, subdistrict: item.name, district_code: item.code });
+            console.warn(item);
+            setUserProfile({ ...userProfile, subdistrict: item.name, subdistrict_code: item.code });
             _refBottomSheetLocation.current.close();
         }
     }
@@ -428,6 +429,7 @@ const CollaboratorProfileScreen = (props) => {
 
                                     userOccupations.map((e, index) =>
                                         <ItemChip
+                                            key={index.toString()}
                                             label={e.name || e.attributes?.name}
                                             close={false}
                                         />

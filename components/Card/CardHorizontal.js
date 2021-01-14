@@ -88,7 +88,8 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     backgroundColor:'coral',
                     display:'flex',
                     flexDirection:'row',
-                    padding:4
+                    padding:4,
+                    top:2
 
                 }}>
                     <MaterialCommunityIcons
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
 
         elevation: 5,
         backgroundColor: 'white',
-        borderRadius: 22,
+        borderRadius: 8,
         overflow: 'hidden',
         height: 140,
 

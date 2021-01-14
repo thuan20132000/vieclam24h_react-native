@@ -179,6 +179,22 @@ const CollaboratorSearchScreen = (props) => {
         _refSimpleBottomSheet.current.open();
     }
 
+
+    useEffect(() => {
+        setFilterData({
+            ...filterData,
+            district:''
+        })
+    }, [filterData.province]);
+
+
+    useEffect(() => {
+        setFilterData({
+            ...filterData,
+            subdistrict:''
+        })
+    }, [filterData.district])
+
     return (
         <>
             <View style={styles.inputSearch}>
@@ -209,13 +225,9 @@ const CollaboratorSearchScreen = (props) => {
                     showsHorizontalScrollIndicator={false}
                 >
                     <TouchableOpacity
-                        style={{
-                            margin: 8,
-                            backgroundColor: 'coral',
-                            padding: 12,
-                            paddingHorizontal: 18,
-                            borderRadius: 12
-                        }}
+                        style={[
+                            styles.chipFilter
+                        ]}
 
                         onPress={() => _onOpenSimpleBottomSheet('province')}
                     >
@@ -229,13 +241,9 @@ const CollaboratorSearchScreen = (props) => {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={{
-                            margin: 8,
-                            backgroundColor: 'coral',
-                            padding: 12,
-                            paddingHorizontal: 18,
-                            borderRadius: 12
-                        }}
+                        style={[
+                            styles.chipFilter
+                        ]}
 
                         onPress={() => _onOpenSimpleBottomSheet('district')}
                     >
@@ -249,13 +257,9 @@ const CollaboratorSearchScreen = (props) => {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        style={{
-                            margin: 8,
-                            backgroundColor: 'coral',
-                            padding: 12,
-                            paddingHorizontal: 18,
-                            borderRadius: 12
-                        }}
+                        style={[
+                            styles.chipFilter
+                        ]}
 
                         onPress={() => _onOpenSimpleBottomSheet('subdistrict')}
                     >
@@ -267,28 +271,6 @@ const CollaboratorSearchScreen = (props) => {
                         >
                             {filterData.subdistrict ? filterData.subdistrict?.name : 'Phường/Xã'}
                         </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{
-                            margin: 8,
-                            backgroundColor: 'coral',
-                            padding: 12,
-                            paddingHorizontal: 18,
-                            borderRadius: 12
-                        }}
-                    >
-                        <Text>Phường xã</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{
-                            margin: 8,
-                            backgroundColor: 'coral',
-                            padding: 12,
-                            paddingHorizontal: 18,
-                            borderRadius: 12
-                        }}
-                    >
-                        <Text>Phường xã</Text>
                     </TouchableOpacity>
 
                 </ScrollView>
@@ -371,5 +353,21 @@ const styles = StyleSheet.create({
 
         elevation: 5,
 
+    },
+    chipFilter: {
+        margin: 8,
+        backgroundColor: 'rgba(234, 151, 56, 0.85)',
+        padding: 4,
+        paddingHorizontal: 18,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+
+        elevation: 5,
     }
 })

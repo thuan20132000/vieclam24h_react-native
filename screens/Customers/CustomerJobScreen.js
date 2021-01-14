@@ -18,6 +18,7 @@ import { formatDateTime, formatCash } from '../../utils/helper';
 import CardJobConfirm from '../../components/Card/CardJobConfirm';
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
+import LoadingSimple from '../../components/Loading/LoadingSimple';
 
 
 
@@ -56,11 +57,11 @@ const CustomerJobItem = ({ _onPress, item, _onDelete }) => {
                 onPress={_onPress}
             >
                 <Text style={{
-                    fontSize:16,
-                    color:'black',
-                    fontWeight:'600',
-                    width:deviceWidth/1.5
-                
+                    fontSize: 16,
+                    color: 'black',
+                    fontWeight: '600',
+                    width: deviceWidth / 1.5
+
                 }}>
                     {jobItem.title}
                 </Text>
@@ -143,22 +144,28 @@ const PendingJob = ({ navigation, userInformation }) => {
             setPendingJobsData(pendingJobsRes.data);
         }
         setIsLoading(false);
+
     }
 
     let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
 
-        timeoutEvent =  setTimeout(() => {
-            _getPendingJobsData();
+        timeoutEvent = setTimeout(() => {
+            let pendingJobsRes = getUserPendingJobs(userInformation.id);
+            if (pendingJobsRes.status) {
+                setPendingJobsData(pendingJobsRes.data);
+            }
             setRefreshing(false)
         }, 2000);
     }, []);
 
     useEffect(() => {
+
+
         _getPendingJobsData();
 
-        return ()=>{
+        return () => {
             clearTimeout(timeoutEvent);
         }
     }, [])
@@ -172,10 +179,27 @@ const PendingJob = ({ navigation, userInformation }) => {
             setPendingJobsData(jobs);
             Alert.alert("Thành Công", "Xoá công việc thành công")
 
-        }else{
+        } else {
             Alert.alert("Thất Bại", "Xoá công việc thất bại!")
 
         }
+    }
+
+
+    if (isLoading) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <LoadingSimple />
+            </View>
+        )
     }
 
 
@@ -239,6 +263,10 @@ const ApprovedJob = ({ navigation, userInformation }) => {
         setRefreshing(true);
 
         setTimeout(() => {
+            let approvedJobsRes = getUserApprovedJobs(userInformation.id);
+            if (approvedJobsRes.status) {
+                setApprovedJobsData(approvedJobsRes.data);
+            }
             setRefreshing(false)
         }, 2000);
     }, []);
@@ -260,13 +288,28 @@ const ApprovedJob = ({ navigation, userInformation }) => {
             setApprovedJobsData(jobs);
             Alert.alert("Thành Công", "Xoá công việc thành công")
 
-        }else{
+        } else {
             Alert.alert("Thất Bại", "Xoá công việc thất bại!")
 
         }
+    }
 
 
 
+    if (isLoading) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <LoadingSimple />
+            </View>
+        )
     }
 
     return (
@@ -284,7 +327,7 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                             key={index.toString()}
                             _onPress={() => _navigateToJobCollaboratorApplying(e)}
                             item={e}
-                            _onDelete={()=>_onDeleteJob(e)}
+                            _onDelete={() => _onDeleteJob(e)}
                         />
                     ) :
                     <ActivityIndicator
@@ -325,7 +368,10 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setTimeout(() => {
-            _getConfirmedJobsData();
+            let approvedJobsRes = getUserConfirmedJobs(userInformation.id);
+            if (approvedJobsRes.status) {
+                setConfirmedJobsData(approvedJobsRes.data);
+            }
             setRefreshing(false)
         }, 2000);
     }, []);
@@ -334,7 +380,24 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
 
     useEffect(() => {
         _getConfirmedJobsData();
-    }, [])
+    }, []);
+
+
+    if (isLoading) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <LoadingSimple />
+            </View>
+        )
+    }
 
     return (
         <ScrollView
@@ -347,7 +410,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                 !isLoading ?
 
                     confirmedJobsData.map((e, index) =>
-                        <CardJobConfirm 
+                        <CardJobConfirm
                             key={index.toString()}
                             item={e}
 

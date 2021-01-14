@@ -196,7 +196,8 @@ const CollaboratorHomeScreen = (props) => {
                                 {...props}
                                 key={index.toString()}
                                 onPress={_navigateToJobDetail}
-                            />)
+                            />
+                        )
                     }
                 </View>
 
