@@ -32,6 +32,7 @@
     "react-native-image-crop-picker": "^0.35.1",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-localization": "^2.1.6",
+    "react-native-maps": "^0.27.1",
     "react-native-paper": "^4.3.1",
     "react-native-parallax-header": "^1.1.4",
     "react-native-raw-bottom-sheet": "^2.2.0",

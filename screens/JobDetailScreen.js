@@ -201,6 +201,14 @@ const JobDetailScreen = (props) => {
         });
     }
 
+
+
+    const _onNavigateToMapDirection = () => {
+        console.warn('dsds');
+        props.navigation.navigate('MapDirection')
+    }
+
+
     useLayoutEffect(() => {
 
         return () => {
@@ -453,6 +461,7 @@ const JobDetailScreen = (props) => {
                                 style={{
                                     marginRight: 8
                                 }}
+                                onPress={_onNavigateToMapDirection}
                             />
                             <Text style={styles.jobAddress}>
                                 {jobDetail.relationships?.author?.address}

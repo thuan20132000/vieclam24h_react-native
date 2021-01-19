@@ -50,6 +50,7 @@ import CollaboratorSearchScreen from './screens/Collaborators/CollaboratorSearch
 import CustomerStatisticScreen from './screens/Customers/CustomerStatisticScreen';
 import CollaboratorStatisticScreen from './screens/Collaborators/CollaboratorStatisticScreen';
 import NotificationScreen from './screens/NotificationScreen';
+import MapPlaceDirectionScreen from './screens/Map/MapPlaceDirectionScreen';
 
 /**
  * Authentication Stack
@@ -101,6 +102,10 @@ function CollaboratorHomeStack() {
             <CollaboratorHomeStackNavigator.Screen
                 name="JobList"
                 component={JobListScreen}
+            />
+            <CollaboratorHomeStackNavigator.Screen
+                name="MapDirection"
+                component={MapPlaceDirectionScreen}
             />
 
         </CollaboratorHomeStackNavigator.Navigator>
