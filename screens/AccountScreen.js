@@ -10,6 +10,8 @@ import CommonImages from '../constants/CommonImages'
 import * as userActions from '../store/actions/authenticationActions';
 
 import ReactNativeParallaxHeader from 'react-native-parallax-header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 
 
@@ -46,7 +48,7 @@ const RenderTitle = ({
 }) => {
     return (
         <>
-          
+
             <View style={[
                 styles.body,
                 {
@@ -97,8 +99,18 @@ const AccountScreen = (props) => {
 
     const _logout = async () => {
         setIsLoading(true);
-        dispatch(userActions.logout());
-        setIsLoading(false);
+        try {
+            await AsyncStorage.setItem('@user_info', '')
+        } catch (e) {
+            // saving error
+        }
+
+        setTimeout(() => {
+            setIsLoading(false);
+            dispatch(userActions.logout());
+
+        }, 400);
+
     }
 
 

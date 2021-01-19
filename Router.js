@@ -49,6 +49,7 @@ import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 import CollaboratorSearchScreen from './screens/Collaborators/CollaboratorSearchScreen';
 import CustomerStatisticScreen from './screens/Customers/CustomerStatisticScreen';
 import CollaboratorStatisticScreen from './screens/Collaborators/CollaboratorStatisticScreen';
+import NotificationScreen from './screens/NotificationScreen';
 
 /**
  * Authentication Stack
@@ -239,6 +240,28 @@ function CustomerJobStack() {
     )
 }
 
+
+
+
+/**
+ * Notification Stack
+ */
+
+ const NotificationStackNavigator = createStackNavigator();
+function NotificationStack(){
+    return (
+        <NotificationStackNavigator.Navigator>
+            <NotificationStackNavigator.Screen
+                name={'NotificationList'}
+                component={NotificationScreen}
+            />
+        </NotificationStackNavigator.Navigator>
+    )
+}
+
+
+
+
 /**
  * tab
  */
@@ -286,7 +309,7 @@ function TabNavigator(props) {
                 tabBarIcon: ({ focused, color, size }) => {
                     let iconName;
 
-                    if (route.name === 'Home') {
+                    if (route.name === 'HomeStack') {
                         iconName = CommonIcons.homeCircle
 
                     } else if (route.name === 'Settings') {
@@ -295,7 +318,11 @@ function TabNavigator(props) {
                         iconName = CommonIcons.messages
                     } else if (route.name === 'Accounts') {
                         iconName = CommonIcons.account
-                    } else {
+                    }
+                    else if (route.name === 'Notification') {
+                        iconName = CommonIcons.bell
+                    }
+                    else {
                         iconName = CommonIcons.newsPaper
                     }
 
@@ -327,6 +354,15 @@ function TabNavigator(props) {
                         options={{
                             tabBarLabel:tabbarTitle.apply
                         }}
+                    />
+                    <BottomTabNavigator.Screen
+                        name="Notification"
+                        component={NotificationStack}
+                        options={{
+                            tabBarLabel:'thong bao',
+                            tabBarBadge:3
+                        }}
+                        
                     />
 
                 </>

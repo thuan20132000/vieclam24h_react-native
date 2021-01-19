@@ -1395,3 +1395,26 @@ export const getCollaboratorStatistic = async (collaborator_id) => {
 
 
 
+
+export const getGraphQl = async () => {
+
+
+
+    try {
+        let url = 'http://localhost:3000/graphql?';
+        let dataFetch = await fetch(url,{
+            method:'GET',
+            body:{
+                firstName,
+            }
+        });
+
+        let dataRes = await dataFetch.json();
+
+        console.warn(dataRes);
+
+    } catch (error) {
+        console.warn("ERROR : ",error);
+    }
+
+}

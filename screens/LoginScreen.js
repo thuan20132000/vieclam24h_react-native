@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Alert, StyleSheet, Text, TextInput, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { ActivityIndicator, Button, HelperText, Snackbar, Title } from 'react-native-paper'
 import { useDispatch } from 'react-redux';
 import CommonColors from '../constants/CommonColors';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { login } from '../utils/serverApi';
 
 import * as userActions from '../store/actions/authenticationActions';
@@ -33,10 +33,13 @@ const LoginScreen = (props) => {
             let loginRes = await login(userAuth.email, userAuth.password);
             if (loginRes.status) {
                 dispatch(userActions.login(loginRes.data));
+                _saveUserInfo(loginRes.data);
+
             }
 
+
             if (!loginRes.status) {
-               Alert.alert("Failed",loginRes.data?.message);
+                Alert.alert("Failed", loginRes.data?.message);
             }
 
 
@@ -46,6 +49,46 @@ const LoginScreen = (props) => {
         }
 
     }
+
+
+
+
+    const _saveUserInfo = async (data) => {
+
+        try {
+            const jsonValue = JSON.stringify(data)
+            await AsyncStorage.setItem('@user_info', jsonValue)
+        } catch (e) {
+            // saving error
+            console.warn('error: ', e);
+        }
+
+    }
+
+
+
+
+    const _getUserInfo = async () => {
+        try {
+            const jsonValue = await AsyncStorage.getItem('@user_info')
+            let dataRes = jsonValue != null ? JSON.parse(jsonValue) : null;
+            if (dataRes) {
+                dispatch(userActions.login(dataRes));
+
+            }
+
+        } catch (e) {
+            // error reading value
+            console.warn('error: ', e);
+        }
+
+    }
+
+
+    useEffect(() => {
+        _getUserInfo();
+
+    }, [])
 
 
 
@@ -120,7 +163,7 @@ const LoginScreen = (props) => {
                 </TouchableOpacity>
             </View>
 
-            
+
 
         </View>
     )

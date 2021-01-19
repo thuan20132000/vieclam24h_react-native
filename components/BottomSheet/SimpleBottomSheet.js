@@ -8,7 +8,7 @@ const SimpleBottomSheet = ({
     closeOnPressMask=false,
     height=400, 
     children,
-    dragFromTopOnly=false 
+    dragFromTopOnly=false
 }) => {
 
 

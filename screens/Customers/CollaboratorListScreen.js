@@ -202,19 +202,26 @@ const CollaboratorListScreen = (props) => {
 
     // if (isLoading) {
     //     return (
-    //         <View
-    //             style={{
-    //                 display: 'flex',
-    //                 flex: 1,
-    //                 flexDirection: "row",
-    //                 alignContent: 'center',
-    //                 backgroundColor: 'white',
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center'
-    //             }}
-    //         >
-    //             <LoadingSimple />
-    //         </View>
+    //         <ScrollView>
+    //             {
+    //                 Array(10).fill({}).map((e, index) =>
+
+    //                     <SkeletonPlaceholder>
+    //                         <View style={[
+    //                             styles.cardContainer
+    //                         ]}>
+    //                             <View style={{ width: 60, height: 60, borderRadius: 50 }} />
+    //                             <View style={{ marginLeft: 20 }}>
+    //                                 <View style={{ width: 120, height: 20, borderRadius: 4 }} />
+    //                                 <View
+    //                                     style={{ marginTop: 6, width: 80, height: 20, borderRadius: 4 }}
+    //                                 />
+    //                             </View>
+    //                         </View>
+    //                     </SkeletonPlaceholder>
+    //                 )
+    //             }
+    //         </ScrollView>
     //     )
     // }
 
@@ -255,54 +262,59 @@ const CollaboratorListScreen = (props) => {
                     />
                 </ScrollView>
             </View>
+
+            {
+                isLoading &&
+                <ScrollView>
+                {
+                    Array(10).fill({}).map((e, index) =>
+
+                        <SkeletonPlaceholder>
+                            <View style={[
+                                styles.cardContainer
+                            ]}>
+                                <View style={{ width: 60, height: 60, borderRadius: 50 }} />
+                                <View style={{ marginLeft: 20 }}>
+                                    <View style={{ width: 120, height: 20, borderRadius: 4 }} />
+                                    <View
+                                        style={{ marginTop: 6, width: 80, height: 20, borderRadius: 4 }}
+                                    />
+                                </View>
+                            </View>
+                        </SkeletonPlaceholder>
+                    )
+                }
+            </ScrollView>
+            }
             <View style={{
                 display: 'flex',
                 flex: 1,
                 paddingTop: 10
             }}>
                 {
-                    collaborators.length > 0 ?
-                        <FlatList style={{ flex: 1, zIndex: -1 }}
-                            showsVerticalScrollIndicator={true}
-                            data={collaborators}
-                            renderItem={({ item, index }) => (
-                                <CollaboratorCard
-                                    item={item}
-                                    navigation={props.navigation}
-                                />
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                            ListFooterComponent={
-                                <ActivityIndicator
-                                    size={'small'}
-                                    color={'red'}
-                                    animating={isLoadMore ? true : false}
-                                />
-                            }
-                            onEndReachedThreshold={0.2}
-                            onEndReached={_onLoadMore}
-                        />
-                        :
-                        <ScrollView>
-                            {
-                                Array(10).fill({}).map((e, index) =>
+                    collaborators.length > 0 &&
+                    <FlatList style={{ flex: 1, zIndex: -1 }}
+                        showsVerticalScrollIndicator={true}
+                        data={collaborators}
+                        renderItem={({ item, index }) => (
+                            <CollaboratorCard
+                                item={item}
+                                navigation={props.navigation}
+                            />
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        ListFooterComponent={
+                            <ActivityIndicator
+                                size={'small'}
+                                color={'red'}
+                                animating={isLoadMore ? true : false}
+                            />
+                        }
+                        onEndReachedThreshold={0.2}
+                        onEndReached={_onLoadMore}
+                    />
 
-                                    <SkeletonPlaceholder>
-                                        <View style={[
-                                            styles.cardContainer
-                                        ]}>
-                                            <View style={{ width: 60, height: 60, borderRadius: 50 }} />
-                                            <View style={{ marginLeft: 20 }}>
-                                                <View style={{ width: 120, height: 20, borderRadius: 4 }} />
-                                                <View
-                                                    style={{ marginTop: 6, width: 80, height: 20, borderRadius: 4 }}
-                                                />
-                                            </View>
-                                        </View>
-                                    </SkeletonPlaceholder>
-                                )
-                            }
-                        </ScrollView>
+
                 }
             </View>
 

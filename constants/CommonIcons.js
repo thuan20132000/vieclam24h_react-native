@@ -39,7 +39,9 @@ export default {
 
     checkboxCircleBlank:'checkbox-blank-circle-outline',
     checkboxCircleMark:'checkbox-marked-circle-outline',
-    plusThick:'plus-thick'
+    plusThick:'plus-thick',
+
+    bell:'bell'
     
 
 }

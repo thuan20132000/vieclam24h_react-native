@@ -27,7 +27,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     uri: item?.attributes?.images[0]?.image_url || CommonImages.notFound
                 }}
                 style={{
-                    width: deviceWidth / 3
+                    width: deviceWidth / 4
                 }}
             >
             </ImageBackground>
