@@ -77,18 +77,6 @@ export const JOB_DATA = [
         minPrice: '200000',
         maxPrice: '1200000'
     },
-    {
-        id: 7,
-        name: 'Woodstock Da Lat',
-        image_url: 'https://cf.bstatic.com/xdata/images/hotel/square600/85143189.webp?k=b269a63ff2fc35960fa24a657313322c4f69c027537bd5904cacd954118091ec&o=',
-        address: 'Hồ Xuân Hương',
-        duration_time: '',
-        category_id: 'c1',
-        province_code: '001',
-        district_code: '0001',
-        subdistrict_code: '00001',
-        minPrice: '200000',
-        maxPrice: '1200000'
-    },
+   
 ];
 

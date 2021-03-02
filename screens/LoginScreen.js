@@ -31,16 +31,19 @@ const LoginScreen = (props) => {
             setIsLoading(true);
 
             let loginRes = await login(userAuth.email, userAuth.password);
+            
+            console.warn('login res: ',loginRes);
+
+            if (!loginRes.status) {
+                Alert.alert("Failed", loginRes.data?.message);
+            }
+
             if (loginRes.status) {
                 dispatch(userActions.login(loginRes.data));
                 _saveUserInfo(loginRes.data);
 
             }
 
-
-            if (!loginRes.status) {
-                Alert.alert("Failed", loginRes.data?.message);
-            }
 
 
             setIsLoading(false);
@@ -106,7 +109,7 @@ const LoginScreen = (props) => {
                     style={[styles.inputLogin, {}]}
                     onChangeText={text => setUserAuth({ ...userAuth, email: text })}
                     value={userAuth.email}
-                    placeholder={'Email'}
+                    placeholder={'Username'}
 
                 />
                 <TextInput

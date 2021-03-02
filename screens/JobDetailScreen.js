@@ -20,7 +20,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import CommonImages from '../constants/CommonImages';
 
 
-
+import service_url from '../serverConfig';
 
 
 const JobDetailScreen = (props) => {
@@ -60,8 +60,8 @@ const JobDetailScreen = (props) => {
     const _onOpenPhotoGallery = async () => {
 
 
-        let images = JOB_DATA.map((e) => {
-            return { url: e.image_url }
+        let images = jobDetail.images.map((e) => {
+            return { url: `${service_url.url_absolute}/${e.image}` }
         })
         setGalleryImages(images);
         setGalleryVisible(true);
@@ -92,9 +92,9 @@ const JobDetailScreen = (props) => {
     // const [showError,setShowError] = useState(false);
 
 
-    const _onCheckValidateApply =  () => {
+    const _onCheckValidateApply = () => {
 
-        if ((jobApplyData.expected_price > jobDetail.attributes.suggestion_price * 2) || jobApplyData.expected_price < 0) {
+        if ((jobApplyData.expected_price > jobDetail.suggestion_price * 2) || jobApplyData.expected_price < 0) {
             setErrorMessage({
                 status: true,
                 message: `Mức giá đưa ra không hợp lý`
@@ -118,9 +118,9 @@ const JobDetailScreen = (props) => {
             setIsDisabling(true);
 
 
-            let checkValidated =  _onCheckValidateApply();
+            let checkValidated = _onCheckValidateApply();
 
-         
+
 
             if (checkValidated) {
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
@@ -160,6 +160,9 @@ const JobDetailScreen = (props) => {
     const _getJobDetail = async () => {
         setIsLoading(true);
         let job = await getJobDetail(job_id);
+        console.warn('job detail: ',job);
+        console.warn('job images: ',job.data.images);
+
         if (job.data) {
             setJobDetail(job.data);
         }
@@ -249,24 +252,52 @@ const JobDetailScreen = (props) => {
     return (
         <ScrollView>
             {
-                jobDetail &&
+                jobDetail ?
 
-                <>
+                    <>
 
-                    {/* Gallery Image */}
-                    {/* Image Show */}
-                    <View
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-around',
-                            alignContent: 'center',
-                            flexDirection: "row",
-                            flexWrap: 'wrap',
+                        {/* Gallery Image */}
+                        {/* Image Show */}
+                        <View
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-around',
+                                alignContent: 'center',
+                                flexDirection: "row",
+                                flexWrap: 'wrap',
 
-                        }}
-                    >
+                            }}
+                        >
+                            {
+                                jobDetail.images?.map((e, index) =>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.imageWrap,
+                                            {
+                                                width: deviceWidth / 3 -10,
+                                                height: 120,
+                                                marginHorizontal: 2
 
-                        {
+                                            }
+                                        ]}
+                                        onPress={_onOpenPhotoGallery}
+
+                                    >
+
+                                        <Image
+                                            source={{
+                                                uri: `${service_url.url_absolute}/${e.image}` || CommonImages.notFound
+                                            }}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                            }}
+
+                                        />
+                                    </TouchableOpacity>
+                                )
+                            }
+                            {/* {
                             JOB_DATA.length >= 2 && (
                                 <View
                                     style={[
@@ -327,260 +358,260 @@ const JobDetailScreen = (props) => {
 
                             )
 
-                        }
+                        } */}
 
-                        {
-                            JOB_DATA.length >= 5 && (
+                            {
+                                // JOB_DATA.length >= 5 && (
+                                //     <View
+                                //         style={[
+                                //             styles.row,
+                                //             {
+
+                                //             }
+                                //         ]}
+                                //     >
+                                //         <TouchableOpacity
+                                //             style={[
+                                //                 styles.imageWrap,
+                                //                 {
+                                //                     width: deviceWidth / 3,
+                                //                     height: 120,
+                                //                     marginHorizontal: 2
+
+                                //                 }
+                                //             ]}
+                                //         >
+
+                                //             <Image
+                                //                 source={{
+                                //                     uri: JOB_DATA[2].image_url
+                                //                 }}
+                                //                 style={{
+                                //                     width: '100%',
+                                //                     height: '100%',
+                                //                 }}
+
+                                //             />
+                                //         </TouchableOpacity>
+                                //         <TouchableOpacity
+                                //             style={[
+                                //                 styles.imageWrap,
+                                //                 {
+                                //                     width: deviceWidth / 3,
+                                //                     height: 120,
+                                //                     marginHorizontal: 2
+
+                                //                 }
+                                //             ]}
+                                //         >
+
+                                //             <Image
+                                //                 source={{
+                                //                     uri: JOB_DATA[3].image_url
+                                //                 }}
+                                //                 style={{
+                                //                     width: '100%',
+                                //                     height: '100%',
+                                //                 }}
+
+                                //             />
+                                //         </TouchableOpacity>
+                                //         <TouchableOpacity
+                                //             style={[
+                                //                 styles.imageWrap,
+                                //                 {
+                                //                     width: deviceWidth / 3,
+                                //                     height: 120,
+                                //                     marginHorizontal: 2
+
+                                //                 }
+                                //             ]}
+                                //             onPress={_onOpenPhotoGallery}
+
+                                //         >
+
+                                //             <ImageBackground
+                                //                 source={{
+                                //                     uri: JOB_DATA[4].image_url
+                                //                 }}
+                                //                 style={{
+                                //                     width: deviceWidth / 3,
+                                //                     height: 120,
+                                //                     justifyContent: 'center',
+                                //                     alignItems: 'center',
+                                //                     alignContent: 'center',
+                                //                     display: 'flex',
+
+                                //                 }}
+                                //             >
+                                //                 <Text style={[styles.textBackground, {
+
+                                //                 }]}>
+                                //                     + {JOB_DATA.length}
+                                //                 </Text>
+                                //             </ImageBackground>
+                                //         </TouchableOpacity>
+
+
+                                //     </View>
+
+
+                                // )
+
+                            }
+                        </View>
+                        {/* End Gallery images */}
+
+
+
+
+
+                        {/* user info and location */}
+                        <View style={[
+                            styles.customerInfoContainer,
+                            {
+                                borderRadius: 22,
+                                marginHorizontal: 8
+                            }
+                        ]}
+
+                        >
+                            <Text style={[
+                                styles.customerName,
+                                {
+                                    fontWeight: '400'
+                                }
+                            ]}>
+                                {jobDetail.author?.name}
+                            </Text>
+                            <View style={styles.jobAddressContainer}>
+                                <MaterialCommunityIcon
+                                    name={CommonIcons.homeMarker}
+                                    size={28}
+                                    color={'coral'}
+                                    style={{
+                                        marginRight: 8
+                                    }}
+                                    onPress={_onNavigateToMapDirection}
+                                />
+                                <Text style={styles.jobAddress}>
+                                    {jobDetail.author?.address}
+                                </Text>
+                            </View>
+                            <View style={styles.jobControl}>
+
+                                <TouchableOpacity
+                                    onPress={() => refRBSheet_applyJob.current.open()}
+
+                                    style={{
+                                        paddingHorizontal: 18,
+                                        paddingVertical: 12,
+                                        backgroundColor: CommonColors.btnSubmit,
+                                        borderRadius: 12
+                                    }}
+
+                                >
+                                    <Text
+                                        style={[
+                                            {
+                                                fontSize: 18,
+                                                fontWeight: '600',
+                                                color: 'white'
+                                            }
+                                        ]}
+                                    >
+                                        Ứng tuyển
+                                </Text>
+                                </TouchableOpacity>
+
                                 <View
                                     style={[
-                                        styles.row,
-                                        {
-
-                                        }
+                                        styles.row
                                     ]}
                                 >
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.imageWrap,
-                                            {
-                                                width: deviceWidth / 3,
-                                                height: 120,
-                                                marginHorizontal: 2
-
-                                            }
-                                        ]}
-                                    >
-
-                                        <Image
-                                            source={{
-                                                uri: JOB_DATA[2].image_url
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                            }}
-
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.imageWrap,
-                                            {
-                                                width: deviceWidth / 3,
-                                                height: 120,
-                                                marginHorizontal: 2
-
-                                            }
-                                        ]}
-                                    >
-
-                                        <Image
-                                            source={{
-                                                uri: JOB_DATA[3].image_url
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                            }}
-
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.imageWrap,
-                                            {
-                                                width: deviceWidth / 3,
-                                                height: 120,
-                                                marginHorizontal: 2
-
-                                            }
-                                        ]}
-                                        onPress={_onOpenPhotoGallery}
-
-                                    >
-
-                                        <ImageBackground
-                                            source={{
-                                                uri: JOB_DATA[4].image_url
-                                            }}
-                                            style={{
-                                                width: deviceWidth / 3,
-                                                height: 120,
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                alignContent: 'center',
-                                                display: 'flex',
-
-                                            }}
-                                        >
-                                            <Text style={[styles.textBackground, {
-
-                                            }]}>
-                                                + {JOB_DATA.length}
-                                            </Text>
-                                        </ImageBackground>
-                                    </TouchableOpacity>
-
+                                    <IconButton
+                                        icon={CommonIcons.chatMessage}
+                                        color={CommonColors.btnSubmit}
+                                        size={22}
+                                        onPress={_onNavigateToChat}
+                                    />
+                                    <IconButton
+                                        icon={CommonIcons.phone}
+                                        color={CommonColors.btnSubmit}
+                                        size={22}
+                                        onPress={_onNavigateToChat}
+                                    />
 
                                 </View>
+                            </View>
 
-
-                            )
-
-                        }
-                    </View>
-                    {/* End Gallery images */}
-
-
-
-
-
-                    {/* user info and location */}
-                    <View style={[
-                        styles.customerInfoContainer,
-                        {
-                            borderRadius: 22,
-                            marginHorizontal: 8
-                        }
-                    ]}
-
-                    >
-                        <Text style={[
-                            styles.customerName,
-                            {
-                                fontWeight: '400'
-                            }
-                        ]}>
-                            {jobDetail.relationships?.author?.name}
-                        </Text>
-                        <View style={styles.jobAddressContainer}>
-                            <MaterialCommunityIcon
-                                name={CommonIcons.homeMarker}
-                                size={28}
-                                color={'coral'}
-                                style={{
-                                    marginRight: 8
-                                }}
-                                onPress={_onNavigateToMapDirection}
-                            />
-                            <Text style={styles.jobAddress}>
-                                {jobDetail.relationships?.author?.address}
-                            </Text>
                         </View>
-                        <View style={styles.jobControl}>
-
-                            <TouchableOpacity
-                                onPress={() => refRBSheet_applyJob.current.open()}
-
-                                style={{
-                                    paddingHorizontal: 18,
-                                    paddingVertical: 12,
-                                    backgroundColor: CommonColors.btnSubmit,
-                                    borderRadius: 12
-                                }}
-
-                            >
-                                <Text
-                                    style={[
-                                        {
-                                            fontSize: 18,
-                                            fontWeight: '600',
-                                            color: 'white'
-                                        }
-                                    ]}
-                                >
-                                    Ứng tuyển
+                        {/* Description */}
+                        <View style={[
+                            styles.jobDescriptionsContainer,
+                            {
+                                backgroundColor: 'white',
+                                marginHorizontal: 8,
+                                borderRadius: 12
+                            }
+                        ]}
+                        >
+                            <Text style={styles.jobTitle}>{jobDetail.name}</Text>
+                            <Text style={styles.jobPrice}>Giá đưa ra :
+                            <Text style={{ fontSize: 18, color: CommonColors.primary }}>
+                                    {formatCash(jobDetail.suggestion_price)} vnd
+                            </Text>
+                            </Text>
+                            <View style={styles.jobDescriptionWrap}>
+                                <Text style={styles.jobDescriptionText}>
+                                    {jobDetail.descriptions}
                                 </Text>
-                            </TouchableOpacity>
-
-                            <View
-                                style={[
-                                    styles.row
-                                ]}
-                            >
-                                <IconButton
-                                    icon={CommonIcons.chatMessage}
-                                    color={CommonColors.btnSubmit}
-                                    size={22}
-                                    onPress={_onNavigateToChat}
-                                />
-                                <IconButton
-                                    icon={CommonIcons.phone}
-                                    color={CommonColors.btnSubmit}
-                                    size={22}
-                                    onPress={_onNavigateToChat}
-                                />
-
                             </View>
                         </View>
 
-                    </View>
-                    {/* Description */}
-                    <View style={[
-                        styles.jobDescriptionsContainer,
-                        {
-                            backgroundColor: 'white',
-                            marginHorizontal: 8,
-                            borderRadius: 12
-                        }
-                    ]}
-                    >
-                        <Text style={styles.jobTitle}>{jobDetail.attributes.name}</Text>
-                        <Text style={styles.jobPrice}>Giá đưa ra :
-                            <Text style={{ fontSize: 18, color: CommonColors.primary }}>
-                                {formatCash(jobDetail.attributes?.suggestion_price)} vnd
+
+                        {/* Ref */}
+                        <RBSheet
+                            ref={refRBSheet_applyJob}
+                            closeOnDragDown={true}
+                            closeOnPressMask={false}
+                            customStyles={{
+                                wrapper: {
+                                    backgroundColor: "transparent"
+                                },
+                                draggableIcon: {
+                                    backgroundColor: "#000"
+                                }
+                            }}
+                            height={Dimensions.get('screen').height}
+                        >
+                            <View>
+                                <TextInput style={styles.input}
+                                    label="Giá đưa ra"
+                                    value={jobApplyData.expected_price}
+                                    onChangeText={text => setJobApplyData({ ...jobApplyData, expected_price: text })}
+                                    keyboardType={'number-pad'}
+                                    error={errorMessagage.status ? true : false}
+                                />
+
+                                <Text style={{
+                                    paddingHorizontal: 18,
+                                    color: 'coral',
+                                    fontSize: 12,
+                                    fontWeight: '300',
+                                    fontStyle: 'italic'
+                                }}>
+                                    Ngân sách đưa ra : {formatCash(jobDetail?.suggestion_price)} VND
                             </Text>
-                        </Text>
-                        <View style={styles.jobDescriptionWrap}>
-                            <Text style={styles.jobDescriptionText}>
-                                {jobDetail.attributes.description}
-                            </Text>
-                        </View>
-                    </View>
+                                <TextInput style={[styles.input, { height: 160 }]}
+                                    label="Lời nhắn"
+                                    value={jobApplyData.description}
+                                    onChangeText={text => setJobApplyData({ ...jobApplyData, description: text })}
+                                    keyboardType={'default'}
+                                    multiline={true}
 
-
-                    {/* Ref */}
-                    <RBSheet
-                        ref={refRBSheet_applyJob}
-                        closeOnDragDown={true}
-                        closeOnPressMask={false}
-                        customStyles={{
-                            wrapper: {
-                                backgroundColor: "transparent"
-                            },
-                            draggableIcon: {
-                                backgroundColor: "#000"
-                            }
-                        }}
-                        height={Dimensions.get('screen').height}
-                    >
-                        <View>
-                            <TextInput style={styles.input}
-                                label="Giá đưa ra"
-                                value={jobApplyData.expected_price}
-                                onChangeText={text => setJobApplyData({ ...jobApplyData, expected_price: text })}
-                                keyboardType={'number-pad'}
-                                error={errorMessagage.status ? true : false}
-                            />
-
-                            <Text style={{
-                                paddingHorizontal: 18,
-                                color: 'coral',
-                                fontSize: 12,
-                                fontWeight: '300',
-                                fontStyle: 'italic'
-                            }}>
-                                Ngân sách đưa ra : {formatCash(jobDetail?.attributes?.suggestion_price)} VND
-                            </Text>
-                            <TextInput style={[styles.input, { height: 160 }]}
-                                label="Lời nhắn"
-                                value={jobApplyData.description}
-                                onChangeText={text => setJobApplyData({ ...jobApplyData, description: text })}
-                                keyboardType={'default'}
-                                multiline={true}
-
-                            />
-                            {/* <Button style={{ marginVertical: 16, width: 160, alignSelf: 'center', backgroundColor: CommonColors.primary }}
+                                />
+                                {/* <Button style={{ marginVertical: 16, width: 160, alignSelf: 'center', backgroundColor: CommonColors.primary }}
                                 mode="contained"
                                 onPress={_applyJob}
                                 loading={isLoading}
@@ -589,81 +620,82 @@ const JobDetailScreen = (props) => {
                                 Ứng Tuyển
                             </Button> */}
 
-                            <Button
-                                onPress={_applyJob}
-                                title="Ứng Tuyến"
-                                color="#841584"
-                                accessibilityLabel="Learn more about this purple button"
-                            />
+                                <Button
+                                    onPress={_applyJob}
+                                    title="Ứng Tuyến"
+                                    color="#841584"
+                                    accessibilityLabel="Learn more about this purple button"
+                                />
 
 
-                            {
-                                errorMessagage.status &&
-                                <Snackbar style={{ backgroundColor: 'coral', position: 'relative', top: 60 }}
-                                    visible={errorMessagage.status}
-                                    onDismiss={() => setErrorMessage({
-                                        status: false
-                                    })}
-                                    action={{
-                                        label: 'cancel',
-                                        onPress: () => setErrorMessage({ status: false })
-                                    }}
-                                >
-                                    {errorMessagage.message}
-                                </Snackbar>
-                            }
-                        </View>
-                    </RBSheet>
-
-
-                    {/* Gallery Photo */}
-                    <Modal visible={galleryVisible} transparent={true}>
-
-                        <ImageViewer
-                            imageUrls={galleryImages}
-
-                            onSwipeDown={() => setGalleryVisible(false)}
-                            enableSwipeDown={true}
-
-
-
-                            renderFooter={() =>
-                                <View
-                         
-                                >
-                                    <ScrollView
-                                        horizontal={true}
-                                       
+                                {
+                                    errorMessagage.status &&
+                                    <Snackbar style={{ backgroundColor: 'coral', position: 'relative', top: 60 }}
+                                        visible={errorMessagage.status}
+                                        onDismiss={() => setErrorMessage({
+                                            status: false
+                                        })}
+                                        action={{
+                                            label: 'cancel',
+                                            onPress: () => setErrorMessage({ status: false })
+                                        }}
                                     >
-                                        {
-                                            JOB_DATA.map((e,index) =>
-                                                <Image
-                                                    key={index.toString()}
-                                                    style={{
-                                                        width: 80,
-                                                        height: 80,
-                                                        margin:12
-                                                    }}
+                                        {errorMessagage.message}
+                                    </Snackbar>
+                                }
+                            </View>
+                        </RBSheet>
 
-                                                    source={{
-                                                        uri: e.image_url
-                                                    }}
-                                                />
-                                            )
-                                        }
-                                    </ScrollView>
-                                </View>
-                            }
-                            footerContainerStyle={{
-                                // backgroundColor: 'white',
-                                width: '100%',
-                                height: 100
-                            }}
 
-                        />
-                    </Modal>
+                        {/* Gallery Photo */}
+                        <Modal visible={galleryVisible} transparent={true}>
 
-                </>
+                            <ImageViewer
+                                imageUrls={galleryImages}
+
+                                onSwipeDown={() => setGalleryVisible(false)}
+                                enableSwipeDown={true}
+
+
+
+                                renderFooter={() =>
+                                    <View
+
+                                    >
+                                        <ScrollView
+                                            horizontal={true}
+
+                                        >
+                                            {
+                                                jobDetail.images.map((e, index) =>
+                                                    <Image
+                                                        key={index.toString()}
+                                                        style={{
+                                                            width: 80,
+                                                            height: 80,
+                                                            margin: 12
+                                                        }}
+
+                                                        source={{
+                                                            uri: `${service_url.url_absolute}/${e.image}` || CommonImages.notFound
+                                                        }}
+                                                    />
+                                                )
+                                            }
+                                        </ScrollView>
+                                    </View>
+                                }
+                                footerContainerStyle={{
+                                    // backgroundColor: 'white',
+                                    width: '100%',
+                                    height: 100
+                                }}
+
+                            />
+                        </Modal>
+
+                    </> :
+                    <Text>Không tìm thấy công việc.</Text>
             }
 
 

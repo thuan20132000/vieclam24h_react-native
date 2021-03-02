@@ -21,7 +21,7 @@ const SelectRole = ({ selectRoleVisible, setSelectRoleVisible, roleSelected, set
     const _onConfirm = () => {
         setRoleSelected({
             name: roleSelected == 'isCustomer' ? 'Tôi là nhà tuyển dụng' : 'Tôi là người tìm việc',
-            value: roleSelected == 'isCustomer'?3:2
+            value: roleSelected == 'isCustomer' ? 3 : 2
         });
         setSelectRoleVisible(false);
     }
@@ -85,17 +85,10 @@ const RegisterScreen = (props) => {
         phonenumber: '',
         password: '',
         idcard: '',
-        province: '',
-        province_code: '',
-        district: '',
-        district_code: '',
-        subDistrict: '',
-        subDistrict_code: '',
-        address: '',
-        role: ''
+       
     });
 
-    const [userLocation,setUserLocation] = useState({
+    const [userLocation, setUserLocation] = useState({
         province: '',
         province_code: '',
         district: '',
@@ -111,10 +104,7 @@ const RegisterScreen = (props) => {
 
     const _onRegister = async () => {
 
-        if(!userInfo.role){
-            Alert.alert("Alert","Vui lòng chọn vai trò!");
-            return;
-        }
+       
 
         setIsLoading(true);
 
@@ -137,9 +127,22 @@ const RegisterScreen = (props) => {
             let errors = registerRes;
             setIsLoading(false);
 
-            Alert.alert("Failed",errors);
-        }else{
-            Alert.alert("Thành Công","Vui lòng xác nhận Email để đăng nhập vào hệ thống.");
+            Alert.alert(
+                'Đăng ký thất bại',
+                'Vui lòng kiểm tra thông tin đăng ký',
+                [
+                 
+                    {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel'
+                    },
+                    { text: 'OK', onPress: () => console.log('OK Pressed') }
+                ],
+                { cancelable: false }
+            );
+        } else {
+            // Alert.alert("Thành Công","Vui lòng xác nhận Email để đăng nhập vào hệ thống.");
             setIsLoading(false);
             props.navigation.navigate('login');
         }
@@ -147,7 +150,7 @@ const RegisterScreen = (props) => {
 
 
     useEffect(() => {
-        setUserInfo({...userInfo,role:roleSelected.value});
+        setUserInfo({ ...userInfo, role: roleSelected.value });
 
     }, [roleSelected]);
 
@@ -174,36 +177,36 @@ const RegisterScreen = (props) => {
 
 
 
-                <SelectRole
+                {/* <SelectRole
                     selectRoleVisible={selectRoleVisible}
                     setSelectRoleVisible={setSelectRoleVisible}
                     setRoleSelected={setRoleSelected}
                     roleSelected={roleSelected}
-                />
+                /> */}
 
 
                 <View style={styles.loginForm}>
 
-                    <TouchableOpacity style={styles.selectButton}
+                    {/* <TouchableOpacity style={styles.selectButton}
                         onPress={() => setSelectRoleVisible(true)}
                     >
                         <Text>{roleSelected.name ? roleSelected.name : 'Chọn vai trò'}</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
 
                     {/* display occupation if user is collaborator */}
                     {
-                        roleSelected.value == 'isCollaborator' &&
-                        <OccupationSelection
-                            itemSelected={occupationSelect}
-                            setItemSelected={setOccupationSelect}
+                        // roleSelected.value == 'isCollaborator' &&
+                        // <OccupationSelection
+                        //     itemSelected={occupationSelect}
+                        //     setItemSelected={setOccupationSelect}
 
-                        />
+                        // />
 
                     }
 
                     <TextInput
                         style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({...userInfo,name:text})}
+                        onChangeText={text => setUserInfo({ ...userInfo, name: text })}
                         value={userInfo.name}
                         placeholder={'Tên'}
 
@@ -231,21 +234,7 @@ const RegisterScreen = (props) => {
                             </HelperText>
 
                     }
-                    <TextInput
-                        style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({ ...userInfo, phonenumber: text })}
-                        value={userInfo.phonenumber}
-                        placeholder={'Số điện thoại'}
-                        keyboardType={'numeric'}
 
-                    />
-                    {
-                        (isError && !userInfo.phonenumber)
-                        && <HelperText type="error" visible={hasErrors()}>
-                            Vui lòng nhập số điện thoại!
-                            </HelperText>
-
-                    }
                     <TextInput
                         style={[styles.inputLogin, {}]}
                         onChangeText={text => setUserInfo({ ...userInfo, password: text })}
@@ -254,13 +243,7 @@ const RegisterScreen = (props) => {
                         secureTextEntry={true}
 
                     />
-                    {
-                        (isError && !userInfo.password)
-                        && <HelperText type="error" visible={hasErrors()}>
-                            Vui lòng nhập mật khẩu!
-                            </HelperText>
 
-                    }
                     <TextInput
                         style={[styles.inputLogin, {}]}
                         onChangeText={text => setUserInfo({ ...userInfo, idcard: text })}
@@ -277,26 +260,6 @@ const RegisterScreen = (props) => {
 
                     }
 
-                    <LocationPicker 
-                        location={userLocation}
-                        setLocation={setUserLocation}
-                    />
-
-                    <TextInput
-                        style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({...userInfo,address:text})}
-                        value={userInfo.address}
-                        placeholder={'Địa chỉ'}
-                        multiline={true}
-
-                    />
-                    {
-                        (isError && !userInfo.idcard)
-                        && <HelperText type="error" visible={hasErrors()}>
-                            Vui lòng nhập chứng minh địa chỉ!
-                            </HelperText>
-
-                    }
 
 
                     {/*  */}

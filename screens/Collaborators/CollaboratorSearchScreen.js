@@ -36,12 +36,12 @@ const SearchItem = ({ title, occupation, onPressItem, item }) => {
                         fontSize: 18,
                         fontWeight: '600'
                     }}>
-                        {item?.attributes.name}
+                        {item.name}
                     </Text>
                     <Text style={{
                         color: 'red'
                     }}>
-                        Giá đưa ra: {formatCash(item?.attributes.suggestion_price || 0)} vnđ
+                        Giá đưa ra: {formatCash(item.suggestion_price || 0)} vnđ
                 </Text>
                     <View style={{
                         display: 'flex',
@@ -58,7 +58,7 @@ const SearchItem = ({ title, occupation, onPressItem, item }) => {
                             fontSize: 14,
                             marginLeft: 12
                         }}>
-                            {item?.relationships?.location?.address}
+                            {item.location?.district}
                         </Text>
                     </View>
                 </View>
@@ -95,7 +95,6 @@ const CollaboratorSearchScreen = (props) => {
     // Search debounce
     const typingTimeoutRef = useRef(null);
     const _onSearchJob = async (text) => {
-
         let value = text.toLowerCase();
         setSearchQuery(text);
         if (typingTimeoutRef.current) {
@@ -110,6 +109,7 @@ const CollaboratorSearchScreen = (props) => {
 
     const _onGetDataSearch = async (value) => {
         let searchRes = await searchJobs(value, districtSearch);
+
         if (searchRes.status) {
             setSearchData(searchRes.data);
         } else {
@@ -284,8 +284,8 @@ const CollaboratorSearchScreen = (props) => {
                     searchData.map((e, index) =>
                         <SearchItem key={index.toString()}
                             item={e}
-                            title={e.attributes.name}
-                            occupation={e.occupation_name}
+                            title={e.name}
+                            occupation={e.field.name}
                             onPressItem={() => _onNavigateToDetail(e)}
 
                         />

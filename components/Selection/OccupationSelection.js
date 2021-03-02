@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View,ScrollView, TouchableOpacity } from 'react-native'
 import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors';
 
-import { getOccupations } from '../../utils/serverApi';
+import { getFields } from '../../utils/serverApi';
 
 const OccupationItem = ({ isSelectOne = false, item, itemSelected, setItemSelected, setVisible }) => {
 
@@ -39,7 +38,7 @@ const OccupationItem = ({ isSelectOne = false, item, itemSelected, setItemSelect
             onPress={_onPress}
         >
             <Text>
-                {item.attributes?.name}
+                {item.name}
             </Text>
         </TouchableOpacity>
     )
@@ -57,7 +56,7 @@ const OccupationSelection = ({ title = "Show Dialog", itemSelected, setItemSelec
 
 
     const _getOccupations = async () => {
-        let occupationData = await getOccupations();
+        let occupationData = await getFields();
         setOccupations(occupationData.data);
     }
 

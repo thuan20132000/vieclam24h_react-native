@@ -9,12 +9,16 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import CommonIcons from '../../constants/CommonIcons';
 import CommonColors from '../../constants/CommonColors';
 
+import server_url from '../../serverConfig';
 
 
 const CardHorizontal = ({ index, item, onPress }) => {
 
     let candidateNumber =   item.relationships?.candidates?.length;
 
+
+
+    
     return (
         <TouchableOpacity style={styles.cardContainer}
             onPress={() => onPress(item?.id)}
@@ -24,7 +28,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
 
             <ImageBackground
                 source={{
-                    uri: item?.attributes?.images[0]?.image_url || CommonImages.notFound
+                    uri: (item.images && item.images[0]) ? `${server_url.url_absolute}/${item.images[0].image}` : CommonImages.notFound
                 }}
                 style={{
                     width: deviceWidth / 4
@@ -33,7 +37,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
             </ImageBackground>
             <Card.Content style={styles.cardContent}>
                 <Text style={{ fontSize: 14,marginRight:20 }}>
-                    {item?.attributes.name}
+                    {item?.name}
                 </Text>
                 <Paragraph
                     numberOfLines={2}
@@ -43,7 +47,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         color: 'grey'
                     }}
                 >
-                    {item?.attributes.description}
+                    {item?.description}
                 </Paragraph>
 
                 <View style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
@@ -53,7 +57,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         color={CommonColors.primary}
                     />
                     <Caption style={{marginHorizontal:6,color:'red',fontWeight:'600'}}>
-                        {formatCash(item?.attributes?.suggestion_price)} đ
+                        {formatCash(item.suggestion_price)} đ
                     </Caption>
 
                 </View>
@@ -64,7 +68,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         color={CommonColors.primary}
                     />
                     <Caption style={{marginHorizontal:6,fontWeight:'300'}}>
-                        {item?.relationships.location.address}
+                        {item?.relationships?.location?.address}
                     </Caption>
 
                 </View>
@@ -78,7 +82,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         fontSize:12,
                         color:'grey'
                     }}>
-                        Đăng lúc : {formatDateTime(item.attributes.created_at)}
+                        Đăng lúc : {formatDateTime(item.created_at)}
                     </Text>
 
                 </View>

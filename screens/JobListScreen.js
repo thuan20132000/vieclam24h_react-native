@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { RefreshControl, StyleSheet, Text, View } from 'react-native'
-import { FlatList, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { ActivityIndicator } from 'react-native-paper';
+import { RefreshControl, StyleSheet, Text, View,FlatList, ScrollView, TouchableOpacity ,ActivityIndicator} from 'react-native'
 import SimpleBottomSheet from '../components/BottomSheet/SimpleBottomSheet';
 import CardHorizontal from '../components/Card/CardHorizontal';
 import FilterBar from '../components/Filter/FilterBar';
 import { RenderDistrict, RenderProvince, RenderSubDistrict } from '../components/Render/RenderSelection';
 
-import { getJobs } from '../utils/serverApi';
+import { getJobs, getJobsByCategory } from '../utils/serverApi';
 
 
 const ButtonItem = ({
@@ -55,14 +53,16 @@ const JobListScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [perPage, setPerPage] = useState(6);
     const [postnumber, setPostnumber] = useState(0);
+    const [nextPage,setNextPage] = useState(null);
     let { category } = props.route.params;
 
     const _getJobs = async () => {
         setIsLoading(true);
 
-        let data = await getJobs(category.id, perPage, postnumber);
+        let data = await getJobsByCategory(category.slug);
         if (data.data.length > 0) {
             setJobs(data.data);
+            setNextPage(data.next);
         }
         setIsLoading(false);
     }
@@ -79,16 +79,26 @@ const JobListScreen = (props) => {
         setIsLoading(true);
         let postnumberIndex = postnumber + perPage;
         setPostnumber(postnumberIndex);
-        let dataRes = await getJobs(category.id, perPage, postnumberIndex);
-        if (dataRes.data?.length > 0) {
-            timeoutEvent = setTimeout(() => {
-                setJobs([...jobs, ...dataRes.data]);
-                setIsLoading(false);
 
-            }, 600);
-        } else {
-            setIsLoading(false);
+        if(nextPage){
+            let dataFetch = await fetch(nextPage);
+            if(!dataFetch.ok){
+                return;
+            }
+            let dataRes = await dataFetch.json();
+
+            if (dataRes.data?.length > 0) {
+                timeoutEvent = setTimeout(() => {
+                    setJobs([...jobs, ...dataRes.data]);
+                    setNextPage(dataRes.next);
+                    setIsLoading(false);
+    
+                }, 300);
+            } else {
+                setIsLoading(false);
+            }
         }
+        
     }
 
     useEffect(() => {
@@ -239,6 +249,8 @@ const JobListScreen = (props) => {
                 ListFooterComponent={
                     <ActivityIndicator
                         animating={isLoading}
+                        color={'coral'}
+                        size={'large'}
                     />
                 }
             />

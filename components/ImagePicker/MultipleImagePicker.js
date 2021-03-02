@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native'
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Text, View, Image, Dimensions,TouchableOpacity } from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
 
 

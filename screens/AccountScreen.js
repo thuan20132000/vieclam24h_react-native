@@ -68,7 +68,7 @@ const RenderTitle = ({
                     }}
                 />
                 <Text style={{ color: 'white', fontSize: 18 }}>
-                    {userAttributes?.name}
+                    {userInformation.username}
                 </Text>
 
 
@@ -115,8 +115,9 @@ const AccountScreen = (props) => {
 
 
     useEffect(() => {
-        let user_role = userInformation.role[0];
-        setUserRole(user_role);
+        // let user_role = userInformation.role[0];
+        // setUserRole(user_role);
+        console.warn('user info: ',userInformation);
     }, []);
 
 

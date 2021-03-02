@@ -17,7 +17,7 @@
 		30F0966606C0A6893C0E1308 /* libPods-vieclam24h.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F62293DCD7894B660C5F4D /* libPods-vieclam24h.a */; };
 		3DCBCC6BD7C9EBAC05BD581F /* libPods-vieclam24h-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E5D361E09219C6ED247E815 /* libPods-vieclam24h-tvOSTests.a */; };
 		635F553F03A926D7613F9B99 /* libPods-vieclam24h-vieclam24hTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5FF8D2623FAFC5EC1F266D80 /* libPods-vieclam24h-vieclam24hTests.a */; };
-		66C2C17C257CEC8800771264 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 66C2C17B257CEC8800771264 /* GoogleService-Info.plist */; };
+		6658C44D25C4110D00A12164 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 66C2C17B257CEC8800771264 /* GoogleService-Info.plist */; };
 		FAF59FD27507B2E9280D19BC /* libPods-vieclam24h-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA7B7D30DC5F60574B319AA7 /* libPods-vieclam24h-tvOS.a */; };
 /* End PBXBuildFile section */
 
@@ -409,7 +409,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66C2C17C257CEC8800771264 /* GoogleService-Info.plist in Resources */,
+				6658C44D25C4110D00A12164 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

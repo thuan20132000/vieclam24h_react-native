@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View } from 'react-native';
+import { Text, View ,TouchableOpacity} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator,TransitionPresets,StackCardStyleInterpolator, CardStyleInterpolators  } from '@react-navigation/stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -51,6 +51,9 @@ import CustomerStatisticScreen from './screens/Customers/CustomerStatisticScreen
 import CollaboratorStatisticScreen from './screens/Collaborators/CollaboratorStatisticScreen';
 import NotificationScreen from './screens/NotificationScreen';
 import MapPlaceDirectionScreen from './screens/Map/MapPlaceDirectionScreen';
+import CategorySectionScreen from './screens/PostJob/CategorySectionScreen';
+import FieldSectionScreen from './screens/PostJob/FieldSectionScreen';
+import { Easing } from 'react-native-reanimated';
 
 /**
  * Authentication Stack
@@ -267,6 +270,62 @@ function NotificationStack(){
 
 
 
+const PostJobStackNavigator = createStackNavigator();
+function PostJobStack(props){
+
+    const configOpen = {
+        animation: 'spring',
+        config: {
+          stiffness: 1000,
+          damping: 500,
+          mass: 3,
+          overshootClamping: true,
+          restDisplacementThreshold: 0.01,
+          restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'timing',
+        config: {
+            duration:200,
+            easing:Easing.linear
+        },
+    };
+
+    return(
+        <PostJobStackNavigator.Navigator
+            screenOptions={{
+                title:<TouchableOpacity onPress={()=>props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                gestureEnabled:true,
+                gestureDirection:'horizontal',
+                animationEnabled:true,
+                cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec:{
+                    open:configOpen,
+                    close:configClose
+                }
+            
+            }}
+            headerMode='float'
+            mode='card'
+            
+        >
+            <PostJobStackNavigator.Screen
+                name={'CategorySection'}
+                component={CategorySectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'FieldSection'}
+                component={FieldSectionScreen}
+            />
+        </PostJobStackNavigator.Navigator>
+    )
+}
+
+
+
+
 /**
  * tab
  */
@@ -277,12 +336,12 @@ function TabNavigator(props) {
     const { userInformation } = useSelector(state => state.authentication);
     const [userRole, setUserRole] = useState();
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        setUserRole(userInformation.role[0].id);
+    //     setUserRole(userInformation.role[0].id);
 
 
-    }, [userRole]);
+    // }, [userRole]);
 
 
 
@@ -344,7 +403,7 @@ function TabNavigator(props) {
 
 
             {
-                (userRole && userRole == 2) &&
+                // (userRole && userRole == 2) &&
                 <>
                     <BottomTabNavigator.Screen
                         name="HomeStack"
@@ -369,31 +428,16 @@ function TabNavigator(props) {
                         }}
                         
                     />
-
-                </>
-            }
-
-
-
-            {
-                (userRole && userRole == 3) &&
-                <>
-                    <BottomTabNavigator.Screen
-                        name="HomeStack"
-                        component={CustomerHomeStack}
+                     <BottomTabNavigator.Screen
+                        name="PostJob"
+                        component={PostJobStack}
                         options={{
-                            tabBarLabel:tabbarTitle.home
+                            tabBarLabel:'Đăng tin',
+                            tabBarVisible:false
                         }}
+                        
                     />
-                    <BottomTabNavigator.Screen
-                        name="CustomerJobList"
-                        component={CustomerJobStack}
-
-                        options={{
-                            tabBarLabel: 'Tin đăng'
-                        }}
-                    />
-                    <BottomTabNavigator.Screen
+                    {/* <BottomTabNavigator.Screen
                         name="CustomerJobCreation"
                         component={CustomerJobCreationScreen}
 
@@ -406,8 +450,46 @@ function TabNavigator(props) {
                             ),
                             tabBarLabel: 'Tạo công việc',
                         }}
-                    />
+                    /> */}
+
                 </>
+            }
+
+
+
+            {
+                // (userRole && userRole == 3) &&
+                // <>
+                //     <BottomTabNavigator.Screen
+                //         name="HomeStack"
+                //         component={CustomerHomeStack}
+                //         options={{
+                //             tabBarLabel:tabbarTitle.home
+                //         }}
+                //     />
+                //     <BottomTabNavigator.Screen
+                //         name="CustomerJobList"
+                //         component={CustomerJobStack}
+
+                //         options={{
+                //             tabBarLabel: 'Tin đăng'
+                //         }}
+                //     />
+                //     <BottomTabNavigator.Screen
+                //         name="CustomerJobCreation"
+                //         component={CustomerJobCreationScreen}
+
+                //         options={{
+                //             tabBarIcon: ({ color, size }) => (
+                //                 <MaterialCommunityIcon style={{ position: 'absolute', bottom: 6 }}
+                //                     name={CommonIcons.historyJob}
+                //                     color={CommonColors.primary} size={44}
+                //                 />
+                //             ),
+                //             tabBarLabel: 'Tạo công việc',
+                //         }}
+                //     />
+                // </>
             }
 
 
@@ -447,6 +529,7 @@ const Router = () => {
         } else {
             setIsAuthenticated(false);
         }
+
     }, [userAccesstoken]);
 
 

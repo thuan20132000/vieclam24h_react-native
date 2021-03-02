@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, View, TouchableOpacity, Alert } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { 
+    KeyboardAvoidingView, 
+    StyleSheet, 
+    Text, 
+    TextInput, 
+    View, 
+    TouchableOpacity, 
+    Alert,
+    ScrollView
+ } from 'react-native'
 import MultipleImagePicker from '../../components/ImagePicker/MultipleImagePicker'
 import LocationPicker from '../../components/LocationPicker/LocationPicker'
 import OccupationSelection from '../../components/Selection/OccupationSelection'
@@ -52,18 +60,24 @@ const CustomerJobCreationScreen = (props) => {
 
         setIsLoading(true);
         let image_urls = [];
-        if (jobImages.length >= 0) {
+        // if (jobImages.length >= 0) {
 
-            for (const element of jobImages) {
-                let image_name = await generateCode('_');
-                const reference = storage().ref(image_name);
-                let image_uploaded = await reference.putFile(element.path);
-                let image_url = await storage().ref(image_name).getDownloadURL();
-                image_urls.push(image_url);
-            }
+        //     for (const element of jobImages) {
+        //         let image_name = await generateCode('_');
+        //         const reference = storage().ref(image_name);
+        //         let image_uploaded = await reference.putFile(element.path);
+        //         let image_url = await storage().ref(image_name).getDownloadURL();
+        //         image_urls.push(image_url);
+        //     }
 
 
-        }
+        // }
+        
+        console.warn('data created: ',jobInfo);
+
+        return;
+
+        console.warn('jobinfo : ',jobInfo);
 
         let jobRes = await createJob(
             jobInfo.name,
@@ -116,12 +130,12 @@ const CustomerJobCreationScreen = (props) => {
 
         >
             <ScrollView
-                style={{
-                    paddingTop: 60
-                }}
-                contentInset={{
-                    bottom: 40
-                }}
+                // style={{
+                //     paddingTop: 60
+                // }}
+                // contentInset={{
+                //     bottom: 40
+                // }}
             >
                 <TextInput
                     style={[styles.inputLogin, {}]}
@@ -173,7 +187,7 @@ const CustomerJobCreationScreen = (props) => {
                             {
                                 ...jobInfo,
                                 occupation_id: item.id,
-                                occupation_name: item.attributes?.name
+                                occupation_name: item.name
                             }
                         )
                         }

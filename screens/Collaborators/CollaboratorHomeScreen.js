@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, Image, RefreshControl } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View, TextInput, Image, RefreshControl,ScrollView, TouchableOpacity } from 'react-native'
 import { Subheading, Button } from 'react-native-paper'
 import CardHorizontal from '../../components/Card/CardHorizontal'
 import MenuItem from '../../components/Menu/MenuItem'
@@ -13,6 +12,7 @@ import { useSelector } from 'react-redux';
 import MultipleLanguage from '../../components/Dialog/MultipleLanguage'
 
 import { Translate } from '../../locales/index';
+import server_url from '../../serverConfig';
 
 const CollaboratorHomeScreen = (props) => {
 
@@ -36,7 +36,8 @@ const CollaboratorHomeScreen = (props) => {
 
     const _getCategory = async () => {
         setIsLoading(true);
-        let data = await getCategory();
+        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjE0ODIzODQwLCJqdGkiOiJjNTEzMjM5Y2FkNGY0M2E2YWI3ODBkOGNmZjdhODdjMyIsInVzZXJfaWQiOjIxfQ.qiM9u2wJNT_r2RcsJaGJQ2IsBOvZVDRB7CbIe-Xnkh8";
+        let data = await getCategory(token);
         if (data.data.length > 0) {
             setCategories(data.data);
         }
@@ -55,6 +56,8 @@ const CollaboratorHomeScreen = (props) => {
         setIsLoading(false);
         setRefreshing(false);
     }
+
+    
     const _navigateToJobDetail = async (job_id) => {
         props.navigation.navigate('JobDetail', { job_id: job_id })
     }
@@ -164,7 +167,7 @@ const CollaboratorHomeScreen = (props) => {
                     {categories &&
                         categories.map((e, index) =>
                             <MenuItem
-                                image={e.image}
+                                image_url={`${server_url.url_absolute}/${e.image}`}
                                 label={e.name}
                                 {...props}
                                 onItemPress={() => _navigateToJobList(e)}

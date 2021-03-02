@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { Alert, Dimensions, StyleSheet, Text, View,ScrollView, TouchableOpacity } from 'react-native'
 import ItemSelection from '../Item/ItemSelection';
 import ItemSelectionChecbox from '../Item/ItemSelectionChecbox'
 

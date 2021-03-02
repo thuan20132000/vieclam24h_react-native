@@ -8,7 +8,8 @@ const MenuItem = ({
     containerStyle,
     labelStyle,
     label,
-    image }) => {
+    image_url
+}) => {
 
 
     // const _onNavigateToJobList = () => {
@@ -24,7 +25,7 @@ const MenuItem = ({
             <Image
                 style={{width:40,height:40}}
                 source={{
-                    uri: image || CommonImages.notFound,
+                    uri: image_url || CommonImages.notFound,
                 }}
             />
 

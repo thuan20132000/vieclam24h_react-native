@@ -9,22 +9,22 @@ import storage from '@react-native-firebase/storage';
  * description: Login
  * created_at:21/11/2020
  * 
- * @param {*} email 
+ * @param {*} username 
  * @param {*} password 
  */
-export const login = async (email, password) => {
+export const login = async (username, password) => {
 
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/login`, {
+        let dataFetch = await fetch(`http://18.141.229.83/api/v1/signin`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "email": email,
+                "username": username,
                 "password": password
 
             })
@@ -42,7 +42,7 @@ export const login = async (email, password) => {
 
         let dataRes = await dataFetch.json();
 
-        if (!dataRes.data) {
+        if (!dataRes.status) {
             return {
                 data: dataRes,
                 message: 'failed',
@@ -84,25 +84,19 @@ export const register = async (
     address,
     role,
 ) => {
+
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/register`, {
+        let dataFetch = await fetch(`http://18.141.229.83/api/v1/signup`, {
             method: 'POST',
             headers: {
-                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "name": name,
-                "email": email,
-                "password": password,
-                "phonenumber": phonenumber,
-                "idcard": idcard,
-                "address": address,
-                "province": province,
-                "district": district,
-                "subdistrict": subdistrict,
-                "role": role
+                username: name,
+                password: password,
+                email: email
+
 
             })
         });
@@ -119,8 +113,9 @@ export const register = async (
         }
 
         let dataRes = await dataFetch.json();
+        console.warn("DATA RES: ", dataRes);
 
-        if (!dataRes.data) {
+        if (!dataRes.status) {
             return {
                 data: dataRes,
                 message: 'failed',
@@ -129,7 +124,7 @@ export const register = async (
         }
 
         return {
-            data: dataRes.data,
+            data: dataRes,
             message: 'success',
             status: true
         }
@@ -149,11 +144,16 @@ export const register = async (
  * description: get all category
  * created_at:17/10/2020
  */
-export const getCategory = async () => {
+export const getCategory = async (access_token) => {
 
     try {
-        let url = `${api.url}/category`;
-        let dataFetch = await fetch(url);
+        let url = `${api.api_v1}/category`;
+        let bearer = `Bearer ${access_token}`;
+        let dataFetch = await fetch(url, {
+            headers: {
+                "Authorization": `${bearer}`
+            }
+        });
 
         if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH CATEGORY');
@@ -164,9 +164,10 @@ export const getCategory = async () => {
             }
         }
         let dataRes = await dataFetch.json();
+        console.warn('data res: ', dataRes);
 
         return {
-            data: dataRes.data,
+            data: dataRes,
             message: 'success'
         }
 
@@ -220,6 +221,44 @@ export const getOccupations = async (category_id = '') => {
 }
 
 
+/**
+ * 
+ * @param {*} category 
+ * @param {*} perpage 
+ * @param {*} postnumber 
+ */
+
+export const getFields = async (category_id = '') => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${api.api_v1}/fields?category=${category_id}`);
+
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT FETCH JOBS');
+
+            return {
+                status: false,
+                data: [],
+                message: 'error'
+            }
+        }
+        let dataRes = await dataFetch.json();
+
+        return {
+            status: true,
+            data: dataRes,
+            message: 'success'
+        }
+
+
+    } catch (error) {
+        return {
+            status: false,
+            data: [],
+            message: 'error ' + error
+        }
+    }
+}
 
 
 /**
@@ -235,7 +274,7 @@ export const getJobs = async (category = '', perpage = 5, postnumber = 0) => {
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job?category=${category}&perpage=${perpage}&postnumber=${postnumber}`);
+        let dataFetch = await fetch(`${api.api_v1}/jobs`);
 
         if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH JOBS');
@@ -249,6 +288,37 @@ export const getJobs = async (category = '', perpage = 5, postnumber = 0) => {
 
         return {
             data: dataRes.data,
+            message: 'success'
+        }
+
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error
+        }
+    }
+}
+
+
+export const getJobsByCategory = async (category_slug, limit=10) => {
+    try {
+        let url = serverConfig.url;
+        let dataFetch = await fetch(`${api.api_v1}/jobs?category_slug=${category_slug}`);
+
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT FETCH JOBS');
+
+            return {
+                data: [],
+                message: 'error'
+            }
+        }
+        let dataRes = await dataFetch.json();
+
+        return {
+            data: dataRes.data,
+            next:dataRes.next,
             message: 'success'
         }
 
@@ -277,7 +347,7 @@ export const getJobDetail = async (id) => {
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job/${id}`);
+        let dataFetch = await fetch(`${api.api_v1}/jobs/${id}`);
 
         if (!dataFetch.ok) {
             console.warn('ERROR AT FETCH JOB DETAIL');
@@ -288,6 +358,8 @@ export const getJobDetail = async (id) => {
             }
         }
         let dataRes = await dataFetch.json();
+
+        console.warn('data res: ',dataRes);
 
         return {
             data: dataRes.data,
@@ -404,7 +476,7 @@ export const createJob = async (
         let url = serverConfig.url;
 
 
-        let dataFetch = await fetch(`${url}/job`, {
+        let dataFetch = await fetch(`${api.api_v1}/job`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -412,14 +484,14 @@ export const createJob = async (
             },
             body: JSON.stringify({
                 name: name,
-                description: description,
+                descriptions: description,
                 address: address,
                 province: province,
                 district: district,
                 subdistrict: subdistrict,
                 suggestion_price: suggestion_price,
-                author: author,
-                occupation_id: occupation_id,
+                author_id: 6,
+                field_id: 2,
                 occupation_name: occupation_name,
                 images: images
             })
@@ -434,6 +506,8 @@ export const createJob = async (
         }
 
         let dataRes = await dataFetch.json();
+
+        console.warn('created res: ',dataRes);
 
         if (dataRes.status) {
             return {
@@ -515,7 +589,7 @@ export const getCollaboratorJobs = async (user_id, status, per_page) => {
 export const searchJobs = async (query, district, limit = 6) => {
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job-search?query=${query}&district=${district}&limit=${limit}`);
+        let dataFetch = await fetch(`${api.api_v1}/job/search?query=${query}&district=${district}&limit=${limit}`);
         if (!dataFetch.ok) {
             console.warn('ERROR AT SEARCH JOB');
 
@@ -1402,9 +1476,9 @@ export const getGraphQl = async () => {
 
     try {
         let url = 'http://localhost:3000/graphql?';
-        let dataFetch = await fetch(url,{
-            method:'GET',
-            body:{
+        let dataFetch = await fetch(url, {
+            method: 'GET',
+            body: {
                 firstName,
             }
         });
@@ -1414,7 +1488,7 @@ export const getGraphQl = async () => {
         console.warn(dataRes);
 
     } catch (error) {
-        console.warn("ERROR : ",error);
+        console.warn("ERROR : ", error);
     }
 
 }
