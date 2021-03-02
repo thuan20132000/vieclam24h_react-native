@@ -1,8 +1,10 @@
-import React,{useEffect,useState} from 'react'
-import { StyleSheet, Text, View,TouchableOpacity,ScrollView } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native'
 import CommonColors from '../../constants/CommonColors'
+import { getCategory } from '../../utils/serverApi'
 import BottomNavigation from './components/BottomNavigation'
 import RowSelection from './components/RowSelection'
+import { useSelector } from 'react-redux'
 
 const CategorySectionScreen = (props) => {
 
@@ -11,65 +13,67 @@ const CategorySectionScreen = (props) => {
         props.navigation.navigate(section)
     }
 
-    const [categories, setCategories] = useState()
-    const getCategory = async () => {
+    const access_token = useSelector(state => state.authentication.access_token)
 
-        console.warn('category');
+    const [categories, setCategories] = useState([]);
+    const getCategoryList = async () => {
+
+        let categories = await getCategory(access_token);
+        if (categories.status) {
+            setCategories(categories.data);
+        }
 
     }
 
     useEffect(() => {
-        getCategory()
-        
+        getCategoryList()
+
         props.navigation.setOptions({
-            title:'Lựa chọn danh mục'
+            title: 'Lựa chọn danh mục'
         })
 
         return () => {
-            
-        }
-    }, [])
 
+        }
+    }, []);
+
+
+    const _onSelectionPress = async (e) => {
+        props.navigation.navigate('FieldSection',{
+            category:e
+        })
+    }
+
+   
 
     return (
         <View
             style={{
-                display:'flex',
-                flex:1,
-                backgroundColor:'white',
-                justifyContent:'space-between'
+                display: 'flex',
+                flex: 1,
+                backgroundColor: 'white',
+                justifyContent: 'space-between'
             }}
         >
             <ScrollView>
-                <RowSelection
-                    label={'Điện - Điện tử - Điển lạnh'}
-                />
-                <RowSelection
-                    label={'Y tế - Sức khoẻ'}
-                />
-                <RowSelection
-                    label={'Tài xế - Giao nhận'}
-                />
-                <RowSelection
-                    label={'Tài xế - Giao nhận'}
-                />
-                <RowSelection
-                    label={'Tài xế - Giao nhận'}
-                />
-                <RowSelection
-                    label={'Tài xế - Giao nhận'}
-                />
-                <RowSelection
-                    label={'Tài xế - Giao nhận'}
-                />
-                <RowSelection
-                    label={'Tài xế - Giao nhận'}
-                />
-            </ScrollView>
+
+                {
+                    categories.length > 0 &&
+                        categories.map((e,index) => 
+                            <RowSelection 
+                                label={e.name} 
+                                itemPress={()=>_onSelectionPress(e)}
+                            />
+                        )
+                        
+                }
             
+            </ScrollView>
+
             <BottomNavigation
-                onNextPress={()=>navigateNext('FieldSection')}
-                onBackPress={()=>props.navigation.goBack()}
+                onNextPress={() => navigateNext('FieldSection')}
+                onBackPress={() => props.navigation.goBack()}
+                disableNext={true}
             />
         </View>
     )
@@ -78,9 +82,9 @@ const CategorySectionScreen = (props) => {
 export default CategorySectionScreen
 
 const styles = StyleSheet.create({
-    row:{
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-around'
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around'
     }
 })

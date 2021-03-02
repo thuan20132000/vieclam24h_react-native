@@ -3,7 +3,6 @@ import api from '../serverConfig';
 import storage from '@react-native-firebase/storage';
 
 
-
 /**
  * author:thuantruong
  * description: Login
@@ -17,7 +16,7 @@ export const login = async (username, password) => {
 
     try {
         let url = serverConfig.url;
-        let dataFetch = await fetch(`http://18.141.229.83/api/v1/signin`, {
+        let dataFetch = await fetch(`${api.api_v1_login}/signin`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -159,20 +158,23 @@ export const getCategory = async (access_token) => {
             console.warn('ERROR AT FETCH CATEGORY');
 
             return {
+                status: false,
                 data: [],
                 message: 'error'
             }
         }
         let dataRes = await dataFetch.json();
-        console.warn('data res: ', dataRes);
+        // console.warn('data res: ', dataRes);
 
         return {
+            status: true,
             data: dataRes,
             message: 'success'
         }
 
     } catch (error) {
         return {
+            status: false,
             data: [],
             message: 'error ' + error
         }
@@ -228,12 +230,25 @@ export const getOccupations = async (category_id = '') => {
  * @param {*} postnumber 
  */
 
-export const getFields = async (category_id = '') => {
+export const getFields = async (category_id = '',access_token='') => {
     try {
-        let url = serverConfig.url;
-        let dataFetch = await fetch(`${api.api_v1}/fields?category=${category_id}`);
+        let bearer = `Bearer ${access_token}`;
+        let datafetch;
+        if (category_id && category_id != '') {
+            datafetch = await fetch(`${api.api_v1}/fields?category_id=${category_id}`, {
+                headers: {
+                    "Authorization": `${bearer}`
+                }
+            });
+        } else {
+            datafetch = await fetch(`${api.api_v1}/fields`, {
+                headers: {
+                    "Authorization": `${bearer}`
+                }
+            });
+        }
 
-        if (!dataFetch.ok) {
+        if (!datafetch.ok) {
             console.warn('ERROR AT FETCH JOBS');
 
             return {
@@ -242,7 +257,7 @@ export const getFields = async (category_id = '') => {
                 message: 'error'
             }
         }
-        let dataRes = await dataFetch.json();
+        let dataRes = await datafetch.json();
 
         return {
             status: true,
@@ -301,7 +316,7 @@ export const getJobs = async (category = '', perpage = 5, postnumber = 0) => {
 }
 
 
-export const getJobsByCategory = async (category_slug, limit=10) => {
+export const getJobsByCategory = async (category_slug, limit = 10) => {
     try {
         let url = serverConfig.url;
         let dataFetch = await fetch(`${api.api_v1}/jobs?category_slug=${category_slug}`);
@@ -318,7 +333,7 @@ export const getJobsByCategory = async (category_slug, limit=10) => {
 
         return {
             data: dataRes.data,
-            next:dataRes.next,
+            next: dataRes.next,
             message: 'success'
         }
 
@@ -359,7 +374,7 @@ export const getJobDetail = async (id) => {
         }
         let dataRes = await dataFetch.json();
 
-        console.warn('data res: ',dataRes);
+        console.warn('data res: ', dataRes);
 
         return {
             data: dataRes.data,
@@ -507,7 +522,7 @@ export const createJob = async (
 
         let dataRes = await dataFetch.json();
 
-        console.warn('created res: ',dataRes);
+        console.warn('created res: ', dataRes);
 
         if (dataRes.status) {
             return {
@@ -1492,3 +1507,6 @@ export const getGraphQl = async () => {
     }
 
 }
+
+
+

@@ -35,7 +35,7 @@ const LoginScreen = (props) => {
             console.warn('login res: ',loginRes);
 
             if (!loginRes.status) {
-                Alert.alert("Failed", loginRes.data?.message);
+                Alert.alert("Failed", loginRes.message);
             }
 
             if (loginRes.status) {

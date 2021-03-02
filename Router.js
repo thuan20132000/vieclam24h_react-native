@@ -54,6 +54,7 @@ import MapPlaceDirectionScreen from './screens/Map/MapPlaceDirectionScreen';
 import CategorySectionScreen from './screens/PostJob/CategorySectionScreen';
 import FieldSectionScreen from './screens/PostJob/FieldSectionScreen';
 import { Easing } from 'react-native-reanimated';
+import LocationSectionScreen from './screens/PostJob/LocationSectionScreen';
 
 /**
  * Authentication Stack
@@ -307,9 +308,7 @@ function PostJobStack(props){
                 }
             
             }}
-            headerMode='float'
-            mode='card'
-            
+       
         >
             <PostJobStackNavigator.Screen
                 name={'CategorySection'}
@@ -318,6 +317,10 @@ function PostJobStack(props){
             <PostJobStackNavigator.Screen
                 name={'FieldSection'}
                 component={FieldSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'LocationSection'}
+                component={LocationSectionScreen}
             />
         </PostJobStackNavigator.Navigator>
     )

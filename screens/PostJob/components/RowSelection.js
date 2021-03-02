@@ -13,12 +13,12 @@ const RowSelection = ({
 }) => {
     return (
         <TouchableOpacity
-            onPress={()=>console.warn('ds s sd')}
+            onPress={itemPress}
 
             style={[
                 styles.row,
                 {
-                    backgroundColor:'gray',
+                    backgroundColor:CommonColors.primary,
                     padding:12,
                     marginVertical:1
                 }

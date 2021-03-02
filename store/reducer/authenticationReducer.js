@@ -4,7 +4,8 @@ import { LOGIN, LOGOUT, UPDATE } from '../actions/authenticationActions';
 const initialState = {
     userInformation: '',
     access_token: null,
-    role: ''
+    role: '',
+    refresh_token:null,
 }
 
 
@@ -17,6 +18,7 @@ export default (state = initialState, action) => {
                 ...state,
                 userInformation: action.data.user,
                 access_token: action.data.access,
+                refresh_token:action.data.refresh
             };
 
 

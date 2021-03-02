@@ -7,4 +7,5 @@ export default {
 
     // url_api_v1
     api_v1:'http://18.141.229.83/service/api/v1',
+    api_v1_login:'http://18.141.229.83/api/v1'
 }
