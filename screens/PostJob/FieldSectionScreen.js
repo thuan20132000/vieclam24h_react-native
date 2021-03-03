@@ -9,7 +9,7 @@ import RowSelection from './components/RowSelection'
 
 const FieldSectionScreen = (props) => {
 
-    const { category } = props.route.params;
+    const { data } = props.route?.params;
 
     const navigateNext = (section) => {
         props.navigation.navigate(section)
@@ -21,7 +21,7 @@ const FieldSectionScreen = (props) => {
     const [fields, setFields] = useState([]);
     const getFieldList = async () => {
 
-        let fields = await getFields(category.id, access_token);
+        let fields = await getFields(data.category?.id, access_token);
         if (fields.status) {
             setFields(fields.data);
         }
@@ -42,7 +42,15 @@ const FieldSectionScreen = (props) => {
 
 
     const _onSelectionPress = async (e) => {
-        props.navigation.navigate('LocationSection')
+
+
+        props.navigation.navigate('LocationSection',{
+            field:e,
+            data:{
+                ...data,
+                field:e
+            }
+        })
     }
 
     return (

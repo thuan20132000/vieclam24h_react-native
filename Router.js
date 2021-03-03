@@ -59,6 +59,8 @@ import PhotoSectionScreen from './screens/PostJob/PhotoSectionScreen';
 import TitleSectionScreen from './screens/PostJob/TitleSectionScreen';
 import DescriptionSectionScreen from './screens/PostJob/DescriptionSectionScreen';
 import PriceSectionScreen from './screens/PostJob/PriceSectionScreen';
+import { StorePostJobProvider,StoreContext } from './utils/store';
+import ReviewSectionScreen from './screens/PostJob/ReviewSectionScreen';
 
 /**
  * Authentication Stack
@@ -276,7 +278,7 @@ function NotificationStack() {
 
 
 const PostJobStackNavigator = createStackNavigator();
-function PostJobStack(props) {
+function PostJobStack() {
 
     const configOpen = {
         animation: 'spring',
@@ -298,51 +300,65 @@ function PostJobStack(props) {
         },
     };
 
+    const updateJob = () => {
+        console.warn('fsa csaca csac');
+    }
+
+
+
     return (
-        <PostJobStackNavigator.Navigator
-            screenOptions={{
-                title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
-                gestureEnabled: true,
-                gestureDirection: 'horizontal',
-                animationEnabled: true,
-                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-                transitionSpec: {
-                    open: configOpen,
-                    close: configClose
-                }
 
-            }}
 
-        >
-            <PostJobStackNavigator.Screen
-                name={'CategorySection'}
-                component={CategorySectionScreen}
-            />
-            <PostJobStackNavigator.Screen
-                name={'FieldSection'}
-                component={FieldSectionScreen}
-            />
-            <PostJobStackNavigator.Screen
-                name={'LocationSection'}
-                component={LocationSectionScreen}
-            />
-            <PostJobStackNavigator.Screen
-                name={'PhotoSection'}
-                component={PhotoSectionScreen}
-            />
-            <PostJobStackNavigator.Screen
-                name={'TitleSection'}
-                component={TitleSectionScreen}
-            />
-            <PostJobStackNavigator.Screen
-                name={'DescriptionSection'}
-                component={DescriptionSectionScreen}
-            />
-            <PostJobStackNavigator.Screen
-                name={'PriceSection'}
-                component={PriceSectionScreen}
-            />
-        </PostJobStackNavigator.Navigator>
+            <PostJobStackNavigator.Navigator
+                screenOptions={{
+                    title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                    gestureEnabled: true,
+                    gestureDirection: 'horizontal',
+                    animationEnabled: true,
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                    transitionSpec: {
+                        open: configOpen,
+                        close: configClose
+                    }
+
+                }}
+
+            >
+                <PostJobStackNavigator.Screen
+                    name={'CategorySection'}
+                    component={CategorySectionScreen}
+                
+
+                />
+                <PostJobStackNavigator.Screen
+                    name={'FieldSection'}
+                    component={FieldSectionScreen}
+                />
+                <PostJobStackNavigator.Screen
+                    name={'LocationSection'}
+                    component={LocationSectionScreen}
+                />
+                <PostJobStackNavigator.Screen
+                    name={'PhotoSection'}
+                    component={PhotoSectionScreen}
+                />
+                <PostJobStackNavigator.Screen
+                    name={'TitleSection'}
+                    component={TitleSectionScreen}
+                />
+                <PostJobStackNavigator.Screen
+                    name={'DescriptionSection'}
+                    component={DescriptionSectionScreen}
+                />
+                <PostJobStackNavigator.Screen
+                    name={'PriceSection'}
+                    component={PriceSectionScreen}
+                />
+                <PostJobStackNavigator.Screen
+                    name={'ReviewSection'}
+                    component={ReviewSectionScreen}
+                />
+            </PostJobStackNavigator.Navigator>
     )
 }
 

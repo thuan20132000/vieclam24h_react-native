@@ -8,7 +8,21 @@ const PhotoSectionScreen = (props) => {
 
     const [photo, setPhoto] = useState([]);
 
+    const {data} = props.route.params;
 
+    console.warn('data: ',data);
+
+    const _onNextSection = () => {
+
+        // console.warn('dsfs dscd cds c');
+        // console.warn(photo);
+        props.navigation.navigate('TitleSection',{
+            data:{
+                ...data,
+                photo:photo
+            }
+        })
+    }
 
 
     return (
@@ -31,7 +45,9 @@ const PhotoSectionScreen = (props) => {
 
             <BottomNavigation
                 onBackPress={() => props.navigation.navigate('TitleSection')}
-                onNextPress={() => props.navigation.navigate('TitleSection')}
+                onNextPress={_onNextSection}
+                backTitle={'Trở lại'}
+                nextTitle={'Tiếp tục'}
 
             />
         </View>

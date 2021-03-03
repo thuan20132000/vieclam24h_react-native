@@ -1,12 +1,14 @@
 import React from 'react'
-import { StyleSheet, Text, View,TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import CommonColors from '../../../constants/CommonColors'
 
 const BottomNavigation = ({
     onNextPress,
     onBackPress,
-    disableNext=false,
-    disableBack=false
+    disableNext = false,
+    disableBack = false,
+    nextTitle,
+    backTitle
 }) => {
     return (
         <View
@@ -20,19 +22,29 @@ const BottomNavigation = ({
                 ]
             }
         >
-            <TouchableOpacity
-                onPress={onBackPress}
-                disabled={disableBack}
-            >
-                <Text>Trở lại</Text>
-            </TouchableOpacity>
+            {
+                backTitle &&
+                <TouchableOpacity
+                    onPress={onBackPress}
+                    disabled={disableBack}
+                    style={[styles.button]}
+                >
+                    <Text style={[styles.buttonText]}>{backTitle}</Text>
+                </TouchableOpacity>
+            }
 
-            <TouchableOpacity
-                onPress={onNextPress}
-                disabled={disableNext}
-            >
-                <Text>Tiếp tục</Text>
-            </TouchableOpacity>
+            {
+                nextTitle &&
+                <TouchableOpacity
+                    onPress={onNextPress}
+                    disabled={disableNext}
+                    style={[styles.button]}
+                >
+                    <Text style={[styles.buttonText]}>{nextTitle}</Text>
+                </TouchableOpacity>
+
+            }
+
         </View>
     )
 }
@@ -40,9 +52,20 @@ const BottomNavigation = ({
 export default BottomNavigation
 
 const styles = StyleSheet.create({
-    row:{
-        display:'flex',
-        flexDirection:'row',
-        justifyContent:'space-around'
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around'
+    },
+    button:{
+        backgroundColor:'coral',
+        padding:6,
+        paddingHorizontal:22,
+        borderRadius:6
+    },
+    buttonText:{
+        fontSize:18,
+        fontWeight:'700',
+        color:'white'
     }
 })

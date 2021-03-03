@@ -8,8 +8,14 @@ import ItemSelectionChecbox from '../../components/Item/ItemSelectionChecbox';
 
 const DescriptionSectionScreen = (props) => {
 
+
+    const {data} = props.route?.params;
+
+
+
     const [dateSelected, setDateSelected] = useState(new Date());
     const [timeSelected, setTimeSelected] = useState(new Date());
+    const [descriptions,setDescriptions] = useState('');
 
     const [mode, setMode] = useState('date');
     const [datetimepickerShow, setDatetimepickerShow] = useState(false);
@@ -52,6 +58,18 @@ const DescriptionSectionScreen = (props) => {
     };
 
     const [withTime, setWithTime] = useState(false);
+
+
+    const _onNextSection = () => {
+        console.warn('data');
+        props.navigation.navigate('PriceSection',{
+            data:{
+                ...data,
+                descriptions:descriptions
+            }
+        })
+    }
+
     return (
         <View
             style={{
@@ -109,8 +127,6 @@ const DescriptionSectionScreen = (props) => {
                             is24Hour={true}
                             display="default"
                             onChange={onChange}
-
-
                         />
 
                     }
@@ -126,6 +142,8 @@ const DescriptionSectionScreen = (props) => {
                         multiline
                         numberOfLines={6}
                         textAlignVertical={'top'}
+                        onChangeText={(text) => setDescriptions(text)}
+
                     />
 
                 </View>
@@ -150,8 +168,9 @@ const DescriptionSectionScreen = (props) => {
             </ScrollView>
             <BottomNavigation
                 onBackPress={() => props.navigation.navigate('TitleSection')}
-                onNextPress={() => props.navigation.navigate('PriceSection')}
-
+                onNextPress={_onNextSection}
+                backTitle={'Trở lại'}
+                nextTitle={'Tiếp tục'}
             />
         </View>
     )

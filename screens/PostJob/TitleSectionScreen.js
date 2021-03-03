@@ -1,12 +1,26 @@
-import React from 'react'
+import React,{useState} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
 
+
+
 const TitleSectionScreen = (props) => {
 
+    const {data} = props.route?.params;
+    
+    const [title, setTitle] = useState('');
+    const _onNextSection = () => {
 
+        props.navigation.navigate('DescriptionSection',{
+            data:{
+                ...data,
+                title:title
+            }
+        })
+
+    }
 
 
     return (
@@ -25,6 +39,7 @@ const TitleSectionScreen = (props) => {
                     <TextInput
                         style={[styles.textinput]}
                         placeholder={'Tiêu đề công việc'}
+                        onChangeText={(text) => setTitle(text)}
                     />
 
                 </View>
@@ -47,8 +62,9 @@ const TitleSectionScreen = (props) => {
             </ScrollView>
             <BottomNavigation
                 onBackPress={() => props.navigation.navigate('TitleSection')}
-                onNextPress={() => props.navigation.navigate('DescriptionSection')}
-
+                onNextPress={_onNextSection}
+                backTitle={'Trở lại'}
+                nextTitle={'Tiếp tục'}
             />
         </View>
     )

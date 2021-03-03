@@ -40,7 +40,9 @@ const CategorySectionScreen = (props) => {
 
     const _onSelectionPress = async (e) => {
         props.navigation.navigate('FieldSection',{
-            category:e
+            data:{
+                category:e
+            },
         })
     }
 

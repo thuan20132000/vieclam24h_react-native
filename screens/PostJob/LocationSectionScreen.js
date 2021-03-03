@@ -7,7 +7,14 @@ import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
 import RowSelection from './components/RowSelection'
 
+
 const LocationSectionScreen = (props) => {
+
+
+    const {data,field} = props.route?.params;
+
+    console.warn('data: ',data);
+
 
     const _refBottomSheet = useRef();
     const [location, setLocation] = useState({
@@ -16,7 +23,8 @@ const LocationSectionScreen = (props) => {
         district: '',
         district_code: '',
         subdistrict: '',
-        subdistrict_code: ''
+        subdistrict_code: '',
+        address:'',
     });
 
 
@@ -52,6 +60,24 @@ const LocationSectionScreen = (props) => {
             subdistrict_code: e.code
         });
         _refBottomSheet.current.close();
+    }
+
+
+    const _onChangeAddress = (e) => {
+        setLocation({
+            ...location,
+            address:e
+        })
+    }
+
+    const _onNextSection = () => {
+
+        props.navigation.navigate('PhotoSection',{
+            data:{
+                ...data,
+                location:location
+            }
+        })
     }
 
     return (
@@ -99,14 +125,15 @@ const LocationSectionScreen = (props) => {
                         <TextInput
                             style={[styles.textinput]}
                             placeholder={'Số nhà và tên đường'}
+                            onChangeText={(text) => _onChangeAddress(text) }
                         />
                     </View>
 
                 </ScrollView>
                 <BottomNavigation
-                    onBackPress={() => props.navigation.navigate('CategorySection')}
-                    onNextPress={() => props.navigation.navigate('PhotoSection')}
-
+                    onNextPress={_onNextSection}
+                    nextTitle={'Tiếp tục'}
+                    backTitle={'Trở lại'}
                 />
             </View>
             <SimpleBottomSheet
