@@ -41,7 +41,9 @@ export default {
     checkboxCircleMark:'checkbox-marked-circle-outline',
     plusThick:'plus-thick',
 
-    bell:'bell'
+    bell:'bell',
+    cameraplus:'camera-plus-outline',
+    
     
 
 }

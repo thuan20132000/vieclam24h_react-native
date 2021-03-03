@@ -39,14 +39,14 @@ const ItemSelectionChecbox = ({
 
                     <IconButton
                         icon={CommonIcons.checkboxCircleBlank}
-                        color={'coral'}
+                        color={'red'}
                         size={22}
                         onPress={onItemPress}
                     /> :
                     <IconButton
                         icon={CommonIcons.checkboxCircleMark}
-                        color={'coral'}
-                        size={26}
+                        color={'red'}
+                        size={22}
                         onPress={onItemPress}
                     />
 

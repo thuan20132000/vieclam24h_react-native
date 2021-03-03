@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View ,TouchableOpacity} from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator,TransitionPresets,StackCardStyleInterpolator, CardStyleInterpolators  } from '@react-navigation/stack';
+import { createStackNavigator, TransitionPresets, StackCardStyleInterpolator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,7 +9,7 @@ import CommonIcons from './constants/CommonIcons';
 
 
 // Multiple Language
-import {Translate} from './locales/index';
+import { Translate } from './locales/index';
 
 
 //redux
@@ -55,6 +55,10 @@ import CategorySectionScreen from './screens/PostJob/CategorySectionScreen';
 import FieldSectionScreen from './screens/PostJob/FieldSectionScreen';
 import { Easing } from 'react-native-reanimated';
 import LocationSectionScreen from './screens/PostJob/LocationSectionScreen';
+import PhotoSectionScreen from './screens/PostJob/PhotoSectionScreen';
+import TitleSectionScreen from './screens/PostJob/TitleSectionScreen';
+import DescriptionSectionScreen from './screens/PostJob/DescriptionSectionScreen';
+import PriceSectionScreen from './screens/PostJob/PriceSectionScreen';
 
 /**
  * Authentication Stack
@@ -256,8 +260,8 @@ function CustomerJobStack() {
  * Notification Stack
  */
 
- const NotificationStackNavigator = createStackNavigator();
-function NotificationStack(){
+const NotificationStackNavigator = createStackNavigator();
+function NotificationStack() {
     return (
         <NotificationStackNavigator.Navigator>
             <NotificationStackNavigator.Screen
@@ -272,43 +276,43 @@ function NotificationStack(){
 
 
 const PostJobStackNavigator = createStackNavigator();
-function PostJobStack(props){
+function PostJobStack(props) {
 
     const configOpen = {
         animation: 'spring',
         config: {
-          stiffness: 1000,
-          damping: 500,
-          mass: 3,
-          overshootClamping: true,
-          restDisplacementThreshold: 0.01,
-          restSpeedThreshold: 0.01,
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
         },
     };
 
     const configClose = {
         animation: 'timing',
         config: {
-            duration:200,
-            easing:Easing.linear
+            duration: 200,
+            easing: Easing.linear
         },
     };
 
-    return(
+    return (
         <PostJobStackNavigator.Navigator
             screenOptions={{
-                title:<TouchableOpacity onPress={()=>props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
-                gestureEnabled:true,
-                gestureDirection:'horizontal',
-                animationEnabled:true,
-                cardStyleInterpolator:CardStyleInterpolators.forHorizontalIOS,
-                transitionSpec:{
-                    open:configOpen,
-                    close:configClose
+                title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+                animationEnabled: true,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
                 }
-            
+
             }}
-       
+
         >
             <PostJobStackNavigator.Screen
                 name={'CategorySection'}
@@ -321,6 +325,22 @@ function PostJobStack(props){
             <PostJobStackNavigator.Screen
                 name={'LocationSection'}
                 component={LocationSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'PhotoSection'}
+                component={PhotoSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'TitleSection'}
+                component={TitleSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'DescriptionSection'}
+                component={DescriptionSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'PriceSection'}
+                component={PriceSectionScreen}
             />
         </PostJobStackNavigator.Navigator>
     )
@@ -412,33 +432,33 @@ function TabNavigator(props) {
                         name="HomeStack"
                         component={CollaboratorHomeStack}
                         options={{
-                            tabBarLabel:tabbarTitle.home
+                            tabBarLabel: tabbarTitle.home
                         }}
                     />
                     <BottomTabNavigator.Screen
                         name="MyJobs"
                         component={CollaboratorJobStack}
                         options={{
-                            tabBarLabel:tabbarTitle.apply
+                            tabBarLabel: tabbarTitle.apply
                         }}
                     />
                     <BottomTabNavigator.Screen
                         name="Notification"
                         component={NotificationStack}
                         options={{
-                            tabBarLabel:'thong bao',
-                            tabBarBadge:3
+                            tabBarLabel: 'thong bao',
+                            tabBarBadge: 3
                         }}
-                        
+
                     />
-                     <BottomTabNavigator.Screen
+                    <BottomTabNavigator.Screen
                         name="PostJob"
                         component={PostJobStack}
                         options={{
-                            tabBarLabel:'Đăng tin',
-                            tabBarVisible:false
+                            tabBarLabel: 'Đăng tin',
+                            tabBarVisible: false
                         }}
-                        
+
                     />
                     {/* <BottomTabNavigator.Screen
                         name="CustomerJobCreation"
@@ -498,18 +518,18 @@ function TabNavigator(props) {
 
 
 
-            <BottomTabNavigator.Screen 
-                name="Messages" 
-                component={ChatStack} 
+            <BottomTabNavigator.Screen
+                name="Messages"
+                component={ChatStack}
                 options={{
-                    tabBarLabel:tabbarTitle.messages
+                    tabBarLabel: tabbarTitle.messages
                 }}
             />
-            <BottomTabNavigator.Screen 
-                name="Accounts" 
-                component={AccountStack} 
+            <BottomTabNavigator.Screen
+                name="Accounts"
+                component={AccountStack}
                 options={{
-                    tabBarLabel:tabbarTitle.account
+                    tabBarLabel: tabbarTitle.account
                 }}
             />
         </BottomTabNavigator.Navigator>

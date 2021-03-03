@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { StyleSheet, Text, View, Image, Dimensions,TouchableOpacity } from 'react-native'
 import ImagePicker from 'react-native-image-crop-picker';
-
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import CommonColors from '../../constants/CommonColors';
+import CommonIcons from '../../constants/CommonIcons';
 
 
 const deviceWidth = Dimensions.get('screen').width;
@@ -15,16 +17,31 @@ const ImageItem = ({ imageItem, onRemove }) => {
     }
 
     return (
-        <TouchableOpacity style={[styles.imageItemWrap]}
-            onLongPress={_onRemoveItem}
+        <View style={[styles.imageItemWrap]}
         >
+            <MaterialCommunityIcon
+                name={CommonIcons.close}
+                size={14}
+                color={'white'}
+                style={{
+                    position:"absolute",
+                    zIndex:999,
+                    right:-6,
+                    top:-6,
+                    borderRadius:15,
+                    backgroundColor:'coral'
+
+                }}
+
+                onPress={_onRemoveItem}
+            />
             <Image
                 style={styles.imageItem}
                 source={{
-                    uri: imageItem.sourceURL
+                    uri: imageItem.path
                 }}
             />
-        </TouchableOpacity>
+        </View>
     )
 
 
@@ -37,15 +54,18 @@ const MultipleImagePicker = ({ imagesSelect = [], setImageSelect }) => {
     const _onPickImage = async () => {
         ImagePicker.openPicker({
             multiple: true,
-            mediaType: 'photo'
+            mediaType: 'photo',
+            maxFiles:3,
+            
         }).then(imageRes => {
             setImageSelect(imageRes);
         });
     }
 
     const _onRemove = (image) => {
+        console.warn('rm: ',image);
 
-        let newImageArr = imagesSelect.filter(e => e.creationDate != image.creationDate);
+        let newImageArr = imagesSelect.filter(e => e.path != image.path);
         setImageSelect(newImageArr);
     }
 
@@ -62,6 +82,11 @@ const MultipleImagePicker = ({ imagesSelect = [], setImageSelect }) => {
             <TouchableOpacity style={styles.buttomPicker}
                 onPress={(_onPickImage)}
             >
+                <MaterialCommunityIcon
+                    name={CommonIcons.cameraplus}
+                    size={32}
+                    color={CommonColors.primary}
+                />
                 <Text>Thêm hình ảnh</Text>
             </TouchableOpacity>
         </View>
@@ -96,7 +121,7 @@ const styles = StyleSheet.create({
         padding: 12, 
         backgroundColor: 'white' ,
         width:120,
-        height:50,
+        height:80,
         alignItems:'center',
         justifyContent:'center',
         shadowColor: "#000",
@@ -108,5 +133,6 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
+        
     }
 })

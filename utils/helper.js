@@ -24,6 +24,18 @@ export const formatDateTime = (timestring) => {
     return `${date.getHours()}:${date.getMinutes()}  ${date.getDate()}-${date.getMonth()+1}-${date.getFullYear()}`;
 }
 
+export const formatDateString = (timestring) => {
+    let date = new Date(timestring);
+
+    return  `${date.getDate()} - ${date.getMonth()}`;
+}
+
+export const formatTimeString = (timestring) => {
+    let time = new Date(timestring);
+
+    return `${time.getHours()} : ${time.getMinutes()}`;
+}
+
 
 export const formatCash = (str) => {
     let convertToString = String(str);

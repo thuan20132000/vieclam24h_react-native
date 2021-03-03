@@ -7,7 +7,7 @@ import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
 import RowSelection from './components/RowSelection'
 
-const LocationSectionScreen = () => {
+const LocationSectionScreen = (props) => {
 
     const _refBottomSheet = useRef();
     const [location, setLocation] = useState({
@@ -61,6 +61,8 @@ const LocationSectionScreen = () => {
                     display: 'flex',
                     flex: 1,
                     backgroundColor: 'white',
+                    justifyContent: 'space-between'
+
                 }}
             >
                 <ScrollView>
@@ -103,6 +105,7 @@ const LocationSectionScreen = () => {
                 </ScrollView>
                 <BottomNavigation
                     onBackPress={() => props.navigation.navigate('CategorySection')}
+                    onNextPress={() => props.navigation.navigate('PhotoSection')}
 
                 />
             </View>

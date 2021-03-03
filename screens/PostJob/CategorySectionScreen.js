@@ -60,7 +60,7 @@ const CategorySectionScreen = (props) => {
                 {
                     categories.length > 0 &&
                         categories.map((e,index) => 
-                            <RowSelection 
+                            <RowSelection key={index.toString()}
                                 label={e.name} 
                                 itemPress={()=>_onSelectionPress(e)}
                             />
