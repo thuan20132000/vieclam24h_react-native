@@ -160,8 +160,8 @@ const JobDetailScreen = (props) => {
     const _getJobDetail = async () => {
         setIsLoading(true);
         let job = await getJobDetail(job_id);
-        console.warn('job detail: ',job);
-        console.warn('job images: ',job.data.images);
+        // console.warn('job detail: ',job);
+        // console.warn('job images: ',job.data.images);
 
         if (job.data) {
             setJobDetail(job.data);
@@ -207,7 +207,6 @@ const JobDetailScreen = (props) => {
 
 
     const _onNavigateToMapDirection = () => {
-        console.warn('dsds');
         props.navigation.navigate('MapDirection')
     }
 

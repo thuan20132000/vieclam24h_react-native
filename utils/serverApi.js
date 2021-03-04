@@ -114,7 +114,7 @@ export const register = async (
         }
 
         let dataRes = await dataFetch.json();
-        console.warn("DATA RES: ", dataRes);
+        // console.warn("DATA RES: ", dataRes);
 
         if (!dataRes.status) {
             return {
@@ -376,7 +376,7 @@ export const getJobDetail = async (id) => {
         }
         let dataRes = await dataFetch.json();
 
-        console.warn('data res: ', dataRes);
+        // console.warn('data res: ', dataRes);
 
         return {
             data: dataRes.data,
