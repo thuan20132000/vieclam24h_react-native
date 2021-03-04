@@ -1,22 +1,56 @@
-import React,{useState} from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useState,useEffect } from 'react'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
+
+import { useSelector, useDispatch } from 'react-redux';
+import * as jobActions from '../../store/actions/jobActions';
 
 
 
 const TitleSectionScreen = (props) => {
 
-    const {data} = props.route?.params;
-    
+    const dispatch = useDispatch();
+    const { data } = props.route?.params;
+    const { jobInformation } = useSelector(state => state.job);
+
     const [title, setTitle] = useState('');
+
+
+    useEffect(() => {
+        setTitle(jobInformation.title);
+    }, [])
+
+    const _onTitleValidation = () => {
+
+        if (!title || title == '' || title.length > 220) {
+            return false;
+        }
+        return true;
+    }
+
     const _onNextSection = () => {
 
-        props.navigation.navigate('DescriptionSection',{
-            data:{
+
+        let valid_res = _onTitleValidation();
+
+        if(!valid_res){
+            Alert.alert("Thông báo","Vui lòng nhập tiêu đề hợp lệ")
+            
+            return;
+        }
+
+        let data = {
+            title: title,
+        }
+
+        dispatch(jobActions.updateJob(data));
+
+        props.navigation.navigate('DescriptionSection', {
+            data: {
                 ...data,
-                title:title
+                title: title
             }
         })
 
@@ -40,6 +74,7 @@ const TitleSectionScreen = (props) => {
                         style={[styles.textinput]}
                         placeholder={'Tiêu đề công việc'}
                         onChangeText={(text) => setTitle(text)}
+                        value={title || jobInformation.title}
                     />
 
                 </View>
@@ -47,23 +82,23 @@ const TitleSectionScreen = (props) => {
                 <View style={[
                     styles.group,
                     {
-                        borderWidth:1,
-                        borderColor:'blue',
-                        height:100,
-                        margin:4,
-                        padding:6,
-                        backgroundColor:CommonColors.secondary
+                        borderWidth: 1,
+                        borderColor: 'blue',
+                        height: 100,
+                        margin: 4,
+                        padding: 6,
+                        backgroundColor: CommonColors.secondary
                     }
                 ]} >
-                    <Text style={{color:'grey'}}>Ví dụ: Cần người sửa xe máy tại nhà.</Text>
+                    <Text style={{ color: 'grey' }}>Ví dụ: Cần người sửa xe máy tại nhà.</Text>
 
-                    <Text style={{color:'grey',fontWeight:'700'}}>Nên viết tiếng Việt có dấu.</Text>
+                    <Text style={{ color: 'grey', fontWeight: '700' }}>Nên viết tiếng Việt có dấu.</Text>
+                    <Text style={{ color: 'grey', fontWeight: '700' }}>Không nhập quá 50 ký tự.</Text>
+
                 </View>
             </ScrollView>
             <BottomNavigation
-                onBackPress={() => props.navigation.navigate('TitleSection')}
                 onNextPress={_onNextSection}
-                backTitle={'Trở lại'}
                 nextTitle={'Tiếp tục'}
             />
         </View>
@@ -75,12 +110,12 @@ export default TitleSectionScreen
 const styles = StyleSheet.create({
     group: {
         marginVertical: 6,
-        marginHorizontal:4
+        marginHorizontal: 4
     },
-    textLabel:{
-        fontSize:16,
-        fontWeight:'700',
-        marginVertical:4
+    textLabel: {
+        fontSize: 16,
+        fontWeight: '700',
+        marginVertical: 4
     },
     textinput: {
         backgroundColor: 'white',
@@ -93,6 +128,6 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
 
         elevation: 5,
-        paddingLeft:8
+        paddingLeft: 8
     }
 })

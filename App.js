@@ -24,6 +24,7 @@ import Router from './Router';
 import AutheticationReducer from './store/reducer/authenticationReducer';
 import SocketSubcribe from './store/reducer/websocketReducer';
 import LanguageReducer from './store/reducer/languageReducer';
+import JobReducer from './store/reducer/jobReducer';
 
 import { Translate } from './locales/index';
 
@@ -35,7 +36,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const rootReducer = combineReducers({
   authentication: AutheticationReducer,
   socketSubcribe: SocketSubcribe,
-  language: LanguageReducer
+  language: LanguageReducer,
+  job:JobReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

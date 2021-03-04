@@ -1,15 +1,18 @@
-import React, { useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TextInput, Platform, Button, TouchableOpacity } from 'react-native'
+import React, { useState,useEffect } from 'react'
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native'
 import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { formatDateString, formatDateTime, formatTimeString } from '../../utils/helper';
+import { formatDateString, formatTimeString } from '../../utils/helper';
 import ItemSelectionChecbox from '../../components/Item/ItemSelectionChecbox';
+
+import { useSelector, useDispatch } from 'react-redux';
+import * as jobActions from '../../store/actions/jobActions';
 
 const DescriptionSectionScreen = (props) => {
 
-
-    const {data} = props.route?.params;
+    const dispatch = useDispatch();
+    const {jobInformation} = useSelector(state => state.job);
 
 
 
@@ -59,15 +62,34 @@ const DescriptionSectionScreen = (props) => {
 
     const [withTime, setWithTime] = useState(false);
 
+    useEffect(() => {
+        setDescriptions(jobInformation.descriptions);
+    }, [])
+
+    const _onDescriptionValidation = () => {
+
+        if(!descriptions || descriptions.length < 10 || descriptions.length > 250 || descriptions.trim() == ""){
+            return false;
+        }
+        return true;
+
+    }
 
     const _onNextSection = () => {
-        console.warn('data');
-        props.navigation.navigate('PriceSection',{
-            data:{
-                ...data,
-                descriptions:descriptions
-            }
-        })
+
+        let valid_res = _onDescriptionValidation();
+
+        if(!valid_res){
+            Alert.alert("Thông báo","Vui lòng nhập mô tả hợp lệ!");
+            return;
+        }
+
+
+        let data = {
+            descriptions:descriptions
+        }
+        dispatch(jobActions.updateJob(data));
+        props.navigation.navigate('PriceSection')
     }
 
     return (
@@ -143,7 +165,7 @@ const DescriptionSectionScreen = (props) => {
                         numberOfLines={6}
                         textAlignVertical={'top'}
                         onChangeText={(text) => setDescriptions(text)}
-
+                        value={descriptions}
                     />
 
                 </View>
@@ -164,12 +186,12 @@ const DescriptionSectionScreen = (props) => {
                     </Text>
 
                     <Text style={{ color: 'grey', fontWeight: '700' }}>Nên viết tiếng Việt có dấu.</Text>
+                    <Text style={{ color: 'grey', fontWeight: '700' }}>Không ít hơn 10 kí tự và lớn hơn 250 ký tự</Text>
+
                 </View>
             </ScrollView>
             <BottomNavigation
-                onBackPress={() => props.navigation.navigate('TitleSection')}
                 onNextPress={_onNextSection}
-                backTitle={'Trở lại'}
                 nextTitle={'Tiếp tục'}
             />
         </View>

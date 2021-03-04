@@ -1,6 +1,8 @@
 import serverConfig from '../serverConfig';
 import api from '../serverConfig';
 import storage from '@react-native-firebase/storage';
+import { Platform } from 'react-native';
+import { generateCode } from './helper';
 
 
 /**
@@ -475,41 +477,65 @@ export const applyJob = async (user_id, job_id, expected_price, description = ""
  * @param {*} images 
  */
 export const createJob = async (
-    name,
-    description,
-    address,
-    province,
-    district,
-    subdistrict,
-    suggestion_price,
+    name = "title test",
+    descriptions,
+    location,
+    suggestion_price = 0,
+    field_id,
+    photos = [],
     author,
     occupation_id,
     occupation_name,
     images = []
 ) => {
     try {
-        let url = serverConfig.url;
+
+        // name: photo.fileName,
+        // type: photo.type,
+        // uri:
+        //   Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
+
+        
+
+        // console.warn('photos: ',photos);
+
+        const formData = new FormData();
+
+        
+
+        formData.append('name',name);
+        formData.append('descriptions',descriptions);
+        formData.append('location',JSON.stringify(location));
+        formData.append('suggestion_price',suggestion_price);
+        formData.append('author_id',6);
+        formData.append('field_id',field_id);
+        
+        // formData.append('images',photos);
+        if(photos && photos.length > 0){
+            photos = photos.map((e) => {
+                const file =  {
+                    name: e.path,
+                    type:e.mime,
+                    uri:e.path 
+                }
+                console.warn(file);
+                formData.append('images',file);
+
+            });
+
+        }
+        // photos.forEach(e => {
+        //     formData.append('images',e);
+        // })
 
 
         let dataFetch = await fetch(`${api.api_v1}/job`, {
-            method: 'POST',
-            headers: {
+            headers:{
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'multipart/form-data',
             },
-            body: JSON.stringify({
-                name: name,
-                descriptions: description,
-                address: address,
-                province: province,
-                district: district,
-                subdistrict: subdistrict,
-                suggestion_price: suggestion_price,
-                author_id: 6,
-                field_id: 2,
-                occupation_name: occupation_name,
-                images: images
-            })
+            method: 'POST',
+            body:formData
         });
 
         if (!dataFetch.ok) {

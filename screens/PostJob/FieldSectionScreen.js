@@ -3,12 +3,14 @@ import { StyleSheet, Text, View,ScrollView } from 'react-native'
 import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
 
-import { useSelector } from 'react-redux'
 import { getFields } from '../../utils/serverApi'
 import RowSelection from './components/RowSelection'
+import * as jobActions from '../../store/actions/jobActions';
+import {useDispatch,useSelector} from 'react-redux';
 
 const FieldSectionScreen = (props) => {
 
+    const dispatch = useDispatch();
     const { data } = props.route?.params;
 
     const navigateNext = (section) => {
@@ -42,7 +44,10 @@ const FieldSectionScreen = (props) => {
 
 
     const _onSelectionPress = async (e) => {
-
+        let data = {
+            field:e
+        }
+        dispatch(jobActions.updateJob(data));
 
         props.navigation.navigate('LocationSection',{
             field:e,

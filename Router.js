@@ -7,7 +7,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from './constants/CommonIcons';
 
-
 // Multiple Language
 import { Translate } from './locales/index';
 

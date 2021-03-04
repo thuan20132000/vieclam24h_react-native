@@ -1,17 +1,26 @@
-import React, { useRef, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native'
+import React, { useRef, useState, useEffect } from 'react'
+import { StyleSheet, Text, View, ScrollView, TextInput, Alert } from 'react-native'
 import CommonColors from '../../constants/CommonColors';
 import { formatCash } from '../../utils/helper';
 import BottomNavigation from './components/BottomNavigation'
+import { useSelector, useDispatch } from 'react-redux';
+import * as jobActions from '../../store/actions/jobActions';
 
 const PriceSectionScreen = (props) => {
 
-    const { data } = props.route?.params;
+    const dispatch = useDispatch();
+
+    const { jobInformation } = useSelector(state => state.job);
 
 
     const typingTimeoutRef = useRef(null);
 
     const [price, setPrice] = useState(0);
+
+    useEffect(() => {
+        setPrice(jobInformation.budget);
+    }, []);
+
     const _onEnterPrice = async (price) => {
         if (typingTimeoutRef.current) {
             clearTimeout(typingTimeoutRef.current);
@@ -21,16 +30,33 @@ const PriceSectionScreen = (props) => {
         }, 100);
     }
 
+    
+    const _onPriceValidation = () => {
+
+        if (!price || isNaN(price)) {
+            return false;
+        }
+        return true;
+
+    }
 
     const _onNextSection = () => {
-        console.warn(price);
 
-        props.navigation.navigate('ReviewSection',{
-            data:{
-                ...data,
-                price:price
-            }
-        })
+        let valid_res = _onPriceValidation();
+        if (!valid_res) {
+
+            Alert.alert("Thông báo","Vui lòng nhập giá hợp lệ.");
+            return;
+        }
+
+        let data = {
+            budget: price
+
+        }
+
+        dispatch(jobActions.updateJob(data));
+
+        props.navigation.navigate('ReviewSection')
     }
 
 
@@ -45,19 +71,19 @@ const PriceSectionScreen = (props) => {
                     <Text style={[styles.textLabel]}>Ngân sách đưa ra (<Text style={{ color: 'red' }}>*</Text>)</Text>
                     <TextInput
                         style={[styles.textinput, { justifyContent: 'flex-start', display: 'flex', flexDirection: 'column' }]}
-                        placeholder={'0'}
+                        placeholder={'Nhập giá'}
                         textAlignVertical={'center'}
                         keyboardType={'number-pad'}
-                        enablesReturnKeyAutomatically={true}
+                        value={price}
+                        onChangeText={(text) => setPrice(text)}
 
-                        onChangeText={(text) => _onEnterPrice(text)}
                     />
                     <Text style={{
                         color: 'red',
                         fontSize: 18,
                         margin: 8
                     }}>
-                        {formatCash(price)} vnđ
+                        {formatCash(price || jobInformation.budget)} vnđ
                     </Text>
                 </View>
                 <View style={[
@@ -77,9 +103,7 @@ const PriceSectionScreen = (props) => {
                 </View>
             </ScrollView>
             <BottomNavigation
-                onBackPress={() => props.navigation.goBack()}
                 onNextPress={_onNextSection}
-                backTitle={'Trở lại'}
                 nextTitle={'Tiếp tục'}
             />
         </View>

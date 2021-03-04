@@ -8,7 +8,7 @@
 
 
 
-export const generateCode = async (prefix='') => { 
+export const generateCode = (prefix='') => { 
     let date = new Date();
     let xx = date.getTime()
 

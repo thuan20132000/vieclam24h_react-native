@@ -22,11 +22,12 @@ const CollaboratorHomeScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = React.useState(false);
 
-    const { userInformation } = useSelector(state => state.authentication);
+    const user_auth = useSelector(state => state.authentication);
     const {
         navigation
     } = props;
 
+    // console.warn(user.access_token);
 
     const language = useSelector(state => state.language);
 
@@ -36,7 +37,8 @@ const CollaboratorHomeScreen = (props) => {
 
     const _getCategory = async () => {
         setIsLoading(true);
-        let token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjE0ODIzODQwLCJqdGkiOiJjNTEzMjM5Y2FkNGY0M2E2YWI3ODBkOGNmZjdhODdjMyIsInVzZXJfaWQiOjIxfQ.qiM9u2wJNT_r2RcsJaGJQ2IsBOvZVDRB7CbIe-Xnkh8";
+        let token = user_auth.access_token;
+
         let data = await getCategory(token);
         if (data.data.length > 0) {
             setCategories(data.data);

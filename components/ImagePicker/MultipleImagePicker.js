@@ -55,7 +55,7 @@ const MultipleImagePicker = ({ imagesSelect = [], setImageSelect }) => {
         ImagePicker.openPicker({
             multiple: true,
             mediaType: 'photo',
-            maxFiles:3,
+            compressImageQuality:0.5
             
         }).then(imageRes => {
             setImageSelect(imageRes);
@@ -63,7 +63,6 @@ const MultipleImagePicker = ({ imagesSelect = [], setImageSelect }) => {
     }
 
     const _onRemove = (image) => {
-        console.warn('rm: ',image);
 
         let newImageArr = imagesSelect.filter(e => e.path != image.path);
         setImageSelect(newImageArr);

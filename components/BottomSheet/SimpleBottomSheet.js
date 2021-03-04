@@ -8,7 +8,8 @@ const SimpleBottomSheet = ({
     closeOnPressMask=false,
     height=400, 
     children,
-    dragFromTopOnly=false
+    dragFromTopOnly=false,
+    containerStyle
 }) => {
 
 
@@ -25,7 +26,8 @@ const SimpleBottomSheet = ({
                 },
                 draggableIcon: {
                     backgroundColor: "#000"
-                }
+                },
+                container:containerStyle
             }}
             height={height}
         >

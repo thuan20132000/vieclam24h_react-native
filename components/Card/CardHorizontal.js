@@ -68,7 +68,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         color={CommonColors.primary}
                     />
                     <Caption style={{marginHorizontal:6,fontWeight:'300'}}>
-                        {item?.relationships?.location?.address}
+                        {item?.location?.district}
                     </Caption>
 
                 </View>

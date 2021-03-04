@@ -1,28 +1,60 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
 import MultipleImagePicker from '../../components/ImagePicker/MultipleImagePicker'
 import BottomNavigation from './components/BottomNavigation';
+import { useSelector, useDispatch } from 'react-redux';
+import * as jobActions from '../../store/actions/jobActions';
+
 
 const PhotoSectionScreen = (props) => {
 
+    const dispatch = useDispatch();
     const [photo, setPhoto] = useState([]);
 
-    const {data} = props.route.params;
+    const { data } = props.route.params;
+    const { jobInformation } = useSelector(state => state.job);
 
-    console.warn('data: ',data);
+
+    useEffect(() => {
+        setPhoto(jobInformation?.photos);
+        
+    }, [])
+
+
+    const _onPhotoValidation = () => {
+        if (photo.length <= 0 || photo.length > 5 || !photo) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 
     const _onNextSection = () => {
 
-        // console.warn('dsfs dscd cds c');
-        // console.warn(photo);
-        props.navigation.navigate('TitleSection',{
-            data:{
+       
+        let valid_res = _onPhotoValidation();
+        if(!valid_res){
+            Alert.alert("Thông báo", "Chọn hình ảnh chưa hợp lệ, vui lòng chọn lại hình ảnh.");
+            return;
+        }
+
+        let data = {
+            photos: photo,
+        }
+        dispatch(jobActions.updateJob(data));
+
+
+        props.navigation.navigate('TitleSection', {
+            data: {
                 ...data,
-                photo:photo
+                photo: photo
             }
         })
     }
+
 
 
     return (
@@ -34,7 +66,7 @@ const PhotoSectionScreen = (props) => {
 
             }}
         >
-            
+
             <ScrollView>
                 <MultipleImagePicker
                     setImageSelect={setPhoto}
@@ -44,9 +76,7 @@ const PhotoSectionScreen = (props) => {
             </ScrollView>
 
             <BottomNavigation
-                onBackPress={() => props.navigation.navigate('TitleSection')}
                 onNextPress={_onNextSection}
-                backTitle={'Trở lại'}
                 nextTitle={'Tiếp tục'}
 
             />

@@ -4,14 +4,14 @@ import CommonColors from '../../constants/CommonColors'
 import { getCategory } from '../../utils/serverApi'
 import BottomNavigation from './components/BottomNavigation'
 import RowSelection from './components/RowSelection'
-import { useSelector } from 'react-redux'
+import { useSelector,useDispatch } from 'react-redux'
+
+import * as jobActions from '../../store/actions/jobActions';
 
 const CategorySectionScreen = (props) => {
 
-
-    const navigateNext = (section) => {
-        props.navigation.navigate(section)
-    }
+    const dispatch = useDispatch();
+  
 
     const access_token = useSelector(state => state.authentication.access_token)
 
@@ -39,11 +39,29 @@ const CategorySectionScreen = (props) => {
 
 
     const _onSelectionPress = async (e) => {
+
+        let data = {
+            category:e
+        }
+
+        dispatch(jobActions.updateJob(data))
+
+
         props.navigation.navigate('FieldSection',{
             data:{
                 category:e
             },
         })
+
+
+    }
+
+
+    const navigateNext = (section) => {
+
+       
+
+        props.navigation.navigate(section)
     }
 
    
@@ -76,6 +94,7 @@ const CategorySectionScreen = (props) => {
                 onNextPress={() => navigateNext('FieldSection')}
                 onBackPress={() => props.navigation.goBack()}
                 disableNext={true}
+                
             />
         </View>
     )

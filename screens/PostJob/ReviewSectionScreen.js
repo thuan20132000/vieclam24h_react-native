@@ -1,29 +1,63 @@
-import React from 'react'
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, Image, ActivityIndicator, Alert } from 'react-native'
 import CommonImages from '../../constants/CommonImages';
 import { formatCash } from '../../utils/helper';
 import BottomNavigation from './components/BottomNavigation';
+import { useSelector, useDispatch } from 'react-redux';
+import * as jobActions from '../../store/actions/jobActions';
+import { createJob } from '../../utils/serverApi';
 
 const ReviewSectionScreen = (props) => {
 
-    const { data } = props.route?.params;
+    const dispatch = useDispatch();
 
-    console.warn(data);
+    const { jobInformation } = useSelector(state => state.job);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const _onCreateJob = async () => {
+
+        console.warn(jobInformation);
+        setIsLoading(true);
+        try {
+            let res = await createJob(
+                jobInformation.title,
+                jobInformation.descriptions,
+                jobInformation.location,
+                jobInformation.budget,
+                jobInformation.field?.id,
+                jobInformation.photos,
+            );
+
+            if(res.status){
+                dispatch(jobActions.resetJob());
+                Alert.alert("Thông báo","Đăng việc thành công.");
+                setTimeout(() => {
+                    props.navigation.dangerouslyGetParent().navigate('HomeStack');
+                    props.navigation.popToTop();
+
+                }, 800);
+            }
+        } catch (error) {
+            console.warn('ERROR : ', error);
+        }
+        setIsLoading(false);
+    }
 
     return (
         <View
             style={[styles.container]}
         >
             <ScrollView>
-                <View style={[styles.group,styles.row,{justifyContent:'flex-start',flexWrap:'wrap'}]}>
+                <View style={[styles.group, styles.row, { justifyContent: 'flex-start', flexWrap: 'wrap' }]}>
                     {
-                        data.photo && data.photo.map((e, index) =>
+                        jobInformation.photos && jobInformation.photos.map((e, index) =>
                             <Image
+                                key={index.toString()}
                                 style={{
                                     width: 100,
                                     height: 60,
-                                    borderRadius:8
-                                    ,margin:4
+                                    borderRadius: 8
+                                    , margin: 4
                                 }}
                                 source={{
                                     uri: e.path || CommonImages.notFound
@@ -34,47 +68,58 @@ const ReviewSectionScreen = (props) => {
                 </View>
                 <View style={[styles.group]}>
                     <Text style={[styles.textLabel]}>Danh mục</Text>
-                    <Text style={[styles.textinput]}>{data.title}</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.category?.name}</Text>
                 </View>
                 <View style={[styles.group]}>
                     <Text style={[styles.textLabel]}>Lĩnh vực</Text>
-                    <Text style={[styles.textinput]}>{data.field?.name}</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.field?.name}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Tỉnh/ Thành phố</Text>
-                    <Text style={[styles.textinput]}>{data.location?.province}</Text>
+                    <Text style={[styles.textLabel]}>Tỉnh/ Thành phố</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.location?.province}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Quận/ Huyện</Text>
-                    <Text style={[styles.textinput]}>{data.location?.district}</Text>
+                    <Text style={[styles.textLabel]}>Quận/ Huyện</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.location?.district}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Phường/ Xã</Text>
-                    <Text style={[styles.textinput]}>{data.location?.subdistrict}</Text>
+                    <Text style={[styles.textLabel]}>Phường/ Xã</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.location?.subdistrict}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Tên đường, số nhà</Text>
-                    <Text style={[styles.textinput]}>{data.location?.address}</Text>
+                    <Text style={[styles.textLabel]}>Tên đường, số nhà</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.location?.address}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Ngân sách</Text>
-                    <Text style={[styles.textinput]}>{`${formatCash(data.price)} vnđ`}</Text>
+                    <Text style={[styles.textLabel]}>Ngân sách</Text>
+                    <Text style={[styles.textinput]}>{`${formatCash(jobInformation.budget || 0)} vnđ`}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Tiêu đề</Text>
-                    <Text style={[styles.textinput]}>{data.title}</Text>
+                    <Text style={[styles.textLabel]}>Tiêu đề</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.title}</Text>
                 </View>
                 <View style={[styles.group]}>
-                    <Text   style={[styles.textLabel]}>Mô tả</Text>
-                    <Text style={[styles.textinput]}>{data.descriptions}</Text>
+                    <Text style={[styles.textLabel]}>Mô tả</Text>
+                    <Text style={[styles.textinput]}>{jobInformation.descriptions}</Text>
                 </View>
 
-               
+
             </ScrollView>
-            <BottomNavigation
-                onBackPress={() => props.navigation.goBack()}
-                nextTitle={'Đăng công việc'}
-            />
+
+            <View>
+
+                {
+                    isLoading ?
+                        <ActivityIndicator size={'large'} color={'coral'} /> :
+                        <BottomNavigation
+                            onBackPress={_onCreateJob}
+                            backTitle={'Đăng công việc'}
+                        />
+
+                }
+
+
+            </View>
         </View>
     )
 }
@@ -97,8 +142,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '400',
         marginVertical: 4,
-        color:'grey',
-        fontStyle:'italic'
+        color: 'grey',
+        fontStyle: 'italic'
     },
     textinput: {
         backgroundColor: 'white',
@@ -112,9 +157,9 @@ const styles = StyleSheet.create({
 
         elevation: 5,
         paddingLeft: 8,
-        padding:6,
-        fontWeight:'700',
-        color:'red'
+        padding: 6,
+        fontWeight: '700',
+        color: 'red'
     },
     row: {
         display: 'flex',
