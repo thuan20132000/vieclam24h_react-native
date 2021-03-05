@@ -5,8 +5,10 @@ import { getCategory } from '../../utils/serverApi'
 import BottomNavigation from './components/BottomNavigation'
 import RowSelection from './components/RowSelection'
 import { useSelector,useDispatch } from 'react-redux'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import * as jobActions from '../../store/actions/jobActions';
+import CommonIcons from '../../constants/CommonIcons'
 
 const CategorySectionScreen = (props) => {
 
@@ -29,7 +31,13 @@ const CategorySectionScreen = (props) => {
         getCategoryList()
 
         props.navigation.setOptions({
-            title: 'Lựa chọn danh mục'
+            title: 'Lựa chọn danh mục',
+            headerLeft:()=>
+                <MaterialCommunityIcon 
+                    name={CommonIcons.arrowLeft} 
+                    size={24} 
+                    onPress={()=>props.navigation.goBack()} 
+                />
         })
 
         return () => {
@@ -58,9 +66,6 @@ const CategorySectionScreen = (props) => {
 
 
     const navigateNext = (section) => {
-
-       
-
         props.navigation.navigate(section)
     }
 

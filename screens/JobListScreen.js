@@ -77,8 +77,7 @@ const JobListScreen = (props) => {
     let timeoutEvent;
     const _loadMoreJobs = async () => {
         setIsLoading(true);
-        let postnumberIndex = postnumber + perPage;
-        setPostnumber(postnumberIndex);
+
 
         if(nextPage){
             let dataFetch = await fetch(nextPage);
@@ -91,13 +90,11 @@ const JobListScreen = (props) => {
                 timeoutEvent = setTimeout(() => {
                     setJobs([...jobs, ...dataRes.data]);
                     setNextPage(dataRes.next);
-                    setIsLoading(false);
     
                 }, 300);
-            } else {
-                setIsLoading(false);
             }
         }
+        setIsLoading(false);
         
     }
 
@@ -187,7 +184,9 @@ const JobListScreen = (props) => {
 
     return (
         <>
-            <View>
+            <View
+               
+            >
 
             </View>
 
@@ -260,9 +259,13 @@ const JobListScreen = (props) => {
             {/* BottomSheet */}
             <SimpleBottomSheet
                 refRBSheet={_refSimpleBottomSheet}
-                height={420}
+                height={800}
                 dragFromTopOnly={true}
                 closeOnPressMask={true}
+                containerStyle={{
+                    borderTopRightRadius:22,
+                    borderTopLeftRadius:22
+                }}
 
             >
 

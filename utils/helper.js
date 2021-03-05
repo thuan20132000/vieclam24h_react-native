@@ -41,3 +41,13 @@ export const formatCash = (str) => {
     let convertToString = String(str);
     return convertToString.replace(/\B(?=(\d{3})+(?!\d))/g, ',')  
 }
+
+export const isPhoneNumber = (number) => {
+    let rex = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+    if(number.match(rex)) {
+      return true;
+    }
+    else {
+      return false;
+    }
+}

@@ -270,6 +270,7 @@ const JobDetailScreen = (props) => {
                             {
                                 jobDetail.images?.map((e, index) =>
                                     <TouchableOpacity
+                                    
                                         style={[
                                             styles.imageWrap,
                                             {
@@ -296,168 +297,7 @@ const JobDetailScreen = (props) => {
                                     </TouchableOpacity>
                                 )
                             }
-                            {/* {
-                            JOB_DATA.length >= 2 && (
-                                <View
-                                    style={[
-                                        styles.row,
-                                        {
-
-                                        }
-                                    ]}
-                                >
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.imageWrap,
-                                            {
-                                                width: deviceWidth / 2,
-                                                height: 120,
-                                                marginHorizontal: 2
-
-                                            }
-                                        ]}
-                                    >
-
-                                        <Image
-                                            source={{
-                                                uri: JOB_DATA[0].image_url
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                            }}
-
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.imageWrap,
-                                            {
-                                                width: deviceWidth / 2,
-                                                height: 120,
-                                                marginHorizontal: 2
-
-                                            }
-                                        ]}
-                                    >
-
-                                        <Image
-                                            source={{
-                                                uri: JOB_DATA[1].image_url
-                                            }}
-                                            style={{
-                                                width: '100%',
-                                                height: '100%',
-                                            }}
-
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-
-
-                            )
-
-                        } */}
-
-                            {
-                                // JOB_DATA.length >= 5 && (
-                                //     <View
-                                //         style={[
-                                //             styles.row,
-                                //             {
-
-                                //             }
-                                //         ]}
-                                //     >
-                                //         <TouchableOpacity
-                                //             style={[
-                                //                 styles.imageWrap,
-                                //                 {
-                                //                     width: deviceWidth / 3,
-                                //                     height: 120,
-                                //                     marginHorizontal: 2
-
-                                //                 }
-                                //             ]}
-                                //         >
-
-                                //             <Image
-                                //                 source={{
-                                //                     uri: JOB_DATA[2].image_url
-                                //                 }}
-                                //                 style={{
-                                //                     width: '100%',
-                                //                     height: '100%',
-                                //                 }}
-
-                                //             />
-                                //         </TouchableOpacity>
-                                //         <TouchableOpacity
-                                //             style={[
-                                //                 styles.imageWrap,
-                                //                 {
-                                //                     width: deviceWidth / 3,
-                                //                     height: 120,
-                                //                     marginHorizontal: 2
-
-                                //                 }
-                                //             ]}
-                                //         >
-
-                                //             <Image
-                                //                 source={{
-                                //                     uri: JOB_DATA[3].image_url
-                                //                 }}
-                                //                 style={{
-                                //                     width: '100%',
-                                //                     height: '100%',
-                                //                 }}
-
-                                //             />
-                                //         </TouchableOpacity>
-                                //         <TouchableOpacity
-                                //             style={[
-                                //                 styles.imageWrap,
-                                //                 {
-                                //                     width: deviceWidth / 3,
-                                //                     height: 120,
-                                //                     marginHorizontal: 2
-
-                                //                 }
-                                //             ]}
-                                //             onPress={_onOpenPhotoGallery}
-
-                                //         >
-
-                                //             <ImageBackground
-                                //                 source={{
-                                //                     uri: JOB_DATA[4].image_url
-                                //                 }}
-                                //                 style={{
-                                //                     width: deviceWidth / 3,
-                                //                     height: 120,
-                                //                     justifyContent: 'center',
-                                //                     alignItems: 'center',
-                                //                     alignContent: 'center',
-                                //                     display: 'flex',
-
-                                //                 }}
-                                //             >
-                                //                 <Text style={[styles.textBackground, {
-
-                                //                 }]}>
-                                //                     + {JOB_DATA.length}
-                                //                 </Text>
-                                //             </ImageBackground>
-                                //         </TouchableOpacity>
-
-
-                                //     </View>
-
-
-                                // )
-
-                            }
+                           
                         </View>
                         {/* End Gallery images */}
 
@@ -494,7 +334,7 @@ const JobDetailScreen = (props) => {
                                     onPress={_onNavigateToMapDirection}
                                 />
                                 <Text style={styles.jobAddress}>
-                                    {jobDetail.author?.address}
+                                    {`${jobDetail.location?.province} - ${jobDetail.location?.district}`}
                                 </Text>
                             </View>
                             <View style={styles.jobControl}>

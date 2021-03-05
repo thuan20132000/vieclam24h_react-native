@@ -24,12 +24,13 @@ import JobListScreen from './screens/JobListScreen';
 import SearchScreen from './screens/SearchScreen';
 import AccountScreen from './screens/AccountScreen';
 
-//Collaborator Screen
+//Candidate Screen
 import JobDetailScreen from './screens/JobDetailScreen';
 import CollaboratorJobScreen from './screens/Collaborators/CollaboratorJobScreen';
 import CollaboratorProfileScreen from './screens/Collaborators/CollaboratorProfileScreen';
 import CollaboratorHomeScreen from './screens/Collaborators/CollaboratorHomeScreen';
 import CollaboratorDetailScreen from './screens/Customers/CollaboratorDetailScreen';
+
 
 
 //Customer Screen
@@ -58,8 +59,13 @@ import PhotoSectionScreen from './screens/PostJob/PhotoSectionScreen';
 import TitleSectionScreen from './screens/PostJob/TitleSectionScreen';
 import DescriptionSectionScreen from './screens/PostJob/DescriptionSectionScreen';
 import PriceSectionScreen from './screens/PostJob/PriceSectionScreen';
-import { StorePostJobProvider,StoreContext } from './utils/store';
+import { StorePostJobProvider, StoreContext } from './utils/store';
 import ReviewSectionScreen from './screens/PostJob/ReviewSectionScreen';
+import LocationRegisterScreen from './screens/RegisterCandidate/LocationRegisterScreen';
+import CategoryRegisterScreen from './screens/RegisterCandidate/CategoryRegisterScreen';
+import IdentificationRegisterScreen from './screens/RegisterCandidate/IdentificationRegisterScreen';
+import PhoneNumberRegisterScreen from './screens/RegisterCandidate/PhoneNumberRegisterScreen';
+import ReviewRegisterScreen from './screens/RegisterCandidate/ReviewRegisterScreen';
 
 /**
  * Authentication Stack
@@ -136,35 +142,6 @@ function CollaboratorJobStack() {
                 component={CollaboratorJobScreen}
             />
         </CollaboratorHomeStackNavigator.Navigator>
-    )
-}
-
-
-
-/**
- * Account Stack
- */
-const AccountStackNavigator = createStackNavigator();
-function AccountStack() {
-    return (
-        <AccountStackNavigator.Navigator>
-            <AccountStackNavigator.Screen
-                name="Account"
-                component={AccountScreen}
-            />
-            <AccountStackNavigator.Screen
-                name="CollaboratorProfile"
-                component={CollaboratorProfileScreen}
-            />
-            <AccountStackNavigator.Screen
-                name="CustomerStatistic"
-                component={CustomerStatisticScreen}
-            />
-            <AccountStackNavigator.Screen
-                name="CollaboratorStatistic"
-                component={CollaboratorStatisticScreen}
-            />
-        </AccountStackNavigator.Navigator>
     )
 }
 
@@ -276,6 +253,9 @@ function NotificationStack() {
 
 
 
+/**
+ * CreateJob Stack
+ */
 const PostJobStackNavigator = createStackNavigator();
 function PostJobStack() {
 
@@ -299,67 +279,198 @@ function PostJobStack() {
         },
     };
 
-    const updateJob = () => {
-        console.warn('fsa csaca csac');
-    }
+
 
 
 
     return (
 
 
-            <PostJobStackNavigator.Navigator
-                screenOptions={{
-                    title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
-                    gestureEnabled: true,
-                    gestureDirection: 'horizontal',
-                    animationEnabled: true,
-                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-                    transitionSpec: {
-                        open: configOpen,
-                        close: configClose
-                    }
+        <PostJobStackNavigator.Navigator
+            screenOptions={{
+                title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+                animationEnabled: true,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                }
 
-                }}
+            }}
 
-            >
-                <PostJobStackNavigator.Screen
-                    name={'CategorySection'}
-                    component={CategorySectionScreen}
-                
+        >
+            <PostJobStackNavigator.Screen
+                name={'CategorySection'}
+                component={CategorySectionScreen}
 
-                />
-                <PostJobStackNavigator.Screen
-                    name={'FieldSection'}
-                    component={FieldSectionScreen}
-                />
-                <PostJobStackNavigator.Screen
-                    name={'LocationSection'}
-                    component={LocationSectionScreen}
-                />
-                <PostJobStackNavigator.Screen
-                    name={'PhotoSection'}
-                    component={PhotoSectionScreen}
-                />
-                <PostJobStackNavigator.Screen
-                    name={'TitleSection'}
-                    component={TitleSectionScreen}
-                />
-                <PostJobStackNavigator.Screen
-                    name={'DescriptionSection'}
-                    component={DescriptionSectionScreen}
-                />
-                <PostJobStackNavigator.Screen
-                    name={'PriceSection'}
-                    component={PriceSectionScreen}
-                />
-                <PostJobStackNavigator.Screen
-                    name={'ReviewSection'}
-                    component={ReviewSectionScreen}
-                />
-            </PostJobStackNavigator.Navigator>
+
+            />
+            <PostJobStackNavigator.Screen
+                name={'FieldSection'}
+                component={FieldSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'LocationSection'}
+                component={LocationSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'PhotoSection'}
+                component={PhotoSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'TitleSection'}
+                component={TitleSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'DescriptionSection'}
+                component={DescriptionSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'PriceSection'}
+                component={PriceSectionScreen}
+            />
+            <PostJobStackNavigator.Screen
+                name={'ReviewSection'}
+                component={ReviewSectionScreen}
+            />
+        </PostJobStackNavigator.Navigator>
     )
 }
+
+
+
+
+/**
+ * RegisterCandidate Stack
+ */
+const RegisterCandidate = createStackNavigator();
+function RegisterCandidateStack(props) {
+
+
+    const configOpen = {
+        animation: 'spring',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'timing',
+        config: {
+            duration: 200,
+            easing: Easing.linear
+        },
+    };
+
+    React.useLayoutEffect(() => {
+
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false
+        })
+
+        return () => {
+            props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: true
+            })
+        }
+
+    }, []);
+
+
+
+
+    return (
+        <RegisterCandidate.Navigator
+            screenOptions={{
+                title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                gestureEnabled: false,
+                animationEnabled: true,
+                swipeEnabled:false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                }
+
+            }}
+            
+            
+        >
+            <RegisterCandidate.Screen
+                name={"CategoryRegister"}
+                component={CategoryRegisterScreen}
+            
+            />
+            <RegisterCandidate.Screen
+                name={"LocationRegister"}
+                component={LocationRegisterScreen}
+            />
+            <RegisterCandidate.Screen
+                name={"IdentificationRegister"}
+                component={IdentificationRegisterScreen}
+            />
+            <RegisterCandidate.Screen
+                name={'PhonenNumberRegister'}
+                component={PhoneNumberRegisterScreen}
+            />
+            <RegisterCandidate.Screen
+                name={'ReviewRegister'}
+                component={ReviewRegisterScreen}
+         
+            />
+
+
+        </RegisterCandidate.Navigator>
+    )
+}
+
+
+
+
+
+
+/**
+ * Account Stack
+ */
+const AccountStackNavigator = createStackNavigator();
+function AccountStack() {
+    return (
+        <AccountStackNavigator.Navigator>
+            <AccountStackNavigator.Screen
+                name="Account"
+                component={AccountScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="CollaboratorProfile"
+                component={CollaboratorProfileScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="CustomerStatistic"
+                component={CustomerStatisticScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="CollaboratorStatistic"
+                component={CollaboratorStatisticScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="RegisterCandidateStack"
+                component={RegisterCandidateStack}
+                options={{
+                    headerShown: false,
+                }}
+            />
+        </AccountStackNavigator.Navigator>
+    )
+}
+
+
 
 
 

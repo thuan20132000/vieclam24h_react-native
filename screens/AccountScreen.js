@@ -114,11 +114,11 @@ const AccountScreen = (props) => {
     }
 
 
-    useEffect(() => {
-        // let user_role = userInformation.role[0];
-        // setUserRole(user_role);
-        console.warn('user info: ',userInformation);
-    }, []);
+    // useEffect(() => {
+    //     // let user_role = userInformation.role[0];
+    //     // setUserRole(user_role);
+    //     console.warn('user info: ', userInformation);
+    // }, []);
 
 
     const _onNavigateToStatistic = async () => {
@@ -137,7 +137,15 @@ const AccountScreen = (props) => {
         return () => {
 
         };
-    }, [])
+    }, []);
+
+
+
+    const _onRegisterLookJob = () => {
+        props.navigation.navigate('RegisterCandidateStack');
+
+    }
+
 
     return (
         <>
@@ -199,6 +207,13 @@ const AccountScreen = (props) => {
                             left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
                             onPress={() => console.warn('ds')}
                         />
+
+                        <List.Item
+                            title=" Đăng ký tìm việc "
+                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                            onPress={_onRegisterLookJob}
+                        />
+
                         <View style={styles.buttonLogoutWrap}>
                             <Button style={styles.buttonLogout}
                                 mode="contained"

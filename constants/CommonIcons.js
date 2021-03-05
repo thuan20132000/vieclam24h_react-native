@@ -34,6 +34,7 @@ export default {
     person:"google-street-view",
 
     arrowRight:'arrow-right',
+    arrowLeft:'arrow-left',
     close:'close',
     arrowRightChevron:'chevron-right',
 
