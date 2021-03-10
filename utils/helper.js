@@ -27,7 +27,7 @@ export const formatDateTime = (timestring) => {
 export const formatDateString = (timestring) => {
     let date = new Date(timestring);
 
-    return  `${date.getDate()} - ${date.getMonth()}`;
+    return  `${date.getDate()} - ${date.getMonth()} - ${date.getFullYear()}`;
 }
 
 export const formatTimeString = (timestring) => {

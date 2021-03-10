@@ -20,7 +20,7 @@ const ItemChip = ({
             ]}
         >
 
-            <Text>{label}</Text>
+            <Text style={[labelStyle]}>{label}</Text>
             {
                 close &&
 

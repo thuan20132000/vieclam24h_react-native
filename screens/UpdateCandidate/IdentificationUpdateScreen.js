@@ -8,7 +8,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import * as authenticationActions from '../../store/actions/authenticationActions';
 import { useDispatch, useSelector } from 'react-redux';
 
-const IdentificationRegisterScreen = (props) => {
+const IdentificationUpdateScreen = (props) => {
 
     const dispatch = useDispatch();
     const { candidateInformation } = useSelector(state => state.authentication);
@@ -82,9 +82,9 @@ const IdentificationRegisterScreen = (props) => {
         let data = {
             images: images_data
         }
-        dispatch(authenticationActions.register_candidate(data));
+        dispatch(authenticationActions.edit_candidate(data));
 
-        props.navigation.navigate('PhonenNumberRegister');
+        props.navigation.navigate('ReviewUpdate');
     }
 
     React.useLayoutEffect(() => {
@@ -200,7 +200,7 @@ const IdentificationRegisterScreen = (props) => {
     )
 }
 
-export default IdentificationRegisterScreen
+export default IdentificationUpdateScreen
 
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;

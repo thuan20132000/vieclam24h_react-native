@@ -45,6 +45,6 @@ export default {
     bell:'bell',
     cameraplus:'camera-plus-outline',
     
-    
+    facebook:'facebook',
 
 }

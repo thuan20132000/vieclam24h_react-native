@@ -14,11 +14,10 @@ import server_url from '../../serverConfig';
 
 const CardHorizontal = ({ index, item, onPress }) => {
 
-    let candidateNumber =   item.relationships?.candidates?.length;
 
 
 
-    
+
     return (
         <TouchableOpacity style={styles.cardContainer}
             onPress={() => onPress(item?.id)}
@@ -26,7 +25,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
         >
 
 
-            <ImageBackground
+            {/* <ImageBackground
                 source={{
                     uri: (item.images && item.images[0]) ? `${server_url.url_absolute}/${item.images[0].image}` : CommonImages.notFound
                 }}
@@ -34,9 +33,9 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     width: deviceWidth / 4
                 }}
             >
-            </ImageBackground>
+            </ImageBackground> */}
             <Card.Content style={styles.cardContent}>
-                <Text style={{ fontSize: 14,marginRight:20 }}>
+                <Text style={{ fontSize: 14, marginRight: 20 }}>
                     {item?.name}
                 </Text>
                 <Paragraph
@@ -50,50 +49,68 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     {item?.description}
                 </Paragraph>
 
-                <View style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                     <MaterialCommunityIcons
                         name={CommonIcons.tagPrice}
                         size={16}
                         color={CommonColors.primary}
                     />
-                    <Caption style={{marginHorizontal:6,color:'red',fontWeight:'600'}}>
-                        {formatCash(item.suggestion_price)} đ
+                    <Caption style={{ marginHorizontal: 6, color: 'red', fontWeight: '600' }}>
+                        {formatCash(item?.suggestion_price || 0)} đ
                     </Caption>
 
                 </View>
-                <View style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                     <MaterialCommunityIcons
                         name={CommonIcons.mapCheck}
                         size={16}
                         color={CommonColors.primary}
                     />
-                    <Caption style={{marginHorizontal:6,fontWeight:'300'}}>
+                    <Caption style={{ marginHorizontal: 6, fontWeight: '300' }}>
                         {item?.location?.district}
                     </Caption>
 
                 </View>
-                <View style={{display:'flex',flexDirection:'row',alignItems:'center'}}>
-                  
+
+                <Text style={{
+                    marginHorizontal: 2,
+                    fontWeight: '300',
+                    bottom: 0,
+                    position: 'relative',
+                    fontSize: 12,
+                    color: 'white',
+                    backgroundColor: 'coral',
+                    padding: 6,
+                    maxWidth:120
+                }}>
+                    {item?.field?.name}
+                </Text>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+
                     <Text style={{
-                        marginHorizontal:6,
-                        fontWeight:'300',
-                        bottom:0,
-                        position:'relative',
-                        fontSize:12,
-                        color:'grey'
+                        marginHorizontal: 2,
+                        fontWeight: '300',
+                        bottom: 0,
+                        position: 'relative',
+                        fontSize: 12,
+                        color: 'grey'
                     }}>
-                        Đăng lúc : {formatDateTime(item.created_at)}
+                        Đăng lúc : {formatDateTime(item?.created_at)}
                     </Text>
 
+
+
                 </View>
+
+
                 <View style={{
-                    position:'absolute',
-                    right:26,
-                    backgroundColor:'coral',
-                    display:'flex',
-                    flexDirection:'row',
-                    padding:4,
-                    top:2
+                    position: 'absolute',
+                    right: 26,
+                    backgroundColor: 'coral',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    padding: 4,
+                    top: 2
 
                 }}>
                     <MaterialCommunityIcons
@@ -101,7 +118,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         size={16}
                         color={'white'}
                     />
-                    <Text style={{color:'white'}}>{candidateNumber}</Text>
+                    <Text style={{ color: 'white' }}>csdc</Text>
                 </View>
             </Card.Content>
         </TouchableOpacity>
@@ -142,6 +159,6 @@ const styles = StyleSheet.create({
     cardContent: {
         width: '70%',
         padding: 6,
-        justifyContent:'space-around'
+        justifyContent: 'space-around'
     }
 })

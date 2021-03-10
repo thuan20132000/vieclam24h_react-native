@@ -1,6 +1,9 @@
 export const LOGIN = 'LOGIN'
 export const LOGOUT = 'LOGOUT'
 export const UPDATE = 'UPDATE'
+export const REGISTER_CANDIDATE = 'REGISTER_CANDIDATE'
+export const EDIT_CANDIDATE = 'EDIT_CANDIDATE'
+export const UPDATE_CANDIDATE_USER = 'UPDATE_CANDIDATE_USER'
 
 
 
@@ -43,5 +46,34 @@ export const logout = () => {
         dispatch({
             type: LOGOUT,
         })
+    }
+}
+
+
+
+export const register_candidate = (data) => {
+
+    
+    return {
+        data:data,
+        type:REGISTER_CANDIDATE
+    }
+}
+
+
+export const edit_candidate = (data) => {
+
+    return {
+        data:data,
+        type:EDIT_CANDIDATE
+    }
+}
+
+
+
+export const update_candidate_user = (data) => {
+    return {
+        data:data,
+        type:UPDATE_CANDIDATE_USER
     }
 }

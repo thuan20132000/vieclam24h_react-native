@@ -125,7 +125,7 @@ const PhoneNumberRegisterScreen = (props) => {
             <ModalConfirmPhoneNumber
                 isVisible={isConfirm}
                 setIsVisible={setIsConfirm}
-                transparent={false}
+                transparent={true}
                 animationType={"slide"}
 
             >

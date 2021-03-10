@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as jobActions from '../../store/actions/jobActions';
 import * as authenticationActions from '../../store/actions/authenticationActions';
 
-const LocationRegisterScreen = (props) => {
+const LocationUpdateScreen = (props) => {
 
     const dispatch = useDispatch();
 
@@ -110,9 +110,9 @@ const LocationRegisterScreen = (props) => {
         let data = {
             location: location
         }
-        dispatch(authenticationActions.register_candidate(data));
+        dispatch(authenticationActions.edit_candidate(data));
 
-        props.navigation.navigate('IdentificationRegister');
+        props.navigation.navigate('IdentificationUpdate');
     }
 
 
@@ -224,7 +224,7 @@ const LocationRegisterScreen = (props) => {
     )
 }
 
-export default LocationRegisterScreen
+export default LocationUpdateScreen
 
 const styles = StyleSheet.create({
     group: {

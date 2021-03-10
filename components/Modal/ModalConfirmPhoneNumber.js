@@ -22,8 +22,9 @@ const ModalConfirmPhoneNumber = ({
                 Alert.alert("Modal has been closed.");
                 setIsVisible(!isVisible);
             }}
+            
         >
-            <View style={styles.centeredView}>
+            <View style={styles.centeredView} >
                 <View style={styles.modalView}>
                     {children}
                 </View>
@@ -39,7 +40,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 22
+        // marginTop: 22,
+        backgroundColor:'#f5f5f5',
+      
       },
       modalView: {
         margin: 20,

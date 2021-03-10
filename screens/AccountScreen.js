@@ -86,7 +86,6 @@ const AccountScreen = (props) => {
     } = props;
     const { userInformation } = useSelector(state => state.authentication);
     const [userRole, setUserRole] = useState();
-
     const [userAttributes, setUserAttributes] = useState();
 
     useEffect(() => {
@@ -130,6 +129,7 @@ const AccountScreen = (props) => {
     }
 
     useLayoutEffect(() => {
+
 
         props.navigation.setOptions({
             headerShown: false
@@ -176,11 +176,22 @@ const AccountScreen = (props) => {
                 }}
                 renderContent={() =>
                     <>
-                        <List.Item
-                            title="Hồ Sơ Cá Nhân"
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={() => navigation.navigate('CollaboratorProfile')}
-                        />
+                         {
+                            userInformation?.candidate_info ?
+                                <List.Item
+                                    title="Hồ sơ tìm việc"
+                                    left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                    onPress={() => props.navigation.navigate('CandidateProfile')}
+                                /> :
+                                <List.Item
+                                    title=" Đăng ký tìm việc "
+                                    left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                    onPress={_onRegisterLookJob}
+                                />
+
+
+                        }
+
                         <List.Item
                             title="Thống Kê"
                             left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
@@ -208,12 +219,8 @@ const AccountScreen = (props) => {
                             onPress={() => console.warn('ds')}
                         />
 
-                        <List.Item
-                            title=" Đăng ký tìm việc "
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={_onRegisterLookJob}
-                        />
 
+                       
                         <View style={styles.buttonLogoutWrap}>
                             <Button style={styles.buttonLogout}
                                 mode="contained"

@@ -140,6 +140,198 @@ export const register = async (
 }
 
 
+
+/**
+ * author:thuantruong
+ * descriptions: Đăng ký làm ứng viên tìm việc làm
+ * @param {*} user_id 
+ * @param {*} categories 
+ * @param {*} location 
+ * @param {*} fields 
+ * @param {*} images_file 
+ * @returns 
+ */
+export const register_candidate = async (
+    user_id,
+    categories,
+    location,
+    fields,
+    photos
+) => {
+
+
+    try {
+
+
+        const formData = new FormData();
+        formData.append('user', user_id);
+        formData.append('categories', JSON.stringify(categories));
+        formData.append('location', JSON.stringify(location));
+        formData.append('fields', JSON.stringify(fields));
+        
+
+        // formData.append('images',photos);
+        if (photos && photos.length > 0) {
+            photos = photos.map((e) => {
+                const file = {
+                    name: e.path,
+                    type: e.mime,
+                    uri: e.path
+                }
+                formData.append('images_file', file);
+
+            });
+
+        }
+        // console.warn(user_id);
+        // console.warn('form data: ',formData);
+
+        let dataFetch = await fetch(`${api.api_v1}/user/${user_id}/register-candidate`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            body:formData
+
+        });
+
+
+        if (!dataFetch.ok) {
+            console.warn("ERROR AT REGISTER : ", dataFetch);
+            return {
+                data: null,
+                message: dataFetch,
+                status: false
+
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        // console.warn("DATA RES: ", dataRes);
+
+        if (!dataRes.status) {
+            return {
+                data: dataRes,
+                message: 'failed',
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: null,
+            message: 'failed' + error,
+            status: false
+        }
+    }
+
+}
+
+
+
+
+
+/**
+ * author:thuantruong
+ * descriptions: Đăng ký làm ứng viên tìm việc làm
+ * @param {*} user_id 
+ * @param {*} categories 
+ * @param {*} location 
+ * @param {*} fields 
+ * @param {*} images_file 
+ * @returns 
+ */
+ export const update_candidate = async (
+    user_id,
+    categories,
+    location,
+    fields,
+    photos
+) => {
+
+
+    try {
+
+
+        const formData = new FormData();
+        formData.append('user', user_id);
+        formData.append('categories', JSON.stringify(categories));
+        formData.append('location', JSON.stringify(location));
+        formData.append('fields', JSON.stringify(fields));
+        
+
+        // // formData.append('images',photos);
+        if (photos && photos.length > 0) {
+            photos = photos.map((e) => {
+                const file = {
+                    name: e.path,
+                    type: e.mime,
+                    uri: e.path
+                }
+                formData.append('images_file', file);
+
+            });
+
+        }
+        // console.warn(user_id);
+        // console.warn('form data: ',formData);
+
+        let dataFetch = await fetch(`${api.api_v1}/user/${user_id}/update-candidate`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            body:formData
+
+        });
+
+
+        if (!dataFetch.ok) {
+            console.warn("ERROR AT REGISTER : ", dataFetch);
+            return {
+                data: null,
+                message: dataFetch,
+                status: false
+
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        // console.warn("DATA RES: ", dataRes);
+
+        if (!dataRes.status) {
+            return {
+                data: dataRes,
+                message: 'failed',
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: null,
+            message: 'failed' + error,
+            status: false
+        }
+    }
+
+}
+
+
 /**
  * author:thuantruong
  * description: get all category
@@ -232,7 +424,7 @@ export const getOccupations = async (category_id = '') => {
  * @param {*} postnumber 
  */
 
-export const getFields = async (category_id = '',access_token='') => {
+export const getFields = async (category_id = '', access_token = '') => {
     try {
         let bearer = `Bearer ${access_token}`;
         let datafetch;
@@ -355,8 +547,6 @@ export const getJobsByCategory = async (category_slug, limit = 10) => {
  * description:get a job detail
  * created_at:18/11/2020
  */
-
-
 export const getJobDetail = async (id) => {
 
 
@@ -495,31 +685,30 @@ export const createJob = async (
         // uri:
         //   Platform.OS === "android" ? photo.uri : photo.uri.replace("file://", "")
 
-        
+
 
         // console.warn('photos: ',photos);
 
         const formData = new FormData();
 
-        
 
-        formData.append('name',name);
-        formData.append('descriptions',descriptions);
-        formData.append('location',JSON.stringify(location));
-        formData.append('suggestion_price',suggestion_price);
-        formData.append('author_id',6);
-        formData.append('field_id',field_id);
-        
+        formData.append('name', name);
+        formData.append('descriptions', descriptions);
+        formData.append('location', JSON.stringify(location));
+        formData.append('suggestion_price', suggestion_price);
+        formData.append('author_id', 6);
+        formData.append('field_id', field_id);
+
         // formData.append('images',photos);
-        if(photos && photos.length > 0){
+        if (photos && photos.length > 0) {
             photos = photos.map((e) => {
-                const file =  {
+                const file = {
                     name: e.path,
-                    type:e.mime,
-                    uri:e.path 
+                    type: e.mime,
+                    uri: e.path
                 }
                 console.warn(file);
-                formData.append('images',file);
+                formData.append('images', file);
 
             });
 
@@ -530,12 +719,12 @@ export const createJob = async (
 
 
         let dataFetch = await fetch(`${api.api_v1}/job`, {
-            headers:{
+            headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'multipart/form-data',
             },
             method: 'POST',
-            body:formData
+            body: formData
         });
 
         if (!dataFetch.ok) {

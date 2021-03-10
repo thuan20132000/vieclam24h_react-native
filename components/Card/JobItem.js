@@ -15,9 +15,9 @@ const JobItem = ({
 }) => {
 
 
-    const apply_job = job.relationship?.job;
-    const job_location = job.relationship?.job?.location;
-    const job_author = job.relationship?.job_author;
+    const apply_job = job?.relationship?.job;
+    const job_location = job?.relationship?.job?.location;
+    const job_author = job?.relationship?.job_author;
 
 
 
@@ -31,14 +31,14 @@ const JobItem = ({
                 textAlign: 'right',
                 margin: 4
             }}>
-                Xác nhận lúc: {formatDateTime(job.attributes.updated_at)}
+                Xác nhận lúc: {formatDateTime(job?.attributes.updated_at || new Date())}
             </Text>
             <View style={{ margin: 6 }}>
                 <Text style={{
                     fontSize: 16,
                     fontWeight: '600',
                     marginVertical: 6
-                }}>{apply_job.name}</Text>
+                }}>{apply_job?.name || 'tên công việc'}</Text>
 
 
                 <View style={{ display: 'flex', flexDirection: 'row', marginVertical: 2 }}>
@@ -54,7 +54,7 @@ const JobItem = ({
                         fontStyle: 'italic',
                         marginHorizontal: 6
                     }}>
-                        {job_location.address}
+                        {job_location?.address || 'địa chỉ'}
                     </Text>
 
                 </View>
@@ -73,7 +73,7 @@ const JobItem = ({
                     }}>
                         Giá đưa ra: <Text style={{
                             color: 'red'
-                        }}>{formatCash(apply_job?.suggestion_price)} đ</Text>
+                        }}>{formatCash(apply_job?.suggestion_price || 0)} đ</Text>
                     </Text>
                 </View>
                 {
@@ -108,7 +108,7 @@ const JobItem = ({
             }}
             >
                 {
-                    apply_job.images.map((e, index) =>
+                    apply_job?.images.map((e, index) =>
                         <View
                             key={index.toString()}
                         >
@@ -141,7 +141,7 @@ const JobItem = ({
                     borderRadius: 20
                 }}
                     source={{
-                        uri: job_author.profile_image || CommonImages.notFound
+                        uri: job_author?.profile_image || CommonImages.notFound
                     }}
                 />
                 <View>
@@ -151,7 +151,7 @@ const JobItem = ({
                         fontWeight: '600',
                         marginHorizontal: 12
                     }}>
-                        {job_author.name}
+                        {job_author?.name}
                     </Text>
                     <Text style={{
                         fontSize: 12,
@@ -159,7 +159,7 @@ const JobItem = ({
                         fontWeight: '600',
                         marginHorizontal: 12
                     }}>
-                        {job_author.phonenumber}
+                        {job_author?.phonenumber}
                     </Text>
                 </View>
             </View>

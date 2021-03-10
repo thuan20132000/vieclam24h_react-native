@@ -66,6 +66,11 @@ import CategoryRegisterScreen from './screens/RegisterCandidate/CategoryRegister
 import IdentificationRegisterScreen from './screens/RegisterCandidate/IdentificationRegisterScreen';
 import PhoneNumberRegisterScreen from './screens/RegisterCandidate/PhoneNumberRegisterScreen';
 import ReviewRegisterScreen from './screens/RegisterCandidate/ReviewRegisterScreen';
+import CandidateProfileScreen from './screens/CandidateProfileScreen';
+import CategoryUpdateScreen from './screens/UpdateCandidate/CategoryUpdateScreen';
+import LocationUpdateScreen from './screens/UpdateCandidate/LocationUpdateScreen';
+import IdentificationUpdateScreen from './screens/UpdateCandidate/IdentificationUpdateScreen';
+import ReviewUpdateScreen from './screens/UpdateCandidate/ReviewUpdateScreen';
 
 /**
  * Authentication Stack
@@ -392,7 +397,7 @@ function RegisterCandidateStack(props) {
                 title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
                 gestureEnabled: false,
                 animationEnabled: true,
-                swipeEnabled:false,
+                swipeEnabled: false,
                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                 transitionSpec: {
                     open: configOpen,
@@ -400,13 +405,13 @@ function RegisterCandidateStack(props) {
                 }
 
             }}
-            
-            
+
+
         >
             <RegisterCandidate.Screen
                 name={"CategoryRegister"}
                 component={CategoryRegisterScreen}
-            
+
             />
             <RegisterCandidate.Screen
                 name={"LocationRegister"}
@@ -423,7 +428,7 @@ function RegisterCandidateStack(props) {
             <RegisterCandidate.Screen
                 name={'ReviewRegister'}
                 component={ReviewRegisterScreen}
-         
+
             />
 
 
@@ -433,6 +438,89 @@ function RegisterCandidateStack(props) {
 
 
 
+/**
+ * UpdateCandidate Stack
+ */
+const UpdateCandidate = createStackNavigator();
+function UpdateCandidateStack(props) {
+
+
+    const configOpen = {
+        animation: 'spring',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'timing',
+        config: {
+            duration: 200,
+            easing: Easing.linear
+        },
+    };
+
+    React.useLayoutEffect(() => {
+
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false
+        })
+
+        return () => {
+            props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: true
+            })
+        }
+
+    }, []);
+
+
+
+
+    return (
+        <UpdateCandidate.Navigator
+            screenOptions={{
+                title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                gestureEnabled: false,
+                animationEnabled: true,
+                swipeEnabled: false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                }
+
+            }}
+
+
+        >
+            <UpdateCandidate.Screen
+                name={"CategoryUpdate"}
+                component={CategoryUpdateScreen}
+
+            />
+            <UpdateCandidate.Screen
+                name={"LocationUpdate"}
+                component={LocationUpdateScreen}
+            />
+            <UpdateCandidate.Screen
+                name={"IdentificationUpdate"}
+                component={IdentificationUpdateScreen}
+            />
+            <UpdateCandidate.Screen
+                name={"ReviewUpdate"}
+                component={ReviewUpdateScreen}
+            />
+
+
+        </UpdateCandidate.Navigator>
+    )
+}
 
 
 
@@ -465,6 +553,17 @@ function AccountStack() {
                 options={{
                     headerShown: false,
                 }}
+            />
+            <AccountStackNavigator.Screen
+                name="UpdateCandidateStack"
+                component={UpdateCandidateStack}
+                options={{
+                    headerShown: false,
+                }}
+            />
+            <AccountStackNavigator.Screen
+                name="CandidateProfile"
+                component={CandidateProfileScreen}
             />
         </AccountStackNavigator.Navigator>
     )

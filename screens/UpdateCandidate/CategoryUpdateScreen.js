@@ -13,12 +13,12 @@ import CommonIcons from '../../constants/CommonIcons'
 
 import { List, Checkbox } from 'react-native-paper';
 
-const CategoryRegisterScreen = (props) => {
+const CategoryUpdateScreen = (props) => {
 
     const dispatch = useDispatch();
 
 
-    const access_token = useSelector(state => state.authentication.access_token)
+    const {access_token,userInformation} = useSelector(state => state.authentication);
 
     const [categories, setCategories] = useState([]);
     const getCategoryList = async () => {
@@ -32,7 +32,8 @@ const CategoryRegisterScreen = (props) => {
 
     useEffect(() => {
 
-        getCategoryList()
+        getCategoryList();
+
 
         props.navigation.setOptions({
             title: 'Lựa chọn lĩnh vực',
@@ -110,7 +111,7 @@ const CategoryRegisterScreen = (props) => {
             fields:fields_id
         }
 
-        dispatch(authenticationActions.register_candidate(data));
+        dispatch(authenticationActions.edit_candidate(data));
 
         props.navigation.navigate(section);
     }
@@ -181,7 +182,7 @@ const CategoryRegisterScreen = (props) => {
             </ScrollView>
 
             <BottomNavigation
-                onNextPress={() => navigateNext('LocationRegister')}
+                onNextPress={() => navigateNext('LocationUpdate')}
                 nextTitle={'Tiếp tục'}
                
             />
@@ -189,7 +190,7 @@ const CategoryRegisterScreen = (props) => {
     )
 }
 
-export default CategoryRegisterScreen
+export default CategoryUpdateScreen
 
 const styles = StyleSheet.create({
     row: {
