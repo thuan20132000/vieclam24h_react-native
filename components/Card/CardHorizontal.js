@@ -25,7 +25,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
         >
 
 
-            {/* <ImageBackground
+            <ImageBackground
                 source={{
                     uri: (item.images && item.images[0]) ? `${server_url.url_absolute}/${item.images[0].image}` : CommonImages.notFound
                 }}
@@ -33,7 +33,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     width: deviceWidth / 4
                 }}
             >
-            </ImageBackground> */}
+            </ImageBackground>
             <Card.Content style={styles.cardContent}>
                 <Text style={{ fontSize: 14, marginRight: 20 }}>
                     {item?.name}
@@ -118,7 +118,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         size={16}
                         color={'white'}
                     />
-                    <Text style={{ color: 'white' }}>csdc</Text>
+                    <Text style={{ color: 'white',fontWeight:'700' }}>{item?.candidates?.length}</Text>
                 </View>
             </Card.Content>
         </TouchableOpacity>

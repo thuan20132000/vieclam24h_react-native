@@ -168,7 +168,7 @@ export const register_candidate = async (
         formData.append('categories', JSON.stringify(categories));
         formData.append('location', JSON.stringify(location));
         formData.append('fields', JSON.stringify(fields));
-        
+
 
         // formData.append('images',photos);
         if (photos && photos.length > 0) {
@@ -192,7 +192,7 @@ export const register_candidate = async (
                 'Accept': 'application/json',
                 'Content-Type': 'multipart/form-data',
             },
-            body:formData
+            body: formData
 
         });
 
@@ -248,7 +248,7 @@ export const register_candidate = async (
  * @param {*} images_file 
  * @returns 
  */
- export const update_candidate = async (
+export const update_candidate = async (
     user_id,
     categories,
     location,
@@ -265,7 +265,7 @@ export const register_candidate = async (
         formData.append('categories', JSON.stringify(categories));
         formData.append('location', JSON.stringify(location));
         formData.append('fields', JSON.stringify(fields));
-        
+
 
         // // formData.append('images',photos);
         if (photos && photos.length > 0) {
@@ -289,7 +289,7 @@ export const register_candidate = async (
                 'Accept': 'application/json',
                 'Content-Type': 'multipart/form-data',
             },
-            body:formData
+            body: formData
 
         });
 
@@ -594,8 +594,7 @@ export const getJobDetail = async (id) => {
 export const applyJob = async (user_id, job_id, expected_price, description = "") => {
 
     try {
-        let url = serverConfig.url;
-        let dataFetch = await fetch(`${url}/job-collaborator`, {
+        let dataFetch = await fetch(`${api.api_v1}/user/${user_id}/apply-job`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -603,8 +602,8 @@ export const applyJob = async (user_id, job_id, expected_price, description = ""
             },
             body: JSON.stringify({
                 "expected_price": expected_price,
-                "description": description,
-                "user_id": user_id,
+                "descriptions": description,
+                "candidate_id": user_id,
                 "job_id": job_id
             })
         });

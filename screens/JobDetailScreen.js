@@ -1,6 +1,16 @@
 import React, { useRef, useState, useEffect, useLayoutEffect } from 'react'
-import { Alert, Dimensions, StyleSheet, Text, View, Button, Image, ImageBackground, Modal } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import {
+    Alert,
+    Dimensions,
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    Modal,
+    TouchableOpacity,
+    ActivityIndicator
+} from 'react-native'
+import { ScrollView, } from 'react-native-gesture-handler';
 import { Headline, IconButton, TextInput, Snackbar } from 'react-native-paper';
 import Carousel from 'react-native-snap-carousel';
 import CardItem from '../components/Card/CardItem';
@@ -123,20 +133,30 @@ const JobDetailScreen = (props) => {
 
 
             if (checkValidated) {
+
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
                 if (!applyRes.status) {
 
-                    Alert.alert("Thất bại", `${applyRes.data.message}`);
+                    Alert.alert("Thất bại", `Ứng viên đã ứng tuyển, không thể ứng tuyển lại!`);
                     setTimeout(() => {
                         refRBSheet_applyJob.current.close();
 
+
                     }, 2500);
+
 
 
                 } else {
                     Alert.alert("Thành công", "Ứng tuyển thành công, vui lòng chờ người tuyển dụng xác nhận.");
                     setTimeout(() => {
                         refRBSheet_applyJob.current.close();
+                        props.navigation.reset({
+                            index: 1,
+                            routes: [
+                                { name: 'HomeStack' },
+
+                            ],
+                        })
 
                     }, 2500);
                 }
@@ -219,25 +239,25 @@ const JobDetailScreen = (props) => {
 
     }, []);
 
-    if (isLoading) {
-        return (
-            <View
-                style={{
-                    display: 'flex',
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    alignContent: 'center',
-                    backgroundColor: 'white'
+    // if (isLoading) {
+    //     return (
+    //         <View
+    //             style={{
+    //                 display: 'flex',
+    //                 flex: 1,
+    //                 justifyContent: 'center',
+    //                 alignItems: 'center',
+    //                 alignContent: 'center',
+    //                 backgroundColor: 'white'
 
-                }}
-            >
-                <LoadingSimple />
+    //             }}
+    //         >
+    //             <LoadingSimple />
 
-            </View>
+    //         </View>
 
-        )
-    }
+    //     )
+    // }
 
 
 
@@ -270,11 +290,11 @@ const JobDetailScreen = (props) => {
                             {
                                 jobDetail.images?.map((e, index) =>
                                     <TouchableOpacity
-                                    
+
                                         style={[
                                             styles.imageWrap,
                                             {
-                                                width: deviceWidth / 3 -10,
+                                                width: deviceWidth / 3 - 10,
                                                 height: 120,
                                                 marginHorizontal: 2
 
@@ -297,7 +317,7 @@ const JobDetailScreen = (props) => {
                                     </TouchableOpacity>
                                 )
                             }
-                           
+
                         </View>
                         {/* End Gallery images */}
 
@@ -398,7 +418,7 @@ const JobDetailScreen = (props) => {
                             <Text style={styles.jobTitle}>{jobDetail.name}</Text>
                             <Text style={styles.jobPrice}>Giá đưa ra :
                             <Text style={{ fontSize: 18, color: CommonColors.primary }}>
-                                    {formatCash(jobDetail.suggestion_price)} vnd
+                                    {formatCash(jobDetail?.suggestion_price)} vnd
                             </Text>
                             </Text>
                             <View style={styles.jobDescriptionWrap}>
@@ -424,7 +444,9 @@ const JobDetailScreen = (props) => {
                             }}
                             height={Dimensions.get('screen').height}
                         >
+
                             <View>
+
                                 <TextInput style={styles.input}
                                     label="Giá đưa ra"
                                     value={jobApplyData.expected_price}
@@ -459,13 +481,45 @@ const JobDetailScreen = (props) => {
                                 Ứng Tuyển
                             </Button> */}
 
-                                <Button
-                                    onPress={_applyJob}
-                                    title="Ứng Tuyến"
-                                    color="#841584"
-                                    accessibilityLabel="Learn more about this purple button"
-                                />
+                                <View style={[
+                                    styles.row,
+                                    {
+                                        justifyContent: 'center'
+                                    }
+                                ]}>
+                                    {
+                                        isLoading ?
+                                            <ActivityIndicator
+                                                color={'coral'}
+                                                size={'large'}
+                                            /> :
+                                            <TouchableOpacity
+                                                onPress={_applyJob}
 
+                                                style={{
+                                                    paddingHorizontal: 18,
+                                                    paddingVertical: 12,
+                                                    backgroundColor: CommonColors.btnSubmit,
+                                                    borderRadius: 12
+                                                }}
+
+
+                                            >
+                                                <Text
+                                                    style={[
+                                                        {
+                                                            fontSize: 18,
+                                                            fontWeight: '600',
+                                                            color: 'white'
+                                                        }
+                                                    ]}
+                                                >
+                                                    Ứng tuyển
+                                    </Text>
+                                            </TouchableOpacity>
+
+                                    }
+                                </View>
 
                                 {
                                     errorMessagage.status &&
@@ -482,6 +536,9 @@ const JobDetailScreen = (props) => {
                                         {errorMessagage.message}
                                     </Snackbar>
                                 }
+
+
+
                             </View>
                         </RBSheet>
 

@@ -66,7 +66,7 @@ const ReviewUpdateScreen = (props) => {
                 { name: 'HomeStack' },
 
             ],
-        })
+        });
     }
 
 
