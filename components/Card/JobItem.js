@@ -31,7 +31,7 @@ const JobItem = ({
                 textAlign: 'right',
                 margin: 4
             }}>
-                Xác nhận lúc: {formatDateTime(job?.attributes.updated_at || new Date())}
+                Xác nhận lúc: {formatDateTime(job?.updated_at || new Date())}
             </Text>
             <View style={{ margin: 6 }}>
                 <Text style={{
@@ -77,7 +77,7 @@ const JobItem = ({
                     </Text>
                 </View>
                 {
-                    job?.attributes?.confirmed_price &&
+                    job?.confirmed_price &&
                     <View style={{ display: 'flex', flexDirection: 'row', marginVertical: 2 }}>
                         <MaterialCommunityIcons
                             name={CommonIcons.tagPrice}
@@ -93,7 +93,7 @@ const JobItem = ({
                         }}>
                             Giá xác nhận: <Text style={{
                                 color: 'red'
-                            }}>{formatCash(job?.attributes?.confirmed_price)} đ</Text>
+                            }}>{formatCash(job?.confirmed_price)} đ</Text>
                         </Text>
                     </View>
 
@@ -180,7 +180,7 @@ const JobItem = ({
                         }}
                     >
                         {
-                            Array(job?.attributes?.range).fill({}).map((e, index) =>
+                            Array(job?.range).fill({}).map((e, index) =>
                                 <ReviewStar
                                     key={index.toString()}
                                 />
@@ -192,7 +192,7 @@ const JobItem = ({
                         marginHorizontal: 12,
                         marginVertical: 6
                     }}>
-                        <Text>Đánh giá từ khách hàng:  {job?.attributes?.review_content}</Text>
+                        <Text>Đánh giá từ khách hàng:  {job?.review_content}</Text>
 
                     </View>
 

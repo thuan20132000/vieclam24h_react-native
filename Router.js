@@ -565,6 +565,17 @@ function AccountStack() {
                 name="CandidateProfile"
                 component={CandidateProfileScreen}
             />
+            <AccountStackNavigator.Screen
+                name="ApplyJobStack"
+                component={CollaboratorJobScreen}
+            />
+            <AccountStackNavigator.Screen
+                name="PostJobStack"
+                component={PostJobStack}
+                options={{
+                    headerShown: false
+                }}
+            />
         </AccountStackNavigator.Navigator>
     )
 }
@@ -650,96 +661,58 @@ function TabNavigator(props) {
 
 
 
-            {
-                // (userRole && userRole == 2) &&
-                <>
-                    <BottomTabNavigator.Screen
-                        name="HomeStack"
-                        component={CollaboratorHomeStack}
-                        options={{
-                            tabBarLabel: tabbarTitle.home
-                        }}
-                    />
-                    <BottomTabNavigator.Screen
-                        name="MyJobs"
-                        component={CollaboratorJobStack}
-                        options={{
-                            tabBarLabel: tabbarTitle.apply
-                        }}
-                    />
-                    <BottomTabNavigator.Screen
-                        name="Notification"
-                        component={NotificationStack}
-                        options={{
-                            tabBarLabel: 'thong bao',
-                            tabBarBadge: 3
-                        }}
+            <BottomTabNavigator.Screen
+                name="HomeStack"
+                component={CollaboratorHomeStack}
+                options={{
+                    tabBarLabel: tabbarTitle.home
+                }}
+            />
+            <BottomTabNavigator.Screen
+                name="Notification"
+                component={NotificationStack}
+                options={{
+                    tabBarLabel: 'thong bao',
+                    tabBarBadge: 3
+                }}
 
-                    />
-                    <BottomTabNavigator.Screen
-                        name="PostJob"
-                        component={PostJobStack}
-                        options={{
-                            tabBarLabel: 'Đăng tin',
-                            tabBarVisible: false
-                        }}
+            />
+            <BottomTabNavigator.Screen
+                name="PostJob"
+                component={SearchCollaboratorScreen}
+                options={{
+                    tabBarLabel: "",
+                    tabBarVisible: false,
+                    tabBarIcon: () => (
+                        <View
+                            style={{
+                                backgroundColor: 'white',
+                                padding: 12,
+                                borderRadius: 12,
+                                shadowColor: "#000",
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 6,
+                                },
+                                shadowOpacity: 0.37,
+                                shadowRadius: 7.49,
 
-                    />
-                    {/* <BottomTabNavigator.Screen
-                        name="CustomerJobCreation"
-                        component={CustomerJobCreationScreen}
+                                elevation: 12,
 
-                        options={{
-                            tabBarIcon: ({ color, size }) => (
-                                <MaterialCommunityIcon style={{ position: 'absolute', bottom: 6 }}
-                                    name={CommonIcons.historyJob}
-                                    color={CommonColors.primary} size={44}
-                                />
-                            ),
-                            tabBarLabel: 'Tạo công việc',
-                        }}
-                    /> */}
+                                // borderTopRightRadius:22,
+                                // borderTopLeftRadius:22
+                            }}
+                        >
+                            <MaterialCommunityIcon
+                                name={CommonIcons.search}
+                                color={'coral'}
+                                size={34}
+                            />
+                        </View>
+                    )
+                }}
 
-                </>
-            }
-
-
-
-            {
-                // (userRole && userRole == 3) &&
-                // <>
-                //     <BottomTabNavigator.Screen
-                //         name="HomeStack"
-                //         component={CustomerHomeStack}
-                //         options={{
-                //             tabBarLabel:tabbarTitle.home
-                //         }}
-                //     />
-                //     <BottomTabNavigator.Screen
-                //         name="CustomerJobList"
-                //         component={CustomerJobStack}
-
-                //         options={{
-                //             tabBarLabel: 'Tin đăng'
-                //         }}
-                //     />
-                //     <BottomTabNavigator.Screen
-                //         name="CustomerJobCreation"
-                //         component={CustomerJobCreationScreen}
-
-                //         options={{
-                //             tabBarIcon: ({ color, size }) => (
-                //                 <MaterialCommunityIcon style={{ position: 'absolute', bottom: 6 }}
-                //                     name={CommonIcons.historyJob}
-                //                     color={CommonColors.primary} size={44}
-                //                 />
-                //             ),
-                //             tabBarLabel: 'Tạo công việc',
-                //         }}
-                //     />
-                // </>
-            }
-
+            />
 
 
 

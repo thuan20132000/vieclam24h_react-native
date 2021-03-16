@@ -176,51 +176,112 @@ const AccountScreen = (props) => {
                 }}
                 renderContent={() =>
                     <>
-                         {
-                            userInformation?.candidate_info ?
-                                <List.Item
-                                    title="Hồ sơ tìm việc"
-                                    left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                    onPress={() => props.navigation.navigate('CandidateProfile')}
-                                /> :
-                                <List.Item
-                                    title=" Đăng ký tìm việc "
-                                    left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                    onPress={_onRegisterLookJob}
-                                />
+                        <View style={{
+                            borderColor: 'grey',
+                            margin: 12,
+                            backgroundColor: 'white',
+                            padding: 12,
+                            borderRadius: 12,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 6,
+                            },
+                            shadowOpacity: 0.37,
+                            shadowRadius: 7.49,
+
+                            elevation: 12,
+                        }}>
+                            <List.Item
+                                title="Thống Kê"
+                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                onPress={_onNavigateToStatistic}
+                                titleStyle={{
+                                    fontWeight: '700'
+                                }}
+                            />
+
+                            <List.Item
+                                title="Quản lý đăng tuyển"
+                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                onPress={() => console.warn('ds')}
+                                titleStyle={{
+                                    fontWeight: '700'
+                                }}
+                            />
+                            <List.Item
+                                title="Trợ Giúp"
+                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                onPress={() => console.warn('ds')}
+                                titleStyle={{
+                                    fontWeight: '700'
+                                }}
+                            />
+
+                        </View>
 
 
-                        }
+                        <View style={{
+                            margin: 12,
+                            borderColor: 'black',
+                            backgroundColor: 'white',
+                            padding: 12,
+                            borderRadius: 12,
+                            shadowColor: "#000",
+                            shadowOffset: {
+                                width: 0,
+                                height: 6,
+                            },
+                            shadowOpacity: 0.37,
+                            shadowRadius: 7.49,
 
-                        <List.Item
-                            title="Thống Kê"
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={_onNavigateToStatistic}
-                        />
+                            elevation: 12,
 
-                        <List.Item
-                            title="Thông Báo"
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={() => console.warn('ds')}
-                        />
-                        <List.Item
-                            title="Trợ Giúp"
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={() => console.warn('ds')}
-                        />
-                        <List.Item
-                            title="Đổi Mật Khẩu"
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={() => console.warn('ds')}
-                        />
-                        <List.Item
-                            title="Đã Lưu"
-                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                            onPress={() => console.warn('ds')}
-                        />
+                        }}>
+
+                            <List.Item
+                                title="Đăng tin"
+                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                onPress={() => props.navigation.navigate('PostJobStack')}
+                                titleStyle={{
+                                    fontWeight: '700'
+                                }}
+                            />
+                            <List.Item
+                                title="Ứng tuyển"
+                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                onPress={() => props.navigation.navigate('ApplyJobStack')}
+                                titleStyle={{
+                                    fontWeight: '700'
+                                }}
+                            />
+
+                            {
+                                userInformation?.candidate_info ?
+                                    <List.Item
+                                        title="Hồ sơ tìm việc"
+                                        left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                        onPress={() => props.navigation.navigate('CandidateProfile')}
+                                        titleStyle={{
+                                            fontWeight: '700'
+                                        }}
+                                    /> :
+                                    <List.Item
+                                        title=" Đăng ký tìm việc "
+                                        left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                        onPress={_onRegisterLookJob}
+                                        titleStyle={{
+                                            fontWeight: '700'
+                                        }}
+                                    />
 
 
-                       
+                            }
+
+                        </View>
+
+
+
                         <View style={styles.buttonLogoutWrap}>
                             <Button style={styles.buttonLogout}
                                 mode="contained"

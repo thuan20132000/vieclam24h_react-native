@@ -807,6 +807,45 @@ export const getCollaboratorJobs = async (user_id, status, per_page) => {
 
 
 
+export const _getApplyJobList = async (
+    candidate_id,
+    job_status
+) => {
+    try {
+        let url = `${api.api_v1}/candidate/${candidate_id}/jobs?apply_status=${job_status}`;
+        let dataFetch = await fetch(url);
+
+        if (!dataFetch.ok) {
+            console.warn(`ERROR AT FETCH JOB ${job_status} `);
+            return {
+                status: false,
+                message: "error",
+                data: []
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            status: true,
+            message: "success",
+            data: dataRes.data
+        }
+
+
+    } catch (error) {
+        return {
+            message: 'error ' + error,
+            status: false,
+            data: [],
+
+        }
+    }
+}
+
+
+
+
 /**
  * author:thuantruong
  * created_at:25/11/2020

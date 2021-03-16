@@ -28,8 +28,6 @@ import JobReducer from './store/reducer/jobReducer';
 
 import { Translate } from './locales/index';
 
-import { ApolloProvider } from 'react-apollo';
-import makeApolloClient from './utils/apollo';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -37,7 +35,7 @@ const rootReducer = combineReducers({
   authentication: AutheticationReducer,
   socketSubcribe: SocketSubcribe,
   language: LanguageReducer,
-  job:JobReducer
+  job: JobReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
@@ -76,44 +74,18 @@ const App = () => {
   };
 
 
-  const [client, setClient] = React.useState(null);
-  const fetchSession = async () => {
-    // fetch session
-    const session = await AsyncStorage.getItem('@todo-graphql:session');
-    const sessionObj = JSON.parse(session);
-
-    if (!sessionObj) {
-      setClient('client');
-      return;
-    }
-
-    const { token, id } = sessionObj;
-
-    const client = makeApolloClient(token);
-
-    setClient(client);
-
-  }
-
-  React.useEffect(() => {
-    fetchSession();
-  }, []);
-
 
   return (
 
-    <ApolloProvider
-      client={client || "client"}
-    >
-      <StoreProvider store={store}>
-        <PaperProvider
-          theme={theme}
-        >
-          <Router />
-        </PaperProvider>
-      </StoreProvider>
 
-    </ApolloProvider>
+    <StoreProvider store={store}>
+      <PaperProvider
+        theme={theme}
+      >
+        <Router />
+      </PaperProvider>
+    </StoreProvider>
+
   );
 };
 

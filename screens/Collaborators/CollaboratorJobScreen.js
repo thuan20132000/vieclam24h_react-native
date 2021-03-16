@@ -7,7 +7,9 @@ import JobItem from '../../components/Card/JobItem';
 import LoadingSimple from '../../components/Loading/LoadingSimple';
 import CommonColors from '../../constants/CommonColors';
 
-import { getCollaboratorJobs } from '../../utils/serverApi';
+import { _getApplyJobList } from '../../utils/serverApi';
+
+import {JobItemPendingCard} from '../../components/Card/CardJobItem';
 
 
 /**
@@ -21,8 +23,8 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-            let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 2);
-
+            let collaboratorJobRes = await _getApplyJobList("25","published");
+            console.warn('res: ',collaboratorJobRes);
             if (collaboratorJobRes.status) {
                 setCollaboratorJob(collaboratorJobRes.data);
             } else {
@@ -64,10 +66,16 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
         >
             {
                 collaboratorJobs.map((e, index) =>
-                    <JobItem
-                        key={index.toString()}
-                        job={e}
-                        isConfirmed={false}
+                    // <JobItem
+                    //     key={index.toString()}
+                    //     job={e}
+                    //     isConfirmed={false}
+                    // />
+                    <JobItemPendingCard
+                        jobTitle={e.job?.name}
+                        jobPrice={e.job?.suggestion_price}
+                        jobExpectedPrice={e?.expected_price}
+                        jobAddress={e?.job?.location?.province}
                     />
                 )
             }
@@ -87,7 +95,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     const [refreshing, setRefreshing] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 3);
+        let collaboratorJobRes = await _getApplyJobList(user_id, status, 3);
         if (collaboratorJobRes.status) {
             setCollaboratorJob(collaboratorJobRes.data);
         }
@@ -154,7 +162,7 @@ const ConfirmJob = ({ user_id, status = 4 }) => {
     const [refreshing, setRefreshing] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await getCollaboratorJobs(user_id, status, 3);
+        let collaboratorJobRes = await _getApplyJobList(user_id, status, 3);
         if (collaboratorJobRes.status) {
             setCollaboratorJob(collaboratorJobRes.data);
         }
