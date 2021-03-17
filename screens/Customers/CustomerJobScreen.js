@@ -9,7 +9,8 @@ import {
     getUserPendingJobs,
     getUserApprovedJobs,
     getUserConfirmedJobs,
-    deleteJobByAuthor
+    deleteJobByAuthor,
+    _getCreatedJobList
 } from '../../utils/serverApi';
 
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
@@ -19,6 +20,7 @@ import CardJobConfirm from '../../components/Card/CardJobConfirm';
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import LoadingSimple from '../../components/Loading/LoadingSimple';
+import { JobItemPendingCard } from '../../components/Card/CardJobItem';
 
 
 
@@ -139,7 +141,7 @@ const PendingJob = ({ navigation, userInformation }) => {
 
     const _getPendingJobsData = async () => {
         setIsLoading(true);
-        let pendingJobsRes = await getUserPendingJobs(userInformation.id);
+        let pendingJobsRes = await _getCreatedJobList(userInformation.id, "published");
         if (pendingJobsRes.status) {
             setPendingJobsData(pendingJobsRes.data);
         }
@@ -215,11 +217,11 @@ const PendingJob = ({ navigation, userInformation }) => {
             {
                 !isLoading ?
                     pendingJobsData.map((e, index) =>
-                        <CustomerJobItem
+                        <JobItemPendingCard
                             key={index.toString()}
-                            _onPress={() => _navigateToJobCollaboratorApplying(e)}
-                            item={e}
-                            _onDelete={() => _onDeleteJob(e)}
+                            jobTitle={e?.name}
+                            jobPrice={e?.suggestion_price}
+                            jobAddress={`${e?.location?.district} - ${e?.location?.province}`}
 
                         />
                     ) :
@@ -252,7 +254,7 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 
     const _getApprovedJobsData = async () => {
         setIsLoading(true);
-        let approvedJobsRes = await getUserApprovedJobs(userInformation.id);
+        let approvedJobsRes = await _getCreatedJobList(userInformation.id, "approved");
         if (approvedJobsRes.status) {
             setApprovedJobsData(approvedJobsRes.data);
         }
@@ -323,11 +325,18 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                 !isLoading ?
 
                     approvedJobsData.map((e, index) =>
-                        <CustomerJobItem
+                        // <CustomerJobItem
+                        //     key={index.toString()}
+                        //     _onPress={() => _navigateToJobCollaboratorApplying(e)}
+                        //     item={e}
+                        //     _onDelete={() => _onDeleteJob(e)}
+                        // />
+                        <JobItemPendingCard
                             key={index.toString()}
-                            _onPress={() => _navigateToJobCollaboratorApplying(e)}
-                            item={e}
-                            _onDelete={() => _onDeleteJob(e)}
+                            jobTitle={e?.name}
+                            jobPrice={e?.suggestion_price}
+                            jobAddress={`${e?.location?.district} - ${e?.location?.province}`}
+
                         />
                     ) :
                     <ActivityIndicator

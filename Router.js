@@ -576,6 +576,13 @@ function AccountStack() {
                     headerShown: false
                 }}
             />
+            <AccountStackNavigator.Screen
+                name="UserJobStack"
+                component={CustomerJobStack}
+                options={{
+                    headerShown:false
+                }}
+            />
         </AccountStackNavigator.Navigator>
     )
 }
@@ -682,7 +689,7 @@ function TabNavigator(props) {
                 component={SearchCollaboratorScreen}
                 options={{
                     tabBarLabel: "",
-                    tabBarVisible: false,
+                    tabBarVisible: true,
                     tabBarIcon: () => (
                         <View
                             style={{

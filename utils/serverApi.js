@@ -846,6 +846,44 @@ export const _getApplyJobList = async (
 
 
 
+export const _getCreatedJobList = async (
+    user_id,
+    job_status
+) => {
+    try {
+        let url = `${api.api_v1}/user/${user_id}/jobs?job_status=${job_status}`;
+        let dataFetch = await fetch(url);
+
+        if (!dataFetch.ok) {
+            console.warn(`ERROR AT FETCH CREATED JOB ${job_status}`);
+            return {
+                status: false,
+                message: "error",
+                data: []
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            status: true,
+            message: "success",
+            data: dataRes.data
+        }
+
+    } catch (error) {
+        return {
+            message: 'error ' + error,
+            status: false,
+            data: [],
+
+        }
+    }
+}
+
+
+
+
 /**
  * author:thuantruong
  * created_at:25/11/2020

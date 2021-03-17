@@ -204,7 +204,7 @@ const AccountScreen = (props) => {
                             <List.Item
                                 title="Quản lý đăng tuyển"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={() => console.warn('ds')}
+                                onPress={() => props.navigation.navigate("UserJobStack")}
                                 titleStyle={{
                                     fontWeight: '700'
                                 }}

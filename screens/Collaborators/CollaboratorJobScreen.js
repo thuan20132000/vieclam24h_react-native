@@ -9,7 +9,10 @@ import CommonColors from '../../constants/CommonColors';
 
 import { _getApplyJobList } from '../../utils/serverApi';
 
-import {JobItemPendingCard} from '../../components/Card/CardJobItem';
+import {JobItemApprovedCard, JobItemPendingCard} from '../../components/Card/CardJobItem';
+import RowInformation from '../../components/Row/RowInformation';
+import CommonIcons from '../../constants/CommonIcons';
+import { formatDateTime, formatTimeString } from '../../utils/helper';
 
 
 /**
@@ -23,8 +26,8 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-            let collaboratorJobRes = await _getApplyJobList("25","published");
-            console.warn('res: ',collaboratorJobRes);
+            let collaboratorJobRes = await _getApplyJobList(user_id,"published");
+            // console.warn('res: ',collaboratorJobRes);
             if (collaboratorJobRes.status) {
                 setCollaboratorJob(collaboratorJobRes.data);
             } else {
@@ -72,6 +75,7 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
                     //     isConfirmed={false}
                     // />
                     <JobItemPendingCard
+                        key={index.toString()}
                         jobTitle={e.job?.name}
                         jobPrice={e.job?.suggestion_price}
                         jobExpectedPrice={e?.expected_price}
@@ -95,7 +99,8 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     const [refreshing, setRefreshing] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await _getApplyJobList(user_id, status, 3);
+        let collaboratorJobRes = await _getApplyJobList(user_id,"approved");
+        console.warn('a: ',collaboratorJobRes);
         if (collaboratorJobRes.status) {
             setCollaboratorJob(collaboratorJobRes.data);
         }
@@ -143,11 +148,22 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
         >
             {
                 collaboratorJobs.map((e, index) =>
-                    <JobItem
-                        job={e}
-                        key={index.toString()}
-                        isConfirmed={false}
+                    // <JobItem
+                    //     job={e}
+                    //     key={index.toString()}
+                    //     isConfirmed={false}
 
+                    // />
+                    <JobItemApprovedCard
+                       jobTitle={e?.job?.name} 
+                       jobPrice={e?.job?.suggestion_price}
+                       jobAddress={e?.job?.location?.province}
+                       children={
+                           <RowInformation
+                                iconName={CommonIcons.close}
+                                label={formatDateTime(e?.updated_at)}
+                           />
+                       }
                     />
                 )
             }
@@ -162,7 +178,7 @@ const ConfirmJob = ({ user_id, status = 4 }) => {
     const [refreshing, setRefreshing] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await _getApplyJobList(user_id, status, 3);
+        let collaboratorJobRes = await _getApplyJobList(user_id, "confirmed", 3);
         if (collaboratorJobRes.status) {
             setCollaboratorJob(collaboratorJobRes.data);
         }
