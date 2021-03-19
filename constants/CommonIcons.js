@@ -47,5 +47,6 @@ export default {
     
     facebook:'facebook',
     calendarCheck:'calendar-check',
+    microphone:'microphone'
 
 }

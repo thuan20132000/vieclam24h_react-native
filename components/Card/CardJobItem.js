@@ -195,6 +195,8 @@ export const JobItemConfirmedCard = (
 
 
 
+
+
 export const JobItemDetailCard = ({
     image_list = [],
     title,

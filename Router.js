@@ -73,6 +73,7 @@ import IdentificationUpdateScreen from './screens/UpdateCandidate/Identification
 import ReviewUpdateScreen from './screens/UpdateCandidate/ReviewUpdateScreen';
 import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
 import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen';
+import SearchHomeScreen from './screens/Search/SearchHomeScreen';
 /**
  * Authentication Stack
  */
@@ -652,6 +653,33 @@ function AccountStack() {
 
 
 
+/**
+ * Search Stack
+ */
+
+const SearchStackNavigator = createStackNavigator();
+const SearchStack = () => {
+    return (
+        <SearchStackNavigator.Navigator>
+            <SearchStackNavigator.Screen
+                name="SearchHome"
+                component={SearchHomeScreen}
+                options={{
+                    headerShown: false
+                }}
+            />
+            <SearchStackNavigator.Screen
+                name="CandidateDetail"
+                component={CollaboratorDetailScreen}
+
+            />
+        </SearchStackNavigator.Navigator>
+    )
+}
+
+
+
+
 
 
 /**
@@ -748,7 +776,7 @@ function TabNavigator(props) {
             />
             <BottomTabNavigator.Screen
                 name="HomeSearch"
-                component={SearchCollaboratorScreen}
+                component={SearchStack}
                 options={{
                     tabBarLabel: "",
                     tabBarVisible: true,

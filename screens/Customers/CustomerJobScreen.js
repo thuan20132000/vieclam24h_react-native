@@ -376,6 +376,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
 
                     confirmedJobsData.map((e, index) =>
                         <JobItemConfirmedCard
+                            key={index.toString()}
                             jobTitle={e?.job?.name}
                             jobAddress={`${e?.job?.location?.district} - ${e?.job?.location?.province}`}
                             pressDisable={true}

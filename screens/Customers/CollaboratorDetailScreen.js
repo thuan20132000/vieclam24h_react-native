@@ -27,7 +27,7 @@ const CollaboratorDetailScreen = (props) => {
         let collaboratorData = await getCollaboratorDetail(collaborator_id);
         if (!collaboratorData.status) {
             Alert.alert("Alert", "Somwthing went wrong");
-            props.navigation.goBack();
+            // props.navigation.goBack();
             return;
         }
         setCollaborator(collaboratorData.data);
