@@ -5,7 +5,7 @@ import { JobItemDetailCard } from '../../components/Card/CardJobItem';
 import { CandidateCard } from '../../components/Card/CardUserItem';
 import CommonColors from '../../constants/CommonColors';
 import { formatCash } from '../../utils/helper';
-import { getJobDetail, modifyJobCandidate } from '../../utils/serverApi';
+import { getJobDetail, modifyJobCandidate, _approve_jobcandidate } from '../../utils/serverApi';
 
 
 const CustomerJobDetailScreen = (props) => {
@@ -43,18 +43,19 @@ const CustomerJobDetailScreen = (props) => {
 
 
     const _onApproveItem = async (jobcandidate) => {
-        console.warn('approved: ',jobcandidate);
+        
+        console.warn(jobcandidate);
 
-        let fetchRes = await modifyJobCandidate(jobcandidate.id,'approved',jobcandidate.candidate?.id);
+        let fetchRes = await _approve_jobcandidate(jobcandidate?.job?.author,jobcandidate.id);
 
+        console.warn(fetchRes);
         if(!fetchRes.status){
             console.warn('Something went wrong!');
             return;
         }
-
-        props.navigation.navigate("UserRecruitment",{
-            refresh:true
-        });
+        props.navigation.reset({
+            routes:[{name:'CustomerJobList'}]
+        })
         
     }
     

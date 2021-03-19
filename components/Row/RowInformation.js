@@ -23,6 +23,8 @@ const RowInformation = ({
                 flexDirection:'row',
                 alignItems:'center',
                 marginVertical:4,
+                alignContent:'center',
+                
             },
             containerStyle
 

@@ -192,15 +192,15 @@ const AccountScreen = (props) => {
 
                             elevation: 12,
                         }}>
+
                             <List.Item
-                                title="Thống Kê"
+                                title="Đăng tin"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={_onNavigateToStatistic}
+                                onPress={() => props.navigation.navigate('PostJobStack')}
                                 titleStyle={{
                                     fontWeight: '700'
                                 }}
                             />
-
                             <List.Item
                                 title="Quản lý đăng tuyển"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
@@ -239,18 +239,19 @@ const AccountScreen = (props) => {
 
                         }}>
 
+
                             <List.Item
-                                title="Đăng tin"
+                                title="Ứng tuyển"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={() => props.navigation.navigate('PostJobStack')}
+                                onPress={() => props.navigation.navigate('ApplyJobStack')}
                                 titleStyle={{
                                     fontWeight: '700'
                                 }}
                             />
                             <List.Item
-                                title="Ứng tuyển"
+                                title="Thống Kê"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={() => props.navigation.navigate('ApplyJobStack')}
+                                onPress={_onNavigateToStatistic}
                                 titleStyle={{
                                     fontWeight: '700'
                                 }}

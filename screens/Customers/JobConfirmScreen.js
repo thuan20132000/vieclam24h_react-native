@@ -2,10 +2,14 @@ import React,{useState} from 'react'
 import { StyleSheet, Text, TextInput, View,ScrollView, TouchableOpacity } from 'react-native'
 import ReviewSatisfationLevel from '../../components/Review/ReviewSatisfationLevel';
 import CommonColors from '../../constants/CommonColors';
+import { _confirm_jobcandidate } from '../../utils/serverApi';
+import {useSelector} from 'react-redux';
 
 const JobConfirmScreen = (props) => {
 
-    const data = props.route?.params;
+    const {data} = props.route?.params;
+
+    const {userInformation} = useSelector(state => state.authentication)
 
     const [confirmedJobInfo, setConfirmedJobInfo] = useState({
         confirmedPrice: '',
@@ -14,10 +18,20 @@ const JobConfirmScreen = (props) => {
     });
 
 
-    React.useEffect(() => {
-        console.warn(confirmedJobInfo)
-    }, [confirmedJobInfo])
+    // React.useEffect(() => {
+    //     console.warn(confirmedJobInfo)
+    // }, [confirmedJobInfo])
 
+
+
+    const _onConfirmJobCandidate = async () => {
+        // console.warn(data);
+        // console.warn('auth: ',userInformation.id);
+        // console.warn('candidate_id: ',data);
+
+        let fetchRes = await _confirm_jobcandidate(userInformation.id,data.id,confirmedJobInfo.satisfationLevel,confirmedJobInfo.message,confirmedJobInfo.confirmedPrice);
+        console.warn("res: ",fetchRes);
+    }
 
     return (
         <View>
@@ -63,7 +77,7 @@ const JobConfirmScreen = (props) => {
                 </View>
 
                 <TouchableOpacity style={[styles.buttonSubmit, { backgroundColor: CommonColors.primary, width: 180, alignSelf: 'center' }]}
-                    // onPress={()}
+                    onPress={_onConfirmJobCandidate}
                 >
                     <Text style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: '500' }}>
                         Xác Nhận

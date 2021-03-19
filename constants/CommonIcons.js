@@ -46,5 +46,6 @@ export default {
     cameraplus:'camera-plus-outline',
     
     facebook:'facebook',
+    calendarCheck:'calendar-check',
 
 }

@@ -19,7 +19,7 @@ const JobItemCardBase = ({
     containerStyle,
     onPressOpen,
     onPressDelete,
-    pressDisable=false
+    pressDisable = false
 }) => {
     return (
         <View
@@ -49,28 +49,36 @@ const JobItemCardBase = ({
                         iconName={CommonIcons.account}
                         value={jobTitle}
                     />
-                    <View style={{
-                        display: 'flex',
-                        flexDirection: 'row'
-                    }}>
-                        <RowInformation
-                            iconName={CommonIcons.tagPrice}
-                            label={jobPrice}
-                            labelStyle={{
-                                color: 'red',
-                                fontWeight: '700'
-                            }}
-                        />
-                        <RowInformation
-                            iconName={CommonIcons.arrowRight}
-                            label={jobExpectedPrice}
-                            labelStyle={{
-                                color: 'blue',
-                                fontWeight: '600',
-                            }}
-                        />
+                    {
+                        jobPrice &&
+                        <View style={{
+                            display: 'flex',
+                            flexDirection: 'row'
+                        }}>
+                            <RowInformation
+                                iconName={CommonIcons.tagPrice}
+                                label={jobPrice}
+                                labelStyle={{
+                                    color: 'red',
+                                    fontWeight: '700'
+                                }}
+                            />
+                            {
+                                jobExpectedPrice &&
+                                <RowInformation
+                                    iconName={CommonIcons.arrowRight}
+                                    label={jobPrice}
+                                    labelStyle={{
+                                        color: 'blue',
+                                        fontWeight: '600',
+                                    }}
+                                />
 
-                    </View>
+                            }
+
+                        </View>
+
+                    }
                     <RowInformation
                         iconName={CommonIcons.mapMarker}
                         label={jobAddress}
@@ -140,7 +148,8 @@ export const JobItemApprovedCard = ({
     jobPrice,
     jobAddress,
     children,
-    pressDisable
+    pressDisable,
+    expectedPrice
 }) => {
     return (
         <>
@@ -151,6 +160,7 @@ export const JobItemApprovedCard = ({
                 canRemove={false}
                 children={children}
                 pressDisable={pressDisable}
+                jobExpectedPrice={expectedPrice}
             />
 
         </>
@@ -159,11 +169,26 @@ export const JobItemApprovedCard = ({
 
 
 
-export const JobItemConfirmedCard = () => {
+export const JobItemConfirmedCard = (
+    {
+        jobTitle,
+        jobPrice,
+        jobAddress,
+        children,
+        pressDisable,
+        expectedPrice
+    }
+) => {
     return (
-        <View>
-            <Text>Confirmed Jobs</Text>
-        </View>
+        <JobItemCardBase
+            jobTitle={jobTitle}
+            jobPrice={jobPrice}
+            jobAddress={jobAddress}
+            canRemove={false}
+            children={children}
+            pressDisable={pressDisable}
+            jobExpectedPrice={expectedPrice}
+        />
     )
 }
 
@@ -180,12 +205,12 @@ export const JobItemDetailCard = ({
     return (
         <View>
 
-            <View 
+            <View
                 style={{
-                    display:'flex',
-                    flexDirection:'row',
-                    justifyContent:'center',
-                    flexWrap:'wrap'
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    flexWrap: 'wrap'
                 }}
             >
                 {
@@ -194,7 +219,7 @@ export const JobItemDetailCard = ({
                     image_list.map((e, index) =>
                         <TouchableOpacity
                             style={{
-                                margin:6
+                                margin: 6
                             }}
                             key={index.toString()}
                         >
@@ -213,7 +238,7 @@ export const JobItemDetailCard = ({
 
             </View>
 
-            <JobItemCardBase 
+            <JobItemCardBase
                 jobTitle={title}
                 jobAddress={address}
                 jobPrice={price}

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Dimensions, Image, RefreshControl, StyleSheet, Text, View } from 'react-native'
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
+import { Alert, Dimensions, Image, RefreshControl, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
 import { ActivityIndicator, Badge, Caption, IconButton, Paragraph, Title } from 'react-native-paper';
 import CardHorizontal from '../../components/Card/CardHorizontal';
 import { useSelector } from 'react-redux';
@@ -20,105 +19,12 @@ import CardJobConfirm from '../../components/Card/CardJobConfirm';
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import LoadingSimple from '../../components/Loading/LoadingSimple';
-import { JobItemPendingCard } from '../../components/Card/CardJobItem';
+import { JobItemApprovedCard, JobItemConfirmedCard, JobItemPendingCard } from '../../components/Card/CardJobItem';
+import { CandidateCard } from '../../components/Card/CardUserItem';
+import ButtonIcon from '../../components/Button/ButtonIcon';
+import RowInformation from '../../components/Row/RowInformation';
 
-
-
-const CustomerJobItem = ({ _onPress, item, _onDelete }) => {
-
-
-    // const _onPress = () => {
-    //     navigation.navigate('JobCollaborator');
-    // }
-    const [jobItem, setJobItem] = useState({
-        title: '',
-        description: '',
-        suggestion_price: '',
-        created_at: '',
-        candidateNumber: ''
-    });
-
-    const [isDelete, setIsDelete] = useState(false);
-
-
-
-    useEffect(() => {
-        setJobItem({
-            title: item?.attributes.name,
-            description: item?.attributes.description,
-            suggestion_price: item?.attributes.suggestion_price,
-            craeted_at: item?.attributes.created_at,
-            candidateNumber: item?.relationships?.candidates.length
-        });
-    }, [])
-
-    return (
-
-        <View>
-            <TouchableOpacity style={[styles.itemContainer, { zIndex: -1 }]}
-                onPress={_onPress}
-            >
-                <Text style={{
-                    fontSize: 16,
-                    color: 'black',
-                    fontWeight: '600',
-                    width: deviceWidth / 1.5
-
-                }}>
-                    {jobItem.title}
-                </Text>
-                <Paragraph>{jobItem.description}</Paragraph>
-                <View>
-                    <Text>Giá đưa ra: <Text style={{ color: 'red' }}>{formatCash(jobItem.suggestion_price)} vnđ</Text></Text>
-                </View>
-
-
-                <View style={[{ display: 'flex', flexDirection: 'row' }]}>
-                    {
-                        item.attributes?.images.map((e, index) =>
-                            <Image style={{
-                                width: 60,
-                                height: 60,
-                                margin: 4
-                            }}
-                                source={{
-                                    uri: e.image_url
-                                }}
-                            />
-                        )
-                    }
-                </View>
-                <Caption>Đăng lúc: {formatDateTime(item?.attributes?.created_at)}</Caption>
-
-
-                <View style={[{ position: 'absolute', right: 0, backgroundColor: CommonColors.primary, padding: 6 }]}>
-                    <Text style={[{ color: 'white', fontStyle: 'italic' }]}>
-                        Số người ứng tuyển <Text style={{ color: 'red', backgroundColor: 'white', fontWeight: '500', fontSize: 18 }}>{jobItem.candidateNumber}</Text>
-                    </Text>
-                </View>
-
-
-            </TouchableOpacity>
-            <IconButton style={{
-                position: 'absolute',
-                bottom: 0,
-                right: 0,
-                width: 100,
-                zIndex: 999
-
-            }}
-                icon={CommonIcons.removeTrash}
-                color={`red`}
-                size={26}
-                onPress={_onDelete}
-                disabled={isDelete}
-            />
-        </View>
-
-
-
-    )
-}
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
 /**
@@ -188,6 +94,14 @@ const PendingJob = ({ navigation, userInformation }) => {
     }
 
 
+    const _onNavigateToCustomerJobDetail = (job) => {
+        // console.warn(job);
+        navigation.navigate('CustomerJobDetail', {
+            data: job
+        })
+    }
+
+
     if (isLoading) {
         return (
             <View
@@ -222,6 +136,7 @@ const PendingJob = ({ navigation, userInformation }) => {
                             jobTitle={e?.name}
                             jobPrice={e?.suggestion_price}
                             jobAddress={`${e?.location?.district} - ${e?.location?.province}`}
+                            onPressOpen={() => _onNavigateToCustomerJobDetail(e)}
 
                         />
                     ) :
@@ -298,6 +213,15 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 
 
 
+    const _onConfirmJob = async (job) => {
+        navigation.navigate('JobConfirm', {
+            data: job
+        });
+
+    }
+
+
+
     if (isLoading) {
         return (
             <View
@@ -322,28 +246,53 @@ const ApprovedJob = ({ navigation, userInformation }) => {
             }
         >
             {
-                !isLoading ?
 
-                    approvedJobsData.map((e, index) =>
-                        // <CustomerJobItem
-                        //     key={index.toString()}
-                        //     _onPress={() => _navigateToJobCollaboratorApplying(e)}
-                        //     item={e}
-                        //     _onDelete={() => _onDeleteJob(e)}
-                        // />
-                        <JobItemPendingCard
-                            key={index.toString()}
-                            jobTitle={e?.name}
-                            jobPrice={e?.suggestion_price}
-                            jobAddress={`${e?.location?.district} - ${e?.location?.province}`}
+                approvedJobsData.length > 0 &&
 
-                        />
-                    ) :
-                    <ActivityIndicator
-                        size={'small'}
+                approvedJobsData.map((e, index) =>
 
+                    <JobItemApprovedCard
+                        key={index.toString()}
+                        jobTitle={e?.job?.name}
+                        jobPrice={`${formatCash(e?.job?.suggestion_price)} vnđ`}
+                        jobAddress={`${e?.job?.location?.district} - ${e?.job?.location?.province}`}
+                        expectedPrice={`${formatCash(e?.expected_price)} vnđ`}
+                        pressDisable={true}
+
+                        children={
+                            <>
+                                <CandidateCard
+                                    name={e?.candidate?.username}
+                                    phone={e?.candidate?.phone || '097723213'}
+                                    message={e?.descriptions}
+
+                                    containerStyle={{
+
+                                    }}
+                                />
+                                <View
+                                    style={[{
+                                        display: 'flex',
+                                        flexDirection: 'row',
+                                        justifyContent: 'space-around',
+
+                                    }]}
+                                >
+                                    <ButtonIcon
+                                        title={"Huỷ"}
+                                        iconName={CommonIcons.removeTrash}
+                                    />
+                                    <ButtonIcon
+                                        title={"Xác nhận"}
+                                        iconName={CommonIcons.checkboxCircleMark}
+                                        onPress={() => _onConfirmJob(e)}
+                                    />
+
+                                </View>
+                            </>
+                        }
                     />
-            }
+                )}
         </ScrollView>
     )
 }
@@ -366,10 +315,17 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
 
 
     const _getConfirmedJobsData = async () => {
+        // setIsLoading(true);
+        // let approvedJobsRes = await getUserConfirmedJobs(userInformation.id);
+        // if (approvedJobsRes.status) {
+        //     setConfirmedJobsData(approvedJobsRes.data);
+        // }
+        // setIsLoading(false);
         setIsLoading(true);
-        let approvedJobsRes = await getUserConfirmedJobs(userInformation.id);
-        if (approvedJobsRes.status) {
-            setConfirmedJobsData(approvedJobsRes.data);
+        let confirmedJobRes = await _getCreatedJobList(userInformation.id, "confirmed");
+        if (confirmedJobRes.status) {
+            console.warn('confirmed job: ', confirmedJobRes);
+            setConfirmedJobsData(confirmedJobRes.data);
         }
         setIsLoading(false);
     }
@@ -419,10 +375,93 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                 !isLoading ?
 
                     confirmedJobsData.map((e, index) =>
-                        <CardJobConfirm
-                            key={index.toString()}
-                            item={e}
+                        <JobItemConfirmedCard
+                            jobTitle={e?.job?.name}
+                            jobAddress={`${e?.job?.location?.district} - ${e?.job?.location?.province}`}
+                            pressDisable={true}
+                            children={
+                                <>
+                                    <RowInformation
+                                        iconName={CommonIcons.messages}
+                                        label={`Đánh giá :`}
+                                        value={e?.reviews[0]?.review_content}
+                                        containerStyle={{
+                                            alignItems: 'center',
 
+                                        }}
+                                        labelStyle={{
+                                            fontStyle: 'italic'
+                                        }}
+                                    />
+                                    <RowInformation
+                                        iconName={CommonIcons.calendarCheck}
+                                        value={formatDateTime(e?.created_at || '')}
+                                        containerStyle={{
+                                            alignItems: 'center',
+
+                                        }}
+                                        labelStyle={{
+                                            fontStyle: 'italic'
+                                        }}
+                                    />
+                                    <View style={{
+                                        display: 'flex',
+                                        flexDirection: 'row'
+                                    }}>
+                                        {
+                                            Array(e?.reviews[0]?.review_level).fill({}).map((e, index) =>
+                                                <MaterialCommunityIcon
+                                                    name={CommonIcons.star}
+                                                    color={'gold'}
+                                                    size={18}
+                                                />
+
+                                            )
+                                        }
+                                    </View>
+                                    <RowInformation
+                                        iconName={CommonIcons.tagPrice}
+                                        label={`${formatCash(e?.confirmed_price || 0)} vnđ`}
+                                        labelStyle={{
+                                            color: 'red',
+                                            fontSize: 18,
+                                            fontWeight: '700'
+                                        }}
+                                    />
+
+                                    <CandidateCard
+                                        name={e?.candidate?.username}
+                                        phone={e?.candidate?.phone || '097723213'}
+                                        message={e?.descriptions}
+
+                                        containerStyle={{
+
+                                        }}
+                                    />
+                                
+                                     
+                                        <ButtonIcon
+                                            title={"Đánh giá lại"}
+                                            iconColor={'white'}
+                                            iconName={CommonIcons.checkboxCircleMark}
+                                            onPress={() => console.warn('review')}
+                                            titleStyle={{
+                                                fontWeight:'700',
+                                                fontSize:12,
+                                                color:'white'
+                                            }}
+                                            containerStyle={{
+                                                position:'absolute',
+                                                bottom:0,
+                                                right:0,
+                                                backgroundColor:'orangered',
+                                                padding:4,
+                                                borderRadius:6
+                                            }}
+                                        />
+
+                                </>
+                            }
                         />
                     ) :
                     <ActivityIndicator

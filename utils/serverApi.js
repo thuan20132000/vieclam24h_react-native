@@ -553,7 +553,6 @@ export const getJobDetail = async (id) => {
 
 
     try {
-        let url = serverConfig.url;
         let dataFetch = await fetch(`${api.api_v1}/jobs/${id}`);
 
         if (!dataFetch.ok) {
@@ -561,14 +560,23 @@ export const getJobDetail = async (id) => {
 
             return {
                 data: null,
+                status: false,
                 message: 'error'
             }
         }
         let dataRes = await dataFetch.json();
 
-        // console.warn('data res: ', dataRes);
+        if (!dataRes.status) {
+            return {
+                status: true,
+                data: false,
+                message: "false"
+            }
+        }
+
 
         return {
+            status: true,
             data: dataRes.data,
             message: 'success'
         }
@@ -576,6 +584,7 @@ export const getJobDetail = async (id) => {
 
     } catch (error) {
         return {
+            status: false,
             data: null,
             message: 'error ' + error
         }
@@ -882,6 +891,125 @@ export const _getCreatedJobList = async (
 }
 
 
+
+
+
+
+
+export const _approve_jobcandidate = async (
+    user_id,
+    jobcandidate_id,
+) => {
+    try {
+
+        let formdata = new FormData();
+        formdata.append("jobcandidate_id", jobcandidate_id);
+        formdata.append("status", "approved");
+
+
+        let url = `${api.api_v1}/user/${user_id}/jobcandidate`;
+        let dataFetch = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            method: "PUT",
+            body: formdata,
+        });
+
+        if (!dataFetch.ok) {
+            console.warn(`ERROR AT FETCH CREATED JOB ${status}`);
+            return {
+                status: false,
+                message: "error",
+                data: []
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        return {
+            status: true,
+            message: "success",
+            data: dataRes.data
+        }
+
+    } catch (error) {
+        return {
+            message: 'error ' + error,
+            status: false,
+            data: [],
+
+        }
+    }
+}
+
+
+
+
+export const _confirm_jobcandidate = async (
+    user_id,
+    jobcandidate_id,
+    review_level,
+    review_content,
+    confirmed_price,
+) => {
+    try {
+
+        let formdata = new FormData();
+        formdata.append("jobcandidate_id", jobcandidate_id);
+        formdata.append("status", "confirmed");
+        formdata.append("review_level", review_level);
+        formdata.append("review_content", review_content);
+        formdata.append("confirmed_price", confirmed_price);
+
+
+
+        let url = `${api.api_v1}/user/${user_id}/jobcandidate`;
+        let dataFetch = await fetch(url, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data',
+            },
+            method: "PUT",
+            body: formdata,
+        });
+
+        if (!dataFetch.ok) {
+            console.warn(`ERROR AT FETCH CREATED JOB ${status}`);
+            return {
+                status: false,
+                message: "error",
+                data: []
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                status: false,
+                message: `error : ${dataRes.data}`,
+                data: []
+            }
+        }
+
+        return {
+            status: true,
+            message: "success",
+            data: dataRes
+        }
+
+    } catch (error) {
+        return {
+            message: 'error ' + error,
+            status: false,
+            data: [],
+
+        }
+    }
+
+}
 
 
 /**
@@ -1293,6 +1421,8 @@ export const getUserPendingJobs = async (author_id) => {
         }
     }
 }
+
+
 
 
 

@@ -7,7 +7,9 @@ const ButtonIcon = ({
     containerStyle,
     title,
     iconName,
-    onPress
+    iconColor,
+    onPress,
+    titleStyle,
 }) => {
     return (
         <TouchableOpacity
@@ -18,9 +20,9 @@ const ButtonIcon = ({
             <MaterialCommunityIcon
                 name={ iconName || CommonIcons.cameraplus}
                 size={24}
-                color={'coral'}
+                color={iconColor || 'coral'}
             />
-            <Text style={[styles.text]}>
+            <Text style={[styles.text,titleStyle]}>
                 {title}
             </Text>
         </TouchableOpacity>

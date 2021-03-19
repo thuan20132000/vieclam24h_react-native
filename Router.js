@@ -71,7 +71,8 @@ import CategoryUpdateScreen from './screens/UpdateCandidate/CategoryUpdateScreen
 import LocationUpdateScreen from './screens/UpdateCandidate/LocationUpdateScreen';
 import IdentificationUpdateScreen from './screens/UpdateCandidate/IdentificationUpdateScreen';
 import ReviewUpdateScreen from './screens/UpdateCandidate/ReviewUpdateScreen';
-
+import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
+import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen';
 /**
  * Authentication Stack
  */
@@ -213,9 +214,60 @@ function ChatStack() {
  * Customer's Job Stack
  */
 const CustomerJobStackNavigator = createStackNavigator();
-function CustomerJobStack() {
+function CustomerJobStack(props) {
+
+    const configOpen = {
+        animation: 'spring',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'timing',
+        config: {
+            duration: 200,
+            easing: Easing.linear
+        },
+    };
+
+
+    React.useLayoutEffect(() => {
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false,
+
+        });
+
+        return () => {
+            props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: true,
+
+            });
+        }
+    }, []);
+
+
     return (
-        <CustomerJobStackNavigator.Navigator>
+        <CustomerJobStackNavigator.Navigator
+            screenOptions={{
+                title: <TouchableOpacity onPress={() => props.navigation.goBack()}><Text>Trở lại</Text></TouchableOpacity>,
+                gestureEnabled: true,
+                gestureDirection: 'horizontal',
+                animationEnabled: true,
+                cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                },
+
+
+            }}
+        >
             <CustomerJobStackNavigator.Screen
                 name="CustomerJobList"
                 component={CustomerJobScreen}
@@ -231,6 +283,16 @@ function CustomerJobStack() {
                 name="CollaboratorDetail"
                 component={CollaboratorDetailScreen}
             />
+            <CustomerHomeStackNavigator.Screen
+                name="CustomerJobDetail"
+                component={CustomerJobDetailScreen}
+            />
+            <CustomerHomeStackNavigator.Screen
+                name="JobConfirm"
+                component={JobConfirmScreen}
+
+            />
+
 
         </CustomerJobStackNavigator.Navigator>
     )
@@ -580,7 +642,7 @@ function AccountStack() {
                 name="UserJobStack"
                 component={CustomerJobStack}
                 options={{
-                    headerShown:false
+                    headerShown: false,
                 }}
             />
         </AccountStackNavigator.Navigator>
@@ -685,7 +747,7 @@ function TabNavigator(props) {
 
             />
             <BottomTabNavigator.Screen
-                name="PostJob"
+                name="HomeSearch"
                 component={SearchCollaboratorScreen}
                 options={{
                     tabBarLabel: "",
@@ -694,7 +756,6 @@ function TabNavigator(props) {
                         <View
                             style={{
                                 backgroundColor: 'white',
-                                padding: 12,
                                 borderRadius: 12,
                                 shadowColor: "#000",
                                 shadowOffset: {
@@ -705,6 +766,9 @@ function TabNavigator(props) {
                                 shadowRadius: 7.49,
 
                                 elevation: 12,
+                                top: 12,
+                                padding: 12,
+                                marginTop: 2
 
                                 // borderTopRightRadius:22,
                                 // borderTopLeftRadius:22
@@ -716,7 +780,7 @@ function TabNavigator(props) {
                                 size={34}
                             />
                         </View>
-                    )
+                    ),
                 }}
 
             />
@@ -734,7 +798,8 @@ function TabNavigator(props) {
                 name="Accounts"
                 component={AccountStack}
                 options={{
-                    tabBarLabel: tabbarTitle.account
+                    tabBarLabel: tabbarTitle.account,
+
                 }}
             />
         </BottomTabNavigator.Navigator>

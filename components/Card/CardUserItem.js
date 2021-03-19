@@ -135,15 +135,7 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         backgroundColor: 'white',
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 5,
-        },
-        shadowOpacity: 0.36,
-        shadowRadius: 6.68,
 
-        elevation: 11,
     },
     cardButton: {
         padding: 12,
