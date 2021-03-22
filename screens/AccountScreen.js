@@ -130,6 +130,7 @@ const AccountScreen = (props) => {
 
     useLayoutEffect(() => {
 
+        console.warn(userInformation?.candidate_info);
 
         props.navigation.setOptions({
             headerShown: false
@@ -240,33 +241,38 @@ const AccountScreen = (props) => {
                         }}>
 
 
-                            <List.Item
-                                title="Ứng tuyển"
-                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={() => props.navigation.navigate('ApplyJobStack')}
-                                titleStyle={{
-                                    fontWeight: '700'
-                                }}
-                            />
-                            <List.Item
-                                title="Thống Kê"
-                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={_onNavigateToStatistic}
-                                titleStyle={{
-                                    fontWeight: '700'
-                                }}
-                            />
+
 
                             {
                                 userInformation?.candidate_info ?
-                                    <List.Item
-                                        title="Hồ sơ tìm việc"
-                                        left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                        onPress={() => props.navigation.navigate('CandidateProfile')}
-                                        titleStyle={{
-                                            fontWeight: '700'
-                                        }}
-                                    /> :
+                                    <>
+                                        <List.Item
+                                            title="Thống Kê"
+                                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                            onPress={_onNavigateToStatistic}
+                                            titleStyle={{
+                                                fontWeight: '700'
+                                            }}
+                                        />
+
+                                        <List.Item
+                                            title="Ứng tuyển"
+                                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                            onPress={() => props.navigation.navigate('ApplyJobStack')}
+                                            titleStyle={{
+                                                fontWeight: '700'
+                                            }}
+                                        />
+                                        <List.Item
+                                            title="Hồ sơ tìm việc"
+                                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                            onPress={() => props.navigation.navigate('CandidateProfile')}
+                                            titleStyle={{
+                                                fontWeight: '700'
+                                            }}
+                                        />
+                                    </>
+                                    :
                                     <List.Item
                                         title=" Đăng ký tìm việc "
                                         left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}

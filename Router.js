@@ -74,6 +74,7 @@ import ReviewUpdateScreen from './screens/UpdateCandidate/ReviewUpdateScreen';
 import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
 import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen';
 import SearchHomeScreen from './screens/Search/SearchHomeScreen';
+import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
 /**
  * Authentication Stack
  */
@@ -659,8 +660,42 @@ function AccountStack() {
 
 const SearchStackNavigator = createStackNavigator();
 const SearchStack = () => {
+
+    const configOpen = {
+        animation: 'spring',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'timing',
+        config: {
+            duration: 200,
+            easing: Easing.linear
+        },
+    };
+
+
     return (
-        <SearchStackNavigator.Navigator>
+        <SearchStackNavigator.Navigator
+            screenOptions={{
+                gestureEnabled: false,
+                animationEnabled: true,
+                swipeEnabled: false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                }
+
+            }}
+        >
             <SearchStackNavigator.Screen
                 name="SearchHome"
                 component={SearchHomeScreen}
@@ -671,6 +706,17 @@ const SearchStack = () => {
             <SearchStackNavigator.Screen
                 name="CandidateDetail"
                 component={CollaboratorDetailScreen}
+                options={{
+                    title: "Thông tin"
+                }}
+
+            />
+            <SearchStackNavigator.Screen
+                name="CandidateReview"
+                component={CandidateReviewsScreen}
+                options={{
+                    title: "Đánh giá"
+                }}
 
             />
         </SearchStackNavigator.Navigator>

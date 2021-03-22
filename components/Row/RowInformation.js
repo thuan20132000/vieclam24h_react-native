@@ -14,7 +14,8 @@ const RowInformation = ({
     value,
     valueStyle,
     containerStyle,
-    children
+    children,
+    iconStyle
 }) => {
     return (
         <View style={[
@@ -33,9 +34,14 @@ const RowInformation = ({
                 name={iconName || CommonIcons.chatMessage}
                 size={iconSize || 18}
                 color={iconColor || CommonColors.btnSubmit}
-                style={{
-                    marginHorizontal:6
-                }}
+                style={[
+                    {
+                        marginHorizontal:6
+
+                    },
+                    iconStyle
+                ]}
+
             />
             <Text
                 style={

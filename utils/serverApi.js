@@ -1012,6 +1012,108 @@ export const _confirm_jobcandidate = async (
 }
 
 
+
+
+export const _searchCandidate = async (
+    user_id,
+    query = ''
+) => {
+
+    
+    try {
+        console.warn(query.toLocaleLowerCase());
+        let url = `${api.api_v1}/user/${user_id}/search-candidate?query=${query.toLocaleLowerCase()}`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT SEARCH JOB');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        console.warn('res: ',dataRes);
+
+        if(!dataRes.status){
+            return {
+                data: [],
+                message:dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+
+
+
+export const _getCandidateDetail = async (
+    user_id,
+) => {
+
+    
+    try {
+        let url = `${api.api_v1}/candidate/${user_id}/detail`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT GET CANDIDATE DETAIL');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if(!dataRes.status){
+            return {
+                data: [],
+                message:dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+
+
+
+
 /**
  * author:thuantruong
  * created_at:25/11/2020

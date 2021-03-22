@@ -9,7 +9,9 @@ import RowInformation from '../Row/RowInformation'
 
 const CardCandidateItemBase = ({
     onDetailPress,
-    onLikePress
+    onLikePress,
+    descriptions,
+    address
 }) => {
     return (
         <View
@@ -27,7 +29,7 @@ const CardCandidateItemBase = ({
                 }}
                 onPress={onDetailPress}
             >
-                <Text>Nhận xây sửa nhà các loại,sắt, cơ khí, điện nước...</Text>
+                <Text>{descriptions || ''}</Text>
 
 
                 <View
@@ -59,7 +61,7 @@ const CardCandidateItemBase = ({
                 <RowInformation
                     iconName={CommonIcons.mapMarker}
                     iconColor={'coral'}
-                    value={'Liên Chiểu - Đà Nẵng'}
+                    value={address || ''}
 
 
                 />

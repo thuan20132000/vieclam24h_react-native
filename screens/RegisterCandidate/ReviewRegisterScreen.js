@@ -26,7 +26,7 @@ const ReviewRegisterScreen = (props) => {
 
 
     const _onFinishReview = async () => {
-
+        console.warn('ds')
         setIsLoading(true);
         let register_candidate_res = await register_candidate(
             userAuth.userInformation?.id,

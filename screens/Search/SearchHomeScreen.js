@@ -1,13 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, TextInput, ScrollView, ActivityIndicator } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import CardCandidateItemBase from '../../components/Card/CardCandidateItem'
 import CommonIcons from '../../constants/CommonIcons'
+import { _searchCandidate } from '../../utils/serverApi'
+import {useSelector} from 'react-redux'
 
 const SearchHomeScreen = (props) => {
     const _refSearchInput = useRef();
     const [searchQuery, setSearchQuery] = useState('');
     const onChangeSearch = query => setSearchQuery(query);
+    const { userInformation } = useSelector(state => state.authentication);
 
     useEffect(() => {
         _refSearchInput.current.focus();
@@ -32,15 +35,17 @@ const SearchHomeScreen = (props) => {
 
     }
 
-
+    const [isLoading,setIsLoading] = useState(false);
     const _onGetDataSearch = async (value) => {
-        let searchRes = await searchCandidates(value, districtSearch);
-        // console.warn(searchRes);
+        setIsLoading(true);
+        let searchRes = await _searchCandidate(userInformation.id,value);
+        // console.warn(searchRes.data);
         if (searchRes.status && searchRes.data) {
-            setSearchData(searchRes.data);
+            setSearchData(searchRes.data?.data);
         } else {
             setSearchData([]);
         }
+        setIsLoading(false);
     }
 
 
@@ -54,8 +59,10 @@ const SearchHomeScreen = (props) => {
     // }, [districtSearch])
 
     const _onNavigateToCandidateDetail = (candidate) => {
+        // console.warn(candidate);
+        // return;
         props.navigation.navigate('CandidateDetail',{
-            collaborator_id:1
+            candidate:candidate
         });
     }
 
@@ -87,28 +94,25 @@ const SearchHomeScreen = (props) => {
 
             {/* Search Results */}
             <ScrollView>
-                <CardCandidateItemBase 
-                    onDetailPress={()=>_onNavigateToCandidateDetail('candidate')}
-                />
-                <CardCandidateItemBase />
-                <CardCandidateItemBase />
-                <CardCandidateItemBase />
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
-                <CardCandidateItemBase />
-
+                {
+                    isLoading &&
+                    <ActivityIndicator
+                        size={'large'}
+                        color={'coral'}
+                    />
+                }
+                {
+                    searchData &&
+                    searchData.map((e,index) =>
+                    <CardCandidateItemBase 
+                        key={index.toString()}
+                        onDetailPress={()=>_onNavigateToCandidateDetail(e)}
+                        address={`${e.location?.district} - ${e.location?.province}`}
+                        descriptions={e.descriptions}
+                    />
+                    
+                    )
+                }
             </ScrollView>
 
             <Text></Text>

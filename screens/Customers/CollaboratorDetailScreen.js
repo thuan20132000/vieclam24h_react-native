@@ -1,60 +1,91 @@
 import React, { useState, useEffect } from 'react'
-import { Alert, StyleSheet, Text, View, Image } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { Alert, Linking, StyleSheet, Text, View, Image, ActivityIndicator } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Avatar, Caption, Chip, IconButton } from 'react-native-paper'
 import CardReview from '../../components/Card/CardReview'
 import ReviewStar from '../../components/Review/ReviewStar'
 import CommonIcons from '../../constants/CommonIcons'
 import CommonImages from '../../constants/CommonImages'
 import { useSelector } from 'react-redux';
+import server_url from '../../serverConfig';
 
-
-
-import { getCollaboratorDetail,checkToConnectToUserChat } from '../../utils/serverApi';
+import {  _getCandidateDetail } from '../../utils/serverApi';
 import CommonColors from '../../constants/CommonColors'
+import RowInformation from '../../components/Row/RowInformation'
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import CardReviewCandidate from '../../components/Review/CardReviewCandidate'
 
 const CollaboratorDetailScreen = (props) => {
     const { userInformation } = useSelector(state => state.authentication);
 
 
-    const occupationsArr = Array(5).fill({});
     const [isFavorite, setIsFavorite] = useState(false);
-    const { collaborator_id } = props.route?.params;
+    const { candidate } = props.route?.params;
     const [collaborator, setCollaborator] = useState();
-    const [collaboratorOccupations, setCollaboratorOccupations] = useState([]);
+    const [candidateInfo, setCandidateInfo] = useState('');
 
-    const _getCollaboratorDetail = async () => {
-        let collaboratorData = await getCollaboratorDetail(collaborator_id);
-        if (!collaboratorData.status) {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const onGetCandidateDetail = async () => {
+        setIsLoading(true);
+        let dataRes = await _getCandidateDetail(candidate.user);
+        console.warn(dataRes);
+
+        if (!dataRes.status) {
             Alert.alert("Alert", "Somwthing went wrong");
             // props.navigation.goBack();
+            setIsLoading(false);
             return;
         }
-        setCollaborator(collaboratorData.data);
-        setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
+        // console.warn('fields: ',dataRes.data?.data.candidate_info.fields);
+        setCandidateInfo(dataRes.data?.data);
+        setCollaborator(dataRes.data?.data)
+        setIsLoading(false)
+        // setCollaborator(collaboratorData.data);
+        // setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
     }
     useEffect(() => {
-        _getCollaboratorDetail();
+        onGetCandidateDetail();
+
 
     }, []);
 
 
-    const _onNavigateToChat = async () => {
+    const _onOpenPhoneCall = (phonenumber) => {
 
-        let checkUserIsConnected = await checkToConnectToUserChat(
-            userInformation.id,
-            userInformation.id,
-            collaborator_id,
-            collaborator?.attributes.profile_image || ""
-        );
-
-      //  console.warn(checkUserIsConnected);
+        Linking.openURL(`tel:${phonenumber}`);
+    }
 
 
+    // const _onNavigateToChat = async () => {
 
-        props.navigation.navigate('ChatLive',{
-            user:checkUserIsConnected.data
-        });
+    //     let checkUserIsConnected = await checkToConnectToUserChat(
+    //         userInformation.id,
+    //         userInformation.id,
+    //         collaborator_id,
+    //         collaborator?.attributes.profile_image || ""
+    //     );
+
+    //   //  console.warn(checkUserIsConnected);
+
+
+
+    //     props.navigation.navigate('ChatLive',{
+    //         user:checkUserIsConnected.data
+    //     });
+    // }
+
+    const _onMoreReview = () => {
+        props.navigation.navigate('CandidateReview');
+    }
+
+    if (isLoading) {
+        return (
+            <ActivityIndicator
+                color={'coral'}
+                size={'large'}
+            />
+        )
     }
 
     return (
@@ -64,8 +95,8 @@ const CollaboratorDetailScreen = (props) => {
 
 
             <IconButton style={{ position: 'absolute', zIndex: 999, right: 1 }}
-                icon={isFavorite ? CommonIcons.star : CommonIcons.starOutline}
-                color={'gold'}
+                icon={isFavorite ? CommonIcons.heart : CommonIcons.heartOutline}
+                color={'red'}
                 size={34}
                 onPress={() => setIsFavorite(!isFavorite)}
             />
@@ -73,35 +104,46 @@ const CollaboratorDetailScreen = (props) => {
             <View style={[styles.sectionWrap, styles.topBannerCard]}>
 
                 <Avatar.Image size={84} source={{
-                    uri: collaborator?.attributes.profile_image || CommonImages.avatar
+                    uri: collaborator?.profile_image || CommonImages.avatar
                 }} />
                 <View style={styles.userInfo}>
-                    <Text style={styles.textTitle}>{collaborator && collaborator.attributes.name}</Text>
-                    <Text style={styles.textDescription}>{collaborator && collaborator.attributes.phonenumber}</Text>
-                    <Text style={styles.textDescription}>{collaborator && collaborator.attributes.idcard}</Text>
-                    <Text style={styles.textDescription}>{collaborator && collaborator.attributes.address}</Text>
+                    <RowInformation
+                        iconName={CommonIcons.account}
+                        value={candidateInfo?.username}
+                    />
+                    <RowInformation
+                        iconName={CommonIcons.mapMarker}
+                        label={`${candidateInfo?.location?.district} - ${candidateInfo?.location?.province}`}
+                        labelStyle={{
+                            fontSize: 12,
+                            fontStyle: 'italic'
+                        }}
+                    />
+                    <TouchableOpacity
+                        onPress={() => _onOpenPhoneCall(candidateInfo?.phone)}
+                    >
+                        <RowInformation
+                            iconName={CommonIcons.phone}
+                            value={candidateInfo?.phone || '09753342124'}
+
+                        />
+
+                    </TouchableOpacity>
 
                 </View>
 
-                <IconButton 
-                    style={{ position: 'absolute', zIndex: 999, right: 0,bottom:0 }}
-                    icon={CommonIcons.messages}
-                    color={CommonColors.btnSubmit}
-                    size={26}
-                    onPress={_onNavigateToChat}
-                />
+
 
             </View>
 
             <View style={[styles.sectionWrap]}>
-                <Text style={[styles.sectionTitle, {}]} >Nghề nghiệp chuyên môn: </Text>
+                <Text style={[styles.sectionTitle]} >Nghề nghiệp chuyên môn: </Text>
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
-                        collaboratorOccupations &&
-                        collaboratorOccupations.map((e, index) =>
+                        candidateInfo?.fields?.map((e, index) =>
                             <Chip style={{ margin: 2 }}
-                                onPress={() => console.log('Pressed')}
                                 key={index.toString()}
+
                             >
                                 {e.name}
                             </Chip>
@@ -116,14 +158,14 @@ const CollaboratorDetailScreen = (props) => {
             <View style={[styles.sectionWrap]}>
                 <Text style={[styles.sectionTitle]} >Hình ảnh hoạt động</Text>
                 {
-                    collaborator?.relationships?.activity_images?.length > 0 ?
+                    candidateInfo?.images?.length > 0 ?
                         <View style={styles.photoGallery}>
                             {
-                                collaborator.relationships.activity_images?.map((e, index) =>
+                                candidateInfo?.images?.map((e, index) =>
                                     <Image style={styles.occupationImage}
                                         key={index.toString()}
                                         source={{
-                                            uri: e.image_url || 'https://reactnative.dev/img/tiny_logo.png',
+                                            uri: `${server_url.url_absolute}/${e.image}` || 'https://reactnative.dev/img/tiny_logo.png',
                                         }}
                                     />
                                 )
@@ -137,22 +179,82 @@ const CollaboratorDetailScreen = (props) => {
                 }
 
             </View>
+
+
             {/* Danh gia khach hang */}
             <View style={[styles.sectionWrap]}>
-                <Text style={[styles.sectionTitle]}>Đánh giá từ khách hàng</Text>
+                <View
+                    style={{
+                        paddingTop: 6
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontWeight: '700'
+                        }}
+                    >
+                        Đánh giá
+                    </Text>
+                    <View
+                        style={{
+                            borderBottomWidth: 0.5,
+                            paddingBottom: 8,
+                            padding: 8,
+                            borderBottomColor: 'grey'
+                        }}
+                    >
+                        <View style={[styles.row, { alignItems: 'center', justifyContent: 'space-between' }]}>
+                            <View style={[styles.row]}>
+                                <Text >4.6/5</Text>
+                                <MaterialCommunityIcon
+                                    name={CommonIcons.star}
+                                    size={18}
+                                    color={'gold'}
+                                    style={{
+                                        marginHorizontal: 4
+                                    }}
+                                />
+                                <Text style={{ marginHorizontal: 6, color: 'grey', fontSize: 12, fontStyle: 'italic' }}>( 22 đánh giá )</Text>
+                            </View>
+                            <View>
+                                <TouchableOpacity
+                                    style={[styles.row, { alignItems: 'center' }]}
+                                    onPress={_onMoreReview}
+                                >
+                                    <Text style={{ fontSize: 12, fontStyle: 'italic', color: 'grey' }}>xem tất cả</Text>
+                                    <MaterialCommunityIcon
+                                        name={CommonIcons.arrowRightChevron}
+                                        size={18}
+                                        color={'grey'}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+                <Text style={[styles.sectionTitle, {
+                    fontSize: 14,
+                    marginVertical: 6
+                }]}>Đánh giá từ khách hàng</Text>
 
                 {
-                    collaborator?.reviews.length > 0 ?
+                    candidateInfo?.reviews?.length > 0 ?
                         <>
                             {
-                                collaborator?.reviews?.map((e, index) =>
-                                    <CardReview
-                                        key={index.toString()}
-                                        review={e}
-                                    />
+                                candidateInfo?.reviews?.map((e, index) =>
+                                    // <CardReview
+                                    //     key={index.toString()}
+                                    //     review={e}
+                                    // />
+                                    <CardReviewCandidate />
 
                                 )
                             }
+                           <CardReviewCandidate />
+                           <CardReviewCandidate />
+                           <CardReviewCandidate />
+
+
                         </> :
                         <View>
                             <Text>Chưa có đánh giá nào từ khách hàng.</Text>
@@ -204,5 +306,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: 'grey',
         fontWeight: '400'
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 })
