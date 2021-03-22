@@ -1021,7 +1021,6 @@ export const _searchCandidate = async (
 
     
     try {
-        console.warn(query.toLocaleLowerCase());
         let url = `${api.api_v1}/user/${user_id}/search-candidate?query=${query.toLocaleLowerCase()}`;
         let dataFetch = await fetch(`${url}`);
         if (!dataFetch.ok) {
@@ -1035,7 +1034,6 @@ export const _searchCandidate = async (
         }
 
         let dataRes = await dataFetch.json();
-        console.warn('res: ',dataRes);
 
         if(!dataRes.status){
             return {
@@ -1107,6 +1105,59 @@ export const _getCandidateDetail = async (
         }
     }
 }
+
+
+
+
+
+
+export const _getCandidateReviews = async (
+    user_id,
+) => {
+
+    
+    try {
+        let url = `${api.api_v1}/candidate/${user_id}/reviews`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT GET CANDIDATE REVIEWS');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if(!dataRes.status){
+            return {
+                data: [],
+                message:dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+
+
 
 
 

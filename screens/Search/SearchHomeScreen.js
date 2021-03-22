@@ -39,7 +39,6 @@ const SearchHomeScreen = (props) => {
     const _onGetDataSearch = async (value) => {
         setIsLoading(true);
         let searchRes = await _searchCandidate(userInformation.id,value);
-        // console.warn(searchRes.data);
         if (searchRes.status && searchRes.data) {
             setSearchData(searchRes.data?.data);
         } else {
@@ -49,9 +48,6 @@ const SearchHomeScreen = (props) => {
     }
 
 
-    const _onNavigateToDetail = (item) => {
-        props.navigation.navigate('JobDetail', { job_id: item.id });
-    }
 
 
     // useEffect(() => {
@@ -109,6 +105,10 @@ const SearchHomeScreen = (props) => {
                         onDetailPress={()=>_onNavigateToCandidateDetail(e)}
                         address={`${e.location?.district} - ${e.location?.province}`}
                         descriptions={e.descriptions}
+                        review_average={e?.review_overall?.review_level_avg}
+                        review_number={e?.review_overall?.review_count}
+                        name={e?.candidate_info?.username}
+                        profile_image={e?.images[2]}
                     />
                     
                     )

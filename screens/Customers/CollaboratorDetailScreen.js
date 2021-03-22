@@ -29,7 +29,6 @@ const CollaboratorDetailScreen = (props) => {
     const onGetCandidateDetail = async () => {
         setIsLoading(true);
         let dataRes = await _getCandidateDetail(candidate.user);
-        console.warn(dataRes);
 
         if (!dataRes.status) {
             Alert.alert("Alert", "Somwthing went wrong");
@@ -76,7 +75,9 @@ const CollaboratorDetailScreen = (props) => {
     // }
 
     const _onMoreReview = () => {
-        props.navigation.navigate('CandidateReview');
+        props.navigation.navigate('CandidateReview',{
+            candidate:candidateInfo
+        });
     }
 
     if (isLoading) {
@@ -104,7 +105,7 @@ const CollaboratorDetailScreen = (props) => {
             <View style={[styles.sectionWrap, styles.topBannerCard]}>
 
                 <Avatar.Image size={84} source={{
-                    uri: collaborator?.profile_image || CommonImages.avatar
+                    uri: `${server_url.url_absolute}/${candidateInfo.candidate_info?.images[2]?.image}` || CommonImages.notFound
                 }} />
                 <View style={styles.userInfo}>
                     <RowInformation
@@ -113,7 +114,7 @@ const CollaboratorDetailScreen = (props) => {
                     />
                     <RowInformation
                         iconName={CommonIcons.mapMarker}
-                        label={`${candidateInfo?.location?.district} - ${candidateInfo?.location?.province}`}
+                        label={`${candidateInfo?.candidate_info?.location?.district} - ${candidateInfo?.candidate_info?.location?.province}`}
                         labelStyle={{
                             fontSize: 12,
                             fontStyle: 'italic'
@@ -140,7 +141,7 @@ const CollaboratorDetailScreen = (props) => {
                 <Text style={[styles.sectionTitle]} >Nghề nghiệp chuyên môn: </Text>
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
-                        candidateInfo?.fields?.map((e, index) =>
+                        candidateInfo?.candidate_info?.fields?.map((e, index) =>
                             <Chip style={{ margin: 2 }}
                                 key={index.toString()}
 
@@ -205,7 +206,7 @@ const CollaboratorDetailScreen = (props) => {
                     >
                         <View style={[styles.row, { alignItems: 'center', justifyContent: 'space-between' }]}>
                             <View style={[styles.row]}>
-                                <Text >4.6/5</Text>
+                                <Text>{candidateInfo?.candidate_info?.review_overall?.review_level_avg | 0}/5</Text>
                                 <MaterialCommunityIcon
                                     name={CommonIcons.star}
                                     size={18}
@@ -214,7 +215,7 @@ const CollaboratorDetailScreen = (props) => {
                                         marginHorizontal: 4
                                     }}
                                 />
-                                <Text style={{ marginHorizontal: 6, color: 'grey', fontSize: 12, fontStyle: 'italic' }}>( 22 đánh giá )</Text>
+                                <Text style={{ marginHorizontal: 6, color: 'grey', fontSize: 12, fontStyle: 'italic' }}>( {candidateInfo?.candidate_info?.review_overall?.review_count} đánh giá )</Text>
                             </View>
                             <View>
                                 <TouchableOpacity
@@ -238,23 +239,25 @@ const CollaboratorDetailScreen = (props) => {
                 }]}>Đánh giá từ khách hàng</Text>
 
                 {
-                    candidateInfo?.reviews?.length > 0 ?
+                    candidateInfo?.candidate_info?.reviews?.length > 0 ?
                         <>
                             {
-                                candidateInfo?.reviews?.map((e, index) =>
+                                candidateInfo?.candidate_info?.reviews?.map((e, index) =>
                                     // <CardReview
                                     //     key={index.toString()}
                                     //     review={e}
                                     // />
-                                    <CardReviewCandidate />
+                                    <CardReviewCandidate 
+                                        key={index.toString()}
+                                        name={e?.review_author?.username}
+                                        review_content={e.review_content}
+                                        review_level={e.review_level}
+                                        updated_at = {e.updated_at}
+                                    />
 
                                 )
                             }
-                           <CardReviewCandidate />
-                           <CardReviewCandidate />
-                           <CardReviewCandidate />
-
-
+                          
                         </> :
                         <View>
                             <Text>Chưa có đánh giá nào từ khách hàng.</Text>

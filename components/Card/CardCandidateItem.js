@@ -1,18 +1,25 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import CommonColors from '../../constants/CommonColors'
 import CommonIcons from '../../constants/CommonIcons'
 import RowInformation from '../Row/RowInformation'
+import server_url from '../../serverConfig';
+import CommonImages from '../../constants/CommonImages'
 
 
 const CardCandidateItemBase = ({
     onDetailPress,
     onLikePress,
     descriptions,
-    address
+    address,
+    review_average,
+    review_number,
+    name,
+    profile_image
 }) => {
+
     return (
         <View
             style={{
@@ -24,13 +31,43 @@ const CardCandidateItemBase = ({
         >
             <TouchableOpacity
                 style={{
-                    display:'flex',
-                    flexDirection:'column'
+                    display: 'flex',
+                    flexDirection: 'column'
                 }}
                 onPress={onDetailPress}
             >
-                <Text>{descriptions || ''}</Text>
+                <View
+                    style={[styles.row, { alignItems: 'center' }]}
+                >
+                    <Image
 
+                        source={profile_image ? { uri: `${server_url.url_absolute}/${profile_image.image}` } : { uri: CommonImages.avatar }}
+                        style={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 25
+                        }}
+                    />
+
+                    <Text
+                        style={{
+                            fontWeight: '700',
+                            marginHorizontal: 12,
+                            marginVertical: 6
+                        }}
+                    >
+                        {name || ''}
+                    </Text>
+                </View>
+                <Text
+                    style={{
+                        fontSize:14,
+                        color:'grey',
+                        marginHorizontal:6
+                    }}
+                >
+                    {descriptions || ''}
+                </Text>
 
                 <View
                     style={[styles.row, {
@@ -39,7 +76,15 @@ const CardCandidateItemBase = ({
                         marginVertical: 6
                     }]}
                 >
-                    <Text>4.6</Text>
+                    <Text
+                        style={{
+                            fontSize: 14,
+                            fontWeight: '600',
+                            color: 'grey'
+                        }}
+                    >
+                        {review_average}
+                    </Text>
                     <MaterialCommunityIcon
                         color={'gold'}
                         size={18}
@@ -55,15 +100,13 @@ const CardCandidateItemBase = ({
                             marginHorizontal: 8
                         }}
                     >
-                        (26 đánh giá)
+                        ({review_number} đánh giá)
                     </Text>
                 </View>
                 <RowInformation
                     iconName={CommonIcons.mapMarker}
                     iconColor={'coral'}
                     value={address || ''}
-
-
                 />
             </TouchableOpacity>
 
