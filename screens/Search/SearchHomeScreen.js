@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, ScrollView, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import CardCandidateItemBase from '../../components/Card/CardCandidateItem'
 import CommonIcons from '../../constants/CommonIcons'
 import { _searchCandidate } from '../../utils/serverApi'
 import {useSelector} from 'react-redux'
+
+import messaging from '@react-native-firebase/messaging'
 
 const SearchHomeScreen = (props) => {
     const _refSearchInput = useRef();
@@ -49,11 +51,6 @@ const SearchHomeScreen = (props) => {
 
 
 
-
-    // useEffect(() => {
-    //     _onGetDataSearch(searchQuery)
-    // }, [districtSearch])
-
     const _onNavigateToCandidateDetail = (candidate) => {
         // console.warn(candidate);
         // return;
@@ -61,6 +58,28 @@ const SearchHomeScreen = (props) => {
             candidate:candidate
         });
     }
+
+
+
+    // On Receive Notifications
+    useEffect(async () => {
+        try {
+            
+           let x = await messaging().getToken();
+            console.warn(x);
+        } catch (error) {
+            console.warn(error);
+        }
+
+        const unsubscribe = messaging().onMessage(async remoteMessage => {
+          Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        });
+    
+        return unsubscribe;
+      }, []);
+    
+
+
 
     return (
         <View>

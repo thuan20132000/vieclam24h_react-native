@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "177241203978",
+    "firebase_url": "https://vieclam24h-3d4e1-default-rtdb.firebaseio.com",
+    "project_id": "vieclam24h-3d4e1",
+    "storage_bucket": "vieclam24h-3d4e1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177241203978:android:bba5e61793abebd92ac6f3",
+        "android_client_info": {
+          "package_name": "com.vieclam24h"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "177241203978-dtch0aflb3admsbqt6dusf6n4c2e1l3c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARb5PEKoQp5cdJUP0N9ow7PqkxEIJlkCw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "177241203978-dtch0aflb3admsbqt6dusf6n4c2e1l3c.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "177241203978-0fue0i6tih6k02na2afvghugaeipfdeo.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.vieclam24h",
+                "app_store_id": "123456789"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

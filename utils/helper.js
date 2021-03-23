@@ -58,7 +58,7 @@ export const getDaysBetweenTwoDates = (created_at) => {
     var date2 = new Date();
     var difference = date2.getTime() - date1.getTime();
     var days = Math.ceil(difference / (1000 * 3600 * 24));
-    return days-1;
+    return days;
 
 
 }

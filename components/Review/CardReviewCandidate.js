@@ -43,8 +43,9 @@ const CardReviewCandidate = ({
                         <Text>{name}</Text>
                         <View style={[styles.row]}>
                             {
-                                Array(5).fill({}).map((e, index) =>
+                                Array(review_level).fill({}).map((e, index) =>
                                     <MaterialCommunityIcon
+                                        key={index.toString()}
                                         name={CommonIcons.star}
                                         color={'gold'}
                                         size={18}
@@ -52,20 +53,14 @@ const CardReviewCandidate = ({
 
                                 )
                             }
-                            <Text
-                                style={{
-                                    marginHorizontal: 6
-                                }}
-                            >
-                                {review_level}
-                            </Text>
+                           
                         </View>
                     </View>
                 </View>
                 <View>
 
                     {
-                        getDaysBetweenTwoDates(updated_at) > 0 && getDaysBetweenTwoDates(updated_at) < 10 ?
+                        getDaysBetweenTwoDates(updated_at) > 0 ?
 
 
                             <Text
