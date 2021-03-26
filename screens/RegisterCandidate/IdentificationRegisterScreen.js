@@ -84,7 +84,7 @@ const IdentificationRegisterScreen = (props) => {
         }
         dispatch(authenticationActions.register_candidate(data));
 
-        props.navigation.navigate('PhonenNumberRegister');
+        props.navigation.navigate('ReviewRegister');
     }
 
     React.useLayoutEffect(() => {

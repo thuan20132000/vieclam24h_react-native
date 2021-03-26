@@ -95,7 +95,7 @@ const CollaboratorHomeScreen = (props) => {
                             }}
                         />
 
-                        <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: '500', marginHorizontal: 22 }}>Viec Lam 24H</Text>
+                        <Text style={{ textAlign: 'center', fontSize: 26,color:'coral', fontWeight: '700', marginHorizontal: 22 }}>Dịch vụ 24/7</Text>
                     </View>
                     <TouchableOpacity
                         style={{
@@ -175,12 +175,27 @@ const CollaboratorHomeScreen = (props) => {
                                 onItemPress={() => _navigateToJobList(e)}
                                 key={index.toString()}
                                 labelStyle={{
-                                    fontSize: 11,
-                                    fontWeight: '500',
+                                    fontSize: 12,
+                                    fontWeight: '700',
+                                    color:'coral'
+
 
                                 }}
                                 containerStyle={{
-                                    width: 80
+                                    width: 80,
+                                    padding:6,
+                                    borderRadius:6,
+                                    shadowColor: "coral",
+                                    shadowOffset: {
+                                        width: 1,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.05,
+                                    shadowRadius: 1.4,
+                            
+                                    elevation: 5,
+                                    backgroundColor:'white'
+
                                 }}
                             />)
                     }
@@ -190,7 +205,11 @@ const CollaboratorHomeScreen = (props) => {
 
                 {/* Job List */}
                 <View style={styles.vericleListContainer}>
-                    <Subheading style={{ paddingHorizontal: 12 }}>{Translate.new_jobs}</Subheading>
+                    <Text style={[
+                        styles.heading,
+                    ]}>
+                        {Translate.new_jobs}
+                    </Text>
 
                     {
                         jobs &&
@@ -227,6 +246,7 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         margin: 12,
         padding: 6,
+        borderRadius:6,
         backgroundColor: 'white',
         shadowColor: "#000",
         shadowOffset: {
@@ -240,7 +260,14 @@ const styles = StyleSheet.create({
 
     },
     vericleListContainer: {
-        marginTop: 22,
+        marginTop: 6,
 
+    },
+    heading:{
+        paddingHorizontal: 12,
+        fontSize:16,
+        fontWeight:'700',
+        marginVertical:6,
+        color:CommonColors.primary
     }
 })

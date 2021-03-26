@@ -32,10 +32,8 @@ const LoginScreen = (props) => {
 
             let loginRes = await login(userAuth.email, userAuth.password);
             
-            console.warn('login res: ',loginRes);
-
             if (!loginRes.status) {
-                Alert.alert("Failed", loginRes.message);
+                Alert.alert("Failed", loginRes?.data?.message);
             }
 
             if (loginRes.status) {
@@ -100,8 +98,22 @@ const LoginScreen = (props) => {
 
 
             <View style={styles.formLogoWrap}>
-                <Title>Viec Lam 24h</Title>
-                <Text>Welcome</Text>
+                <Title
+                    style={{
+                        fontSize:26,
+                        color:CommonColors.primary
+                    }}
+                >
+                    Dịch vụ 24/7
+                </Title>
+                <Text
+                    style={{
+                        fontSize:18,
+                        color:CommonColors.primary
+                    }}
+                >
+                    Xin chào!
+                </Text>
             </View>
 
             <View style={styles.loginForm}>
@@ -109,14 +121,14 @@ const LoginScreen = (props) => {
                     style={[styles.inputLogin, {}]}
                     onChangeText={text => setUserAuth({ ...userAuth, email: text })}
                     value={userAuth.email}
-                    placeholder={'Username'}
+                    placeholder={'Số điện thoại'}
 
                 />
                 <TextInput
                     style={[styles.inputLogin, {}]}
                     onChangeText={text => setUserAuth({ ...userAuth, password: text })}
                     value={userAuth.password}
-                    placeholder={'Password'}
+                    placeholder={'Mật khẩu'}
                     secureTextEntry={true}
 
                 />

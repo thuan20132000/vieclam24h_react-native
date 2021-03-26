@@ -73,7 +73,7 @@ const PriceSectionScreen = (props) => {
                         style={[styles.textinput, { justifyContent: 'flex-start', display: 'flex', flexDirection: 'column' }]}
                         placeholder={'Nhập giá'}
                         textAlignVertical={'center'}
-                        keyboardType={'number-pad'}
+                        keyboardType={'numeric'}
                         value={price}
                         onChangeText={(text) => setPrice(text)}
 

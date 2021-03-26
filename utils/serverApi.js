@@ -10,14 +10,13 @@ import { generateCode } from './helper';
  * description: Login
  * created_at:21/11/2020
  * 
- * @param {*} username 
+ * @param {*} phonenumber 
  * @param {*} password 
  */
-export const login = async (username, password) => {
+export const login = async (phonenumber, password) => {
 
 
     try {
-        let url = serverConfig.url;
         let dataFetch = await fetch(`${api.api_v1_login}/signin`, {
             method: 'POST',
             headers: {
@@ -25,7 +24,7 @@ export const login = async (username, password) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "username": username,
+                "phonenumber": phonenumber,
                 "password": password
 
             })
@@ -75,19 +74,12 @@ export const login = async (username, password) => {
 
 export const register = async (
     name,
-    email,
-    password,
     phonenumber,
-    idcard,
-    province,
-    district,
-    subdistrict,
-    address,
-    role,
+    password
+  
 ) => {
 
     try {
-        let url = serverConfig.url;
         let dataFetch = await fetch(`http://18.141.229.83/api/v1/signup`, {
             method: 'POST',
             headers: {
@@ -95,26 +87,23 @@ export const register = async (
             },
             body: JSON.stringify({
                 username: name,
-                password: password,
-                email: email
-
-
+                phonenumber: phonenumber,
+                password: password
             })
         });
 
 
         if (!dataFetch.ok) {
-            console.warn("ERROR AT REGISTER : ", dataFetch);
+            console.log("ERROR AT REGISTER : ", dataFetch);
             return {
                 data: null,
-                message: dataFetch,
+                message: "Account has exists!",
                 status: false
 
             }
         }
 
         let dataRes = await dataFetch.json();
-        // console.warn("DATA RES: ", dataRes);
 
         if (!dataRes.status) {
             return {
@@ -341,11 +330,11 @@ export const getCategory = async (access_token) => {
 
     try {
         let url = `${api.api_v1}/category`;
-        let bearer = `Bearer ${access_token}`;
+        // let bearer = `Bearer ${access_token}`;
         let dataFetch = await fetch(url, {
-            headers: {
-                "Authorization": `${bearer}`
-            }
+            // headers: {
+            //     "Authorization": `${bearer}`
+            // }
         });
 
         if (!dataFetch.ok) {
@@ -426,13 +415,13 @@ export const getOccupations = async (category_id = '') => {
 
 export const getFields = async (category_id = '', access_token = '') => {
     try {
-        let bearer = `Bearer ${access_token}`;
+        // let bearer = `Bearer ${access_token}`;
         let datafetch;
         if (category_id && category_id != '') {
             datafetch = await fetch(`${api.api_v1}/fields?category_id=${category_id}`, {
-                headers: {
-                    "Authorization": `${bearer}`
-                }
+                // headers: {
+                //     "Authorization": `${bearer}`
+                // }
             });
         } else {
             datafetch = await fetch(`${api.api_v1}/fields`, {
@@ -1024,7 +1013,7 @@ export const _searchCandidate = async (
         let url = `${api.api_v1}/user/${user_id}/search-candidate?query=${query.toLocaleLowerCase()}`;
         let dataFetch = await fetch(`${url}`);
         if (!dataFetch.ok) {
-            console.warn('ERROR AT SEARCH JOB');
+            console.log('ERROR AT SEARCH JOB');
 
             return {
                 data: [],
@@ -1069,10 +1058,10 @@ export const _getCandidateDetail = async (
 
     
     try {
-        let url = `${api.api_v1}/candidate/${user_id}/detail`;
+        let url = `${api.api_v1}/user/${user_id}/detail`;
         let dataFetch = await fetch(`${url}`);
         if (!dataFetch.ok) {
-            console.warn('ERROR AT GET CANDIDATE DETAIL');
+            console.log('ERROR AT GET CANDIDATE DETAIL');
 
             return {
                 data: [],

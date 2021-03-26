@@ -35,7 +35,9 @@ const CardHorizontal = ({ index, item, onPress }) => {
             >
             </ImageBackground>
             <Card.Content style={styles.cardContent}>
-                <Text style={{ fontSize: 14, marginRight: 20 }}>
+                <Text style={{ fontSize: 14, marginRight: 20, fontWeight: '700' }}
+                    numberOfLines={2}
+                >
                     {item?.name}
                 </Text>
                 <Paragraph
@@ -53,7 +55,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     <MaterialCommunityIcons
                         name={CommonIcons.tagPrice}
                         size={16}
-                        color={CommonColors.primary}
+                        color={'grey'}
                     />
                     <Caption style={{ marginHorizontal: 6, color: 'red', fontWeight: '600' }}>
                         {formatCash(item?.suggestion_price || 0)} đ
@@ -64,7 +66,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     <MaterialCommunityIcons
                         name={CommonIcons.mapCheck}
                         size={16}
-                        color={CommonColors.primary}
+                        color={'grey'}
                     />
                     <Caption style={{ marginHorizontal: 6, fontWeight: '300' }}>
                         {item?.location?.district}
@@ -74,14 +76,16 @@ const CardHorizontal = ({ index, item, onPress }) => {
 
                 <Text style={{
                     marginHorizontal: 2,
-                    fontWeight: '300',
+                    fontWeight: '700',
                     bottom: 0,
                     position: 'relative',
                     fontSize: 12,
                     color: 'white',
                     backgroundColor: 'coral',
                     padding: 6,
-                    maxWidth:120
+                    maxWidth: 120,
+                    textAlign: 'center',
+                    borderRadius: 6
                 }}>
                     {item?.field?.name}
                 </Text>
@@ -105,12 +109,22 @@ const CardHorizontal = ({ index, item, onPress }) => {
 
                 <View style={{
                     position: 'absolute',
-                    right: 26,
+                    right: 2,
                     backgroundColor: 'coral',
                     display: 'flex',
                     flexDirection: 'row',
                     padding: 4,
-                    top: 2
+                    top: 2,
+                    borderRadius:6,
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 1,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 6,
 
                 }}>
                     <MaterialCommunityIcons
@@ -118,7 +132,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         size={16}
                         color={'white'}
                     />
-                    <Text style={{ color: 'white',fontWeight:'700' }}>{item?.candidates?.length}</Text>
+                    <Text style={{ color: 'white', fontWeight: '700' }}>{item?.candidates?.length}</Text>
                 </View>
             </Card.Content>
         </TouchableOpacity>

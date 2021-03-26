@@ -22,6 +22,8 @@ target 'vieclam24h' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-voice', :path => '../node_modules/@react-native-voice/voice'
+
   target 'vieclam24hTests' do
     inherit! :complete
     # Pods for testing

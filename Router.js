@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer,useNavigation,TabActions, useNavigationBuilder } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets, StackCardStyleInterpolator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from './constants/CommonIcons';
 
+// Firebase FCM
+import messaging from '@react-native-firebase/messaging';
 // Multiple Language
 import { Translate } from './locales/index';
 
@@ -75,6 +77,10 @@ import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
 import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen';
 import SearchHomeScreen from './screens/Search/SearchHomeScreen';
 import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
+
+
+
+
 /**
  * Authentication Stack
  */
@@ -82,7 +88,9 @@ import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
 const AuthenticationStackNavigator = createStackNavigator();
 function AuthenticationStack() {
     return (
-        <AuthenticationStackNavigator.Navigator>
+        <AuthenticationStackNavigator.Navigator
+            initialRouteName={'login'}
+        >
             <AuthenticationStackNavigator.Screen
                 name="login"
                 component={LoginScreen}
@@ -93,6 +101,9 @@ function AuthenticationStack() {
             <AuthenticationStackNavigator.Screen
                 name="register"
                 component={RegisterScreen}
+                options={{
+                    title:"Đăng ký"
+                }}
             />
         </AuthenticationStackNavigator.Navigator>
     )
@@ -113,6 +124,7 @@ function CollaboratorHomeStack() {
             <CollaboratorHomeStackNavigator.Screen
                 name="CollaboratorHome"
                 component={CollaboratorHomeScreen}
+                
             />
             <CollaboratorHomeStackNavigator.Screen
                 name="JobDetail"
@@ -326,7 +338,7 @@ function NotificationStack() {
  * CreateJob Stack
  */
 const PostJobStackNavigator = createStackNavigator();
-function PostJobStack() {
+function PostJobStack(props) {
 
     const configOpen = {
         animation: 'spring',
@@ -350,6 +362,19 @@ function PostJobStack() {
 
 
 
+    React.useLayoutEffect(() => {
+
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarVisible: false
+        })
+
+        return () => {
+            props.navigation.dangerouslyGetParent().setOptions({
+                tabBarVisible: true
+            })
+        }
+
+    }, []);
 
 
     return (
@@ -366,7 +391,7 @@ function PostJobStack() {
                     open: configOpen,
                     close: configClose
                 }
-
+            
             }}
 
         >
@@ -756,6 +781,8 @@ function TabNavigator(props) {
         account: Translate.account
     })
 
+
+
     useEffect(() => {
         // console.warn(Translate.home);
 
@@ -800,6 +827,7 @@ function TabNavigator(props) {
                 activeTintColor: 'tomato',
                 inactiveTintColor: 'gray',
             }}
+            initialRouteName={'HomeSearch'}
         >
 
 
@@ -816,8 +844,9 @@ function TabNavigator(props) {
                 component={NotificationStack}
                 options={{
                     tabBarLabel: 'thong bao',
-                    tabBarBadge: 3
+                    tabBarBadge: 3,
                 }}
+                
 
             />
             <BottomTabNavigator.Screen
@@ -889,6 +918,7 @@ const Router = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const userAccesstoken = useSelector(state => state.authentication.access_token);
 
+
     useEffect(() => {
         if (userAccesstoken) {
             setIsAuthenticated(true);
@@ -898,6 +928,9 @@ const Router = () => {
         }
 
     }, [userAccesstoken]);
+
+
+    
 
 
 

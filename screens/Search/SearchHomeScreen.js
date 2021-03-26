@@ -1,12 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { StyleSheet, Text, View, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, Text, View, TextInput, ScrollView, ActivityIndicator, Alert, TouchableOpacity, Image } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import CardCandidateItemBase from '../../components/Card/CardCandidateItem'
 import CommonIcons from '../../constants/CommonIcons'
 import { _searchCandidate } from '../../utils/serverApi'
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native';
 
-import messaging from '@react-native-firebase/messaging'
+import messaging from '@react-native-firebase/messaging';
+
+import Voice from '@react-native-voice/voice';
+import ModalRecording from '../../components/Modal/ModalRecording'
+import CommonColors from '../../constants/CommonColors'
+
+
 
 const SearchHomeScreen = (props) => {
     const _refSearchInput = useRef();
@@ -21,6 +28,9 @@ const SearchHomeScreen = (props) => {
     const [searchData, setSearchData] = useState([]);
 
     const [districtSearch, setDistrictSearch] = useState('');
+
+    const navigation = useNavigation();
+    const [recordingModal, setRecordingModal] = useState(false);
 
     // Search debounce
     const typingTimeoutRef = useRef(null);
@@ -37,10 +47,11 @@ const SearchHomeScreen = (props) => {
 
     }
 
-    const [isLoading,setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const _onGetDataSearch = async (value) => {
         setIsLoading(true);
-        let searchRes = await _searchCandidate(userInformation.id,value);
+        let searchRes = await _searchCandidate(userInformation.id, value);
+        console.warn(searchRes);
         if (searchRes.status && searchRes.data) {
             setSearchData(searchRes.data?.data);
         } else {
@@ -54,88 +65,202 @@ const SearchHomeScreen = (props) => {
     const _onNavigateToCandidateDetail = (candidate) => {
         // console.warn(candidate);
         // return;
-        props.navigation.navigate('CandidateDetail',{
-            candidate:candidate
+        props.navigation.navigate('CandidateDetail', {
+            candidate: candidate
         });
     }
 
 
+    useEffect(() => {
 
-    // On Receive Notifications
-    useEffect(async () => {
-        try {
-            
-           let x = await messaging().getToken();
-            console.warn(x);
-        } catch (error) {
-            console.warn(error);
-        }
+        messaging().getToken().then((token) => console.warn(token));
 
-        const unsubscribe = messaging().onMessage(async remoteMessage => {
-          Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+        messaging().onNotificationOpenedApp(remoteMsg => {
+            navigation.navigate('Notification')
         });
-    
-        return unsubscribe;
-      }, []);
-    
+
+
+    }, []);
+
+
+
+    // Voice
+    const [isRecording, setIsRecording] = useState(false);
+    const _onSpeechStart = (e) => {
+        console.log('On speech start ', e)
+
+    }
+
+    const _onSpeechEnd = async (e) => {
+        console.log('On Speech End ', e);
+        setTimeout(() => {
+            setIsRecording(false);
+        }, 1200);
+
+    }
+
+    const _onSpeechResult = (e) => {
+        console.log('On speech results:  ', e);
+        setSearchQuery(e.value[0]);
+        setTimeout(() => {
+            setIsRecording(false);
+            _onSearchJob(e.value[0]);
+        }, 1200);
+    }
+
+
+
+
+    useEffect(() => {
+        Voice.onSpeechStart = _onSpeechStart.bind(this);
+        Voice.onSpeechEnd = _onSpeechEnd.bind(this);
+        Voice.onSpeechResults = _onSpeechResult.bind(this);
+    }, []);
+
+
+
+
+    const _onSpeechRecord = () => {
+        try {
+            setIsRecording(true);
+            Voice.start('vi-VN');
+
+
+        } catch (error) {
+            console.log("ERROR : ", error);
+        }
+    }
+
 
 
 
     return (
-        <View>
+        <>
+            <View>
 
-            <View style={[styles.searchContainer]}>
-                <View style={styles.inputSearch}>
-                    <MaterialCommunityIcon
-                        name={CommonIcons.search}
-                        size={28}
-                    />
-                    <TextInput style={[styles.input, { marginLeft: 12, width: '78%', height: '100%' }]}
-                        ref={_refSearchInput}
-                        placeholder="Tìm kiếm..."
-                        onChangeText={_onSearchJob}
-                        value={searchQuery}
+                <View style={[styles.searchContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }]}>
+                    <View style={styles.inputSearch}>
+                        <MaterialCommunityIcon
+                            name={CommonIcons.search}
+                            size={28}
+                        />
+                        <TextInput style={[styles.input, { marginLeft: 12, width: '68%', height: '100%' }]}
+                            ref={_refSearchInput}
+                            placeholder="Tìm kiếm..."
+                            onChangeText={_onSearchJob}
+                            value={searchQuery}
 
-                    />
+                        />
+                        {
+                            searchQuery.length > 0 &&
+                            <MaterialCommunityIcon
+                                name={CommonIcons.close}
+                                size={22}
+                                color={'black'}
+                                onPress={() => setSearchQuery('')}
+
+                                style={{
+                                    // backgroundColor: 'red',
+                                    width: 20,
+                                    height: 20,
+                                    right: -40
+                                }}
+                            />
+
+                        }
+                    </View>
                     <MaterialCommunityIcon
                         name={CommonIcons.microphone}
                         size={22}
-                        color={'grey'}
-                        onPress={() => console.warn('sas')}
+                        color={isRecording ? 'red' : 'grey'}
+                        onPress={_onSpeechRecord}
+
+                        style={{
+                            // backgroundColor: 'red',
+                            width: 20,
+                            height: 20,
+                            marginHorizontal: 6
+                        }}
                     />
+
                 </View>
+
+                {/* Search Results */}
+                <ScrollView>
+                    {
+                        isLoading &&
+                        <ActivityIndicator
+                            size={'large'}
+                            color={'coral'}
+                        />
+                    }
+                    {
+                        searchData &&
+                        searchData.map((e, index) =>
+                            <CardCandidateItemBase
+                                key={index.toString()}
+                                onDetailPress={() => _onNavigateToCandidateDetail(e)}
+                                address={`${e.candidate_info?.location?.district} - ${e.candidate_info?.location?.province}`}
+                                descriptions={e?.candidate_info?.descriptions}
+                                review_average={e?.candidate_info?.review_overall?.review_level_avg}
+                                review_number={e?.candidate_info?.review_overall?.review_count}
+                                name={e?.username}
+                                profile_image={e?.profile_image}
+                            />
+
+                        )
+                    }
+                </ScrollView>
+
+
+                {
+                    searchData.length <= 0 &&
+                    <View style={[
+                        styles.group,
+                        {
+                            borderWidth: 1,
+                            borderColor: 'coral',
+                            height: 100,
+                            margin: 4,
+                            padding: 6,
+                            backgroundColor: CommonColors.secondary,
+                            marginTop: 32
+                        }
+                    ]} >
+
+                        <Text style={{ color: 'grey', fontWeight: '700' }}>Nên viết tiếng Việt có dấu.</Text>
+
+                        <Text style={{ color: 'grey' }}>
+                            Ví dụ: Thợ sửa nhôm kính, giao hàng, giúp việc,...
+                        </Text>
+
+                    </View>
+
+                }
+
 
             </View>
 
-            {/* Search Results */}
-            <ScrollView>
-                {
-                    isLoading &&
-                    <ActivityIndicator
-                        size={'large'}
-                        color={'coral'}
-                    />
-                }
-                {
-                    searchData &&
-                    searchData.map((e,index) =>
-                    <CardCandidateItemBase 
-                        key={index.toString()}
-                        onDetailPress={()=>_onNavigateToCandidateDetail(e)}
-                        address={`${e.location?.district} - ${e.location?.province}`}
-                        descriptions={e.descriptions}
-                        review_average={e?.review_overall?.review_level_avg}
-                        review_number={e?.review_overall?.review_count}
-                        name={e?.candidate_info?.username}
-                        profile_image={e?.images[2]}
-                    />
-                    
-                    )
-                }
-            </ScrollView>
+            <ModalRecording
+                isVisible={isRecording}
+                transparent={true}
 
-            <Text></Text>
-        </View>
+
+            >
+
+                <Image
+                    source={require(`../../utils/gift/recording.gif`)}
+                    style={{
+                        width: 180,
+                        height: 180,
+                    }}
+                />
+
+
+
+            </ModalRecording>
+
+        </>
     )
 }
 
@@ -167,5 +292,9 @@ const styles = StyleSheet.create({
     searchContainer: {
         backgroundColor: 'coral',
         paddingVertical: 22
-    }
+    },
+    group: {
+        marginVertical: 6,
+        marginHorizontal: 4
+    },
 })

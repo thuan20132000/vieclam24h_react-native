@@ -28,20 +28,16 @@ const CollaboratorDetailScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const onGetCandidateDetail = async () => {
         setIsLoading(true);
-        let dataRes = await _getCandidateDetail(candidate.user);
-
+        let dataRes = await _getCandidateDetail(candidate.id);
         if (!dataRes.status) {
             Alert.alert("Alert", "Somwthing went wrong");
             // props.navigation.goBack();
             setIsLoading(false);
             return;
         }
-        // console.warn('fields: ',dataRes.data?.data.candidate_info.fields);
         setCandidateInfo(dataRes.data?.data);
         setCollaborator(dataRes.data?.data)
         setIsLoading(false)
-        // setCollaborator(collaboratorData.data);
-        // setCollaboratorOccupations(collaboratorData.data?.relationships.occupations);
     }
     useEffect(() => {
         onGetCandidateDetail();
@@ -54,25 +50,6 @@ const CollaboratorDetailScreen = (props) => {
 
         Linking.openURL(`tel:${phonenumber}`);
     }
-
-
-    // const _onNavigateToChat = async () => {
-
-    //     let checkUserIsConnected = await checkToConnectToUserChat(
-    //         userInformation.id,
-    //         userInformation.id,
-    //         collaborator_id,
-    //         collaborator?.attributes.profile_image || ""
-    //     );
-
-    //   //  console.warn(checkUserIsConnected);
-
-
-
-    //     props.navigation.navigate('ChatLive',{
-    //         user:checkUserIsConnected.data
-    //     });
-    // }
 
     const _onMoreReview = () => {
         props.navigation.navigate('CandidateReview',{
@@ -105,7 +82,7 @@ const CollaboratorDetailScreen = (props) => {
             <View style={[styles.sectionWrap, styles.topBannerCard]}>
 
                 <Avatar.Image size={84} source={{
-                    uri: `${server_url.url_absolute}/${candidateInfo.candidate_info?.images[2]?.image}` || CommonImages.notFound
+                    uri: `${server_url.url_absolute}/${candidateInfo?.profile_image}` || CommonImages.notFound
                 }} />
                 <View style={styles.userInfo}>
                     <RowInformation
@@ -121,11 +98,11 @@ const CollaboratorDetailScreen = (props) => {
                         }}
                     />
                     <TouchableOpacity
-                        onPress={() => _onOpenPhoneCall(candidateInfo?.phone)}
+                        onPress={() => _onOpenPhoneCall(candidateInfo?.phonenumber)}
                     >
                         <RowInformation
                             iconName={CommonIcons.phone}
-                            value={candidateInfo?.phone || '09753342124'}
+                            value={candidateInfo?.phonenumber || ''}
 
                         />
 

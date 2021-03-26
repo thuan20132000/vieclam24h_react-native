@@ -30,6 +30,10 @@ import { Translate } from './locales/index';
 
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
+
+
+
 
 const rootReducer = combineReducers({
   authentication: AutheticationReducer,
@@ -72,6 +76,7 @@ const App = () => {
       },
     },
   };
+
 
 
 

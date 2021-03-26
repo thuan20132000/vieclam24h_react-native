@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Alert, KeyboardAvoidingView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { ScrollView, TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Button, Paragraph, Dialog, Portal, Title, RadioButton, Drawer, ActivityIndicator, HelperText } from 'react-native-paper';
 import CommonColors from '../constants/CommonColors';
@@ -8,58 +8,7 @@ import { register } from '../utils/serverApi';
 
 import LocationPicker from '../components/LocationPicker/LocationPicker';
 import OccupationSelection from '../components/Selection/OccupationSelection';
-
-
-const SelectRole = ({ selectRoleVisible, setSelectRoleVisible, roleSelected, setRoleSelected }) => {
-
-    const [value, setValue] = useState('isCustomer');
-
-    useEffect(() => {
-        setRoleSelected(value);
-    }, [value])
-
-    const _onConfirm = () => {
-        setRoleSelected({
-            name: roleSelected == 'isCustomer' ? 'Tôi là nhà tuyển dụng' : 'Tôi là người tìm việc',
-            value: roleSelected == 'isCustomer' ? 3 : 2
-        });
-        setSelectRoleVisible(false);
-    }
-
-    return (
-        <View>
-
-            <Portal>
-                <Dialog visible={selectRoleVisible} onDismiss={() => setSelectRoleVisible(false)}>
-                    <Dialog.Content>
-                        <RadioButton.Group onValueChange={newValue => setValue(newValue)} value={value}>
-                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                <Text>Tôi là nhà tuyển dụng</Text>
-                                <RadioButton
-                                    value="isCustomer"
-                                />
-                            </View>
-                            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }} >
-                                <Text>Tôi là người tìm việc</Text>
-                                <RadioButton
-                                    value="isCollaborator"
-                                />
-                            </View>
-                        </RadioButton.Group>
-
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={_onConfirm}>OK</Button>
-
-                        <Button onPress={() => setSelectRoleVisible(false)}>Cancel</Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
-        </View>
-
-    )
-}
-
+import ModalConfirmPhoneNumber from '../components/Modal/ModalConfirmPhoneNumber';
 
 
 const RegisterScreen = (props) => {
@@ -69,90 +18,62 @@ const RegisterScreen = (props) => {
     } = props;
 
     const [isLoading, setIsLoading] = useState(false);
-    const [selectRoleVisible, setSelectRoleVisible] = useState(false);
-    const [roleSelected, setRoleSelected] = useState({
-        name: '',
-        value: '',
-    });
-
-    const [occupationSelect, setOccupationSelect] = useState([]);
-
-    const [value, onChangeText] = useState();
-
     const [userInfo, setUserInfo] = useState({
-        name: '',
-        email: '',
+        username: '',
         phonenumber: '',
         password: '',
-        idcard: '',
-       
-    });
 
-    const [userLocation, setUserLocation] = useState({
-        province: '',
-        province_code: '',
-        district: '',
-        district_code: '',
-        subdistrict: '',
-        subdistrict_code: '',
-    })
+    });
+    const [isConfirm, setIsConfirm] = useState(false);
+    const [confirmCode, setConfirmCode] = useState();
+
+
 
     const [isError, setIsError] = useState(false);
 
-
-
-
     const _onRegister = async () => {
+        if (!userInfo.username || !userInfo.phonenumber || !userInfo.password) {
+            Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin.")
+            return;
+        }
 
-       
 
         setIsLoading(true);
 
         let registerRes = await register(
-            userInfo.name,
-            userInfo.email,
-            userInfo.password,
+            userInfo.username,
             userInfo.phonenumber,
-            userInfo.idcard,
-            userInfo.province,
-            userInfo.district,
-            userInfo.subDistrict,
-            userInfo.address,
-            userInfo.role
+            userInfo.password
         );
 
         if (!registerRes.status) {
             setIsError(true);
-            // let errors = registerRes.data.message.email[0];
-            let errors = registerRes;
             setIsLoading(false);
 
             Alert.alert(
                 'Đăng ký thất bại',
                 'Vui lòng kiểm tra thông tin đăng ký',
                 [
-                 
-                    {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel'
-                    },
                     { text: 'OK', onPress: () => console.log('OK Pressed') }
                 ],
                 { cancelable: false }
             );
         } else {
-            // Alert.alert("Thành Công","Vui lòng xác nhận Email để đăng nhập vào hệ thống.");
+            Alert.alert("Thành Công", "Vui lòng xác nhận số điện thoại để đăng nhập vào hệ thống.",
+
+                [
+                    { text: 'OK', onPress: () => setIsConfirm(true) }
+                ],
+                { cancelable: false }
+            );
             setIsLoading(false);
-            props.navigation.navigate('login');
+
+            // setIsConfirm(true);
+            // props.navigation.navigate('login');
         }
     }
 
 
-    useEffect(() => {
-        setUserInfo({ ...userInfo, role: roleSelected.value });
-
-    }, [roleSelected]);
 
 
     const hasErrors = (error) => {
@@ -165,153 +86,228 @@ const RegisterScreen = (props) => {
     };
 
 
+
+
+    // Confirm SMS OTP
+    const _onCheckConfirmCode = () => {
+        if (!confirmCode || confirmCode.length < 6) {
+            return false;
+        }
+        return true;
+    }
+
+    const _onConfirmCode = async () => {
+        setIsLoading(true);
+        let isValid = _onCheckConfirmCode();
+
+        if (!isValid) {
+            setIsLoading(false);
+            Alert.alert("Thông báo", "Mã OTP không hợp lệ!.")
+            return;
+        }
+
+        setTimeout(() => {
+            setIsConfirm(false);
+            setIsLoading(false);
+            props.navigation.navigate('login');
+        }, 1200);
+
+    }
+
+
+
     return (
-        <KeyboardAvoidingView
-            behavior={"height"}
-            style={{ flex: 1 }}
-            keyboardVerticalOffset={60}
+
+        <>
+            <KeyboardAvoidingView
+                behavior={"height"}
+                style={{ flex: 1 }}
+                keyboardVerticalOffset={60}
 
 
-        >
-            <ScrollView style={styles.container}>
-
-
-
-                {/* <SelectRole
-                    selectRoleVisible={selectRoleVisible}
-                    setSelectRoleVisible={setSelectRoleVisible}
-                    setRoleSelected={setRoleSelected}
-                    roleSelected={roleSelected}
-                /> */}
-
-
-                <View style={styles.loginForm}>
-
-                    {/* <TouchableOpacity style={styles.selectButton}
-                        onPress={() => setSelectRoleVisible(true)}
-                    >
-                        <Text>{roleSelected.name ? roleSelected.name : 'Chọn vai trò'}</Text>
-                    </TouchableOpacity> */}
-
-                    {/* display occupation if user is collaborator */}
-                    {
-                        // roleSelected.value == 'isCollaborator' &&
-                        // <OccupationSelection
-                        //     itemSelected={occupationSelect}
-                        //     setItemSelected={setOccupationSelect}
-
-                        // />
-
-                    }
-
-                    <TextInput
-                        style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({ ...userInfo, name: text })}
-                        value={userInfo.name}
-                        placeholder={'Tên'}
-
-                    />
-                    {
-                        (isError && !userInfo.name)
-                        && <HelperText type="error" visible={hasErrors()}>
-                            Vui lòng nhập tên!
-                            </HelperText>
-
-                    }
-
-
-                    <TextInput
-                        style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({ ...userInfo, email: text })}
-                        value={userInfo.email}
-                        placeholder={'Email'}
-
-                    />
-                    {
-                        (isError && !userInfo.email)
-                        && <HelperText type="error" visible={hasErrors()}>
-                            Vui lòng nhập email!
-                            </HelperText>
-
-                    }
-
-                    <TextInput
-                        style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({ ...userInfo, password: text })}
-                        value={userInfo.password}
-                        placeholder={'Mật khẩu'}
-                        secureTextEntry={true}
-
-                    />
-
-                    <TextInput
-                        style={[styles.inputLogin, {}]}
-                        onChangeText={text => setUserInfo({ ...userInfo, idcard: text })}
-                        value={userInfo.idcard}
-                        placeholder={'Số chứng minh nhân dân / căn cước công dân'}
-                        keyboardType={'numeric'}
-
-                    />
-                    {
-                        (isError && !userInfo.idcard)
-                        && <HelperText type="error" visible={hasErrors()}>
-                            Vui lòng nhập chứng minh nhân dân!
-                            </HelperText>
-
-                    }
+            >
+                <ScrollView style={styles.container}>
 
 
 
-                    {/*  */}
-                    <TouchableOpacity style={styles.buttonSubmit}
-                        onPress={_onRegister}
-                        disabled={isLoading}
-                    >
+                    <View style={styles.formLogoWrap}>
+                        <Title
+                            style={{
+                                fontSize: 26,
+                                color: CommonColors.primary
+                            }}
+                        >
+                            Dịch vụ 24/7
+                </Title>
+                        <Text
+                            style={{
+                                fontSize: 18,
+                                color: CommonColors.primary
+                            }}
+                        >
+                            Xin chào!
+                </Text>
+                    </View>
+
+
+                    <View style={styles.loginForm}>
+
+
+                        <TextInput
+                            style={[styles.inputLogin, {}]}
+                            onChangeText={text => setUserInfo({ ...userInfo, username: text })}
+                            value={userInfo.username}
+                            placeholder={'Nhập họ và tên'}
+
+                        />
                         {
-                            isLoading && <ActivityIndicator />
+                            (isError && !userInfo.username)
+                            && <HelperText type="error" visible={hasErrors()}>
+                                Vui lòng nhập tên!
+                            </HelperText>
+
                         }
-                        <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Ký</Text>
 
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.socialNetworkLogin}>
-                    <Button style={{ marginRight: 16 }}
-                        labelStyle={{
-                            color: 'white'
-                        }}
-                        icon="facebook"
-                        mode="contained" onPress={() => console.log('Pressed')}
-                    >
-                        Facebook
-            </Button>
-                    <Button
-                        labelStyle={{
-                            color: 'white'
-                        }}
-                        color={'salmon'}
-                        icon="google"
-                        mode="contained" onPress={() => console.log('Pressed')}
-                    >
-                        Google
-            </Button>
-                </View>
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
-                    <TouchableOpacity
-                        onPress={() => console.warn('ds')}
-                    >
-                        <Text>Quên mật khẩu?</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('login')}
-                    >
-                        <Text>Đã có tài khoản?</Text>
-                    </TouchableOpacity>
-                </View>
+                        <TextInput
+                            style={[styles.inputLogin, {}]}
+                            onChangeText={text => setUserInfo({ ...userInfo, phonenumber: text })}
+                            value={userInfo.phonenumber}
+                            placeholder={'Số điện thoại'}
+                            keyboardType={'numeric'}
+                        />
+                        {
+                            (isError && !userInfo.phonenumber)
+                            && <HelperText type="error" visible={hasErrors()}>
+                                Vui lòng nhập số điện thoại!
+                            </HelperText>
 
-            </ScrollView >
-        </KeyboardAvoidingView>
+                        }
+
+                        <TextInput
+                            style={[styles.inputLogin, {}]}
+                            onChangeText={text => setUserInfo({ ...userInfo, password: text })}
+                            value={userInfo.password}
+                            placeholder={'Mật khẩu'}
+                            secureTextEntry={true}
+
+                        />
+                        {
+                            (isError && !userInfo.password)
+                            && <HelperText type="error" visible={hasErrors()}>
+                                Vui lòng nhập số điện thoại!
+                            </HelperText>
+
+                        }
+
+
+
+                        {/*  */}
+                        <TouchableOpacity style={styles.buttonSubmit}
+                            onPress={_onRegister}
+                            disabled={isLoading}
+                        >
+                            {
+                                isLoading && <ActivityIndicator />
+                            }
+                            <Text style={{ textAlign: 'center', fontWeight: '600', color: 'white', fontSize: 18 }}>Đăng Ký</Text>
+
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.socialNetworkLogin}>
+                        <Button style={{ marginRight: 16 }}
+                            labelStyle={{
+                                color: 'white'
+                            }}
+                            icon="facebook"
+                            mode="contained" onPress={() => console.log('Pressed')}
+                        >
+                            Facebook
+            </Button>
+                        <Button
+                            labelStyle={{
+                                color: 'white'
+                            }}
+                            color={'salmon'}
+                            icon="google"
+                            mode="contained" onPress={() => console.log('Pressed')}
+                        >
+                            Google
+            </Button>
+                    </View>
+                    {/* <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+                        <TouchableOpacity
+                            onPress={() => console.warn('ds')}
+                        >
+                            <Text>Quên mật khẩu?</Text>
+                        </TouchableOpacity>
+                    </View> */}
+                    <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: 40 }}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('login')}
+                        >
+                            <Text>Đã có tài khoản?</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </ScrollView >
+            </KeyboardAvoidingView>
+
+
+            <ModalConfirmPhoneNumber
+                isVisible={isConfirm}
+                setIsVisible={setIsConfirm}
+                transparent={true}
+                animationType={"slide"}
+
+            >
+                <Text style={{ fontWeight: '700' }}>Nhập mã xác nhận OTP</Text>
+                <View style={{ width: 260 }}>
+                    <TextInput
+                        value={confirmCode}
+                        onChangeText={(text) => setConfirmCode(text)}
+                        keyboardType={'number-pad'}
+                        placeholder={"000000"}
+                        style={{
+                            borderBottomWidth: 1,
+                            borderColor: 'coral',
+                            padding: 12,
+                            fontSize: 32,
+                            textAlign: 'center'
+                        }}
+                        editable={!isLoading}
+                    />
+
+                    {
+                        !isLoading ?
+                            <View style={[styles.row, {
+                                alignItems: 'center',
+                                justifyContent: 'space-around',
+                                marginVertical: 18
+                            }]}>
+                                <Pressable
+                                    style={[styles.button, {
+                                    }]}
+                                    onPress={() => setIsConfirm(!isConfirm)}
+                                >
+                                    <Text style={styles.textStyle}>Huỷ</Text>
+                                </Pressable>
+                                <Pressable
+                                    style={[styles.button, {}]}
+                                    onPress={_onConfirmCode}
+                                >
+                                    <Text style={styles.textStyle}>Xác nhận</Text>
+                                </Pressable>
+
+                            </View> :
+                            <ActivityIndicator
+                                color={'coral'}
+                                size={'large'}
+                            />
+
+                    }
+                </View>
+            </ModalConfirmPhoneNumber>
+        </>
 
     )
 }
@@ -364,5 +360,29 @@ const styles = StyleSheet.create({
         backgroundColor: 'hsla(360, 100%, 100%, 0.5)',
         width: 160,
         alignSelf: 'center'
+    },
+    formLogoWrap: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 32
+
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        backgroundColor: 'coral',
+        width: 120
+    },
+    textStyle: {
+        fontSize: 18,
+        textAlign: 'center',
+        color: 'white',
+        fontWeight: '700'
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 })
