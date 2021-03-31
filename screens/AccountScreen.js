@@ -271,6 +271,14 @@ const AccountScreen = (props) => {
                                                 fontWeight: '700'
                                             }}
                                         />
+                                        <List.Item
+                                            title={"Cài đặt thông báo"}
+                                            left={props => <List.Icon {...props} icon={CommonIcons.bell} />}
+                                            onPress={() => props.navigation.navigate('NotificationSettingStack')}
+                                            titleStyle={{
+                                                fontWeight: '700'
+                                            }}
+                                        />
                                     </>
                                     :
                                     <List.Item

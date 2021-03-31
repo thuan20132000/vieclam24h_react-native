@@ -3,8 +3,10 @@ import { StyleSheet, Text, View, Image, Dimensions } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import CommonImages from '../constants/CommonImages'
 import messaging from '@react-native-firebase/messaging';
+import { useSelector } from 'react-redux';
 
-
+import { _getUserNotifications } from '../utils/serverApi'
+import { getDaysBetweenTwoDates } from '../utils/helper';
 
 const NotificationItem = ({
     title,
@@ -61,7 +63,7 @@ const NotificationItem = ({
                 <Text
                     style={[styles.subTime, { textAlign: 'left' }]}
                 >
-                    {time} giờ trước
+                    {time}
                 </Text>
             </View>
         </TouchableOpacity>
@@ -72,35 +74,25 @@ const NotificationItem = ({
 
 const NotificationScreen = (props) => {
 
-
+    const { userInformation } = useSelector(state => state.authentication);
     const notification_data = props.route.params;
-    const [notificationData, setNotificationData] = useState([
-        {
-            id: 1,
-            title: "C1 vua them mot cong viec ",
-            body: "C1 vua them mot cong viec",
-            sendTime: 2
-        },
-        {
-            id: 2,
-            title: "C1 vua them mot cong viec ",
-            body: "C2 vua them mot cong viec",
-            sendTime: 5
-        },
-        {
-            id: 3,
-            title: "C1 vua them mot cong viec ",
-            body: "C3 vua them mot cong viec",
-            sendTime: 2
-        }
-    ]);
-
+    const [notificationData, setNotificationData] = useState([]);
+    const [userNotification, setUserNotification] = useState([]);
     // React.useEffect(() => {
-    //     console.warn('fafas');
-    //     messaging().onNotificationOpenedApp(remoteMsg => {
-    //         setNotificationData([...notificationData, remoteMsg.notification]);
-    //     });
-    // }, [])
+    //     // console.warn('fafas');
+    //     // messaging().onNotificationOpenedApp(remoteMsg => {
+    //     //     setNotificationData([...notificationData, remoteMsg.notification]);
+    //     // });
+
+    //     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+    //         setNotificationData([...notificationData, remoteMessage.notification]);
+
+    //     } )
+
+    // }, []);
+
+
+
 
     React.useEffect(() => {
 
@@ -110,7 +102,18 @@ const NotificationScreen = (props) => {
                 setNotificationData([...notification_data, item]);
             }
         }
-    }, [])
+    }, []);
+
+
+
+    React.useEffect(() => {
+        _getUserNotifications(userInformation?.id).then((e) => {
+            console.warn(e);
+            if (e.status) {
+                setUserNotification(e.data);
+            }
+        });
+    }, []);
 
     return (
         <ScrollView
@@ -120,12 +123,14 @@ const NotificationScreen = (props) => {
             }}
         >
             {
-                notificationData.map((e, index) =>
+                userNotification.length > 0 &&
+                userNotification.map((e, index) =>
                     <NotificationItem
                         key={index.toString()}
                         title={`${e.title}`}
-                        subtitle={`${e.body}`}
-                        time={2}
+                        subtitle={`${e.content}`}
+                        time={getDaysBetweenTwoDates(e.created_at)}
+                    
                     />
 
                 )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, Image } from 'react-native';
 import { NavigationContainer,useNavigation,TabActions, useNavigationBuilder } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets, StackCardStyleInterpolator, CardStyleInterpolators } from '@react-navigation/stack';
 
@@ -7,8 +7,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from './constants/CommonIcons';
 
-// Firebase FCM
-import messaging from '@react-native-firebase/messaging';
 // Multiple Language
 import { Translate } from './locales/index';
 
@@ -77,6 +75,7 @@ import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
 import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen';
 import SearchHomeScreen from './screens/Search/SearchHomeScreen';
 import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
+import NotificationSettingHomeScreen from './screens/NotificationSettingStack/NotificationSettingHomeScreen';
 
 
 
@@ -322,7 +321,11 @@ function CustomerJobStack(props) {
 const NotificationStackNavigator = createStackNavigator();
 function NotificationStack() {
     return (
-        <NotificationStackNavigator.Navigator>
+        <NotificationStackNavigator.Navigator
+            screenOptions={{
+                title:"Thông báo"
+            }}
+        >
             <NotificationStackNavigator.Screen
                 name={'NotificationList'}
                 component={NotificationScreen}
@@ -613,6 +616,24 @@ function UpdateCandidateStack(props) {
 
 
 
+
+const NotificationSettingStackNavigator = createStackNavigator();
+const NotificationSettingStack = () => {
+    return (
+        <NotificationSettingStackNavigator.Navigator>
+            <NotificationSettingStackNavigator.Screen
+                name="NoticationSettingHome"
+                component={NotificationSettingHomeScreen}
+                options={{
+                    title:"Cài đặt thông báo"
+                }}
+            />
+        </NotificationSettingStackNavigator.Navigator>
+    )
+}
+
+
+
 /**
  * Account Stack
  */
@@ -668,6 +689,13 @@ function AccountStack() {
             <AccountStackNavigator.Screen
                 name="UserJobStack"
                 component={CustomerJobStack}
+                options={{
+                    headerShown: false,
+                }}
+            />
+               <AccountStackNavigator.Screen
+                name="NotificationSettingStack"
+                component={NotificationSettingStack}
                 options={{
                     headerShown: false,
                 }}
@@ -843,7 +871,7 @@ function TabNavigator(props) {
                 name="Notification"
                 component={NotificationStack}
                 options={{
-                    tabBarLabel: 'thong bao',
+                    tabBarLabel: 'Thông báo',
                     tabBarBadge: 3,
                 }}
                 
@@ -869,18 +897,29 @@ function TabNavigator(props) {
                                 shadowRadius: 7.49,
 
                                 elevation: 12,
-                                top: 12,
-                                padding: 12,
-                                marginTop: 2
+                                // top: 12,
+                                padding: 4,
+                                marginTop: 18
 
                                 // borderTopRightRadius:22,
                                 // borderTopLeftRadius:22
                             }}
                         >
-                            <MaterialCommunityIcon
+                            {/* <MaterialCommunityIcon
                                 name={CommonIcons.search}
                                 color={'coral'}
                                 size={34}
+                            /> */}
+                            <Image
+                                source={
+                                    require('./utils/gift/search2.gif')
+
+                                }
+                                style={{
+                                    width:40,
+                                    height:40,
+                                    borderRadius:20
+                                }}
                             />
                         </View>
                     ),

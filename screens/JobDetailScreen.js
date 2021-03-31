@@ -31,6 +31,7 @@ import CommonImages from '../constants/CommonImages';
 
 
 import service_url from '../serverConfig';
+import RowInformation from '../components/Row/RowInformation';
 
 
 const JobDetailScreen = (props) => {
@@ -91,10 +92,6 @@ const JobDetailScreen = (props) => {
     }
 
     const [jobDetail, setJobDetail] = useState();
-
-
-
-
     const [errorMessagage, setErrorMessage] = useState({
         status: false,
         message: ''
@@ -135,14 +132,21 @@ const JobDetailScreen = (props) => {
             if (checkValidated) {
 
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
+                console.log('apply res: ',applyRes);
                 if (!applyRes.status) {
+                    if (applyRes.code == "CANDIDATE_404") {
+                        Alert.alert("Thông báo", "Bạn cần đăng ký ứng viên để ứng tuyển.");
 
-                    Alert.alert("Thất bại", `Ứng viên đã ứng tuyển, không thể ứng tuyển lại!`);
+                    } else {
+                        Alert.alert("Thất bại", `Ứng viên đã ứng tuyển, không thể ứng tuyển lại!`);
+                    }
+                    refRBSheet_applyJob.current.close();
+
                     setTimeout(() => {
-                        refRBSheet_applyJob.current.close();
+                        props.navigation.navigate('Accounts')
+                        
 
-
-                    }, 2500);
+                    }, 1500);
 
 
 
@@ -176,7 +180,7 @@ const JobDetailScreen = (props) => {
     const [expectedPrice, setExpectedPrice] = useState('');
     const [jobMessage, setJobMessage] = useState('');
 
-
+    let timeoutEvent;
     const _getJobDetail = async () => {
         setIsLoading(true);
         let job = await getJobDetail(job_id);
@@ -199,7 +203,11 @@ const JobDetailScreen = (props) => {
         props.navigation.setOptions({
             title: "Chi tiết công việc",
             headerBackTitleVisible: false
-        })
+        });
+
+        return () => {
+            clearTimeout(timeoutEvent);
+        }
 
     }, []);
 
@@ -231,43 +239,6 @@ const JobDetailScreen = (props) => {
     }
 
 
-    useLayoutEffect(() => {
-
-        return () => {
-
-        };
-
-    }, []);
-
-    // if (isLoading) {
-    //     return (
-    //         <View
-    //             style={{
-    //                 display: 'flex',
-    //                 flex: 1,
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center',
-    //                 alignContent: 'center',
-    //                 backgroundColor: 'white'
-
-    //             }}
-    //         >
-    //             <LoadingSimple />
-
-    //         </View>
-
-    //     )
-    // }
-
-
-
-
-
-
-
-
-
-
     return (
         <ScrollView>
             {
@@ -284,19 +255,20 @@ const JobDetailScreen = (props) => {
                                 alignContent: 'center',
                                 flexDirection: "row",
                                 flexWrap: 'wrap',
+                                marginVertical: 6
 
                             }}
                         >
                             {
                                 jobDetail.images?.map((e, index) =>
-                                    <TouchableOpacity
+                                    <TouchableOpacity key={index.toString()}
 
                                         style={[
                                             styles.imageWrap,
                                             {
                                                 width: deviceWidth / 3 - 10,
                                                 height: 120,
-                                                marginHorizontal: 2
+                                                marginHorizontal: 2,
 
                                             }
                                         ]}
@@ -311,6 +283,8 @@ const JobDetailScreen = (props) => {
                                             style={{
                                                 width: '100%',
                                                 height: '100%',
+                                                borderRadius: 6
+
                                             }}
 
                                         />
@@ -329,34 +303,24 @@ const JobDetailScreen = (props) => {
                         <View style={[
                             styles.customerInfoContainer,
                             {
-                                borderRadius: 22,
+                                borderRadius: 6,
                                 marginHorizontal: 8
                             }
                         ]}
 
                         >
-                            <Text style={[
-                                styles.customerName,
-                                {
-                                    fontWeight: '400'
-                                }
-                            ]}>
-                                {jobDetail.author?.name}
-                            </Text>
-                            <View style={styles.jobAddressContainer}>
-                                <MaterialCommunityIcon
-                                    name={CommonIcons.homeMarker}
-                                    size={28}
-                                    color={'coral'}
-                                    style={{
-                                        marginRight: 8
-                                    }}
-                                    onPress={_onNavigateToMapDirection}
-                                />
-                                <Text style={styles.jobAddress}>
-                                    {`${jobDetail.location?.province} - ${jobDetail.location?.district}`}
-                                </Text>
-                            </View>
+
+                            <RowInformation
+                                iconName={CommonIcons.account}
+                                iconColor={'coral'}
+                                value={jobDetail?.author?.username}
+                            />
+                            <RowInformation
+                                iconName={CommonIcons.homeCircle}
+                                iconColor={'coral'}
+                                value={`${jobDetail.location?.province} - ${jobDetail.location?.district}`}
+                            />
+
                             <View style={styles.jobControl}>
 
                                 <TouchableOpacity
@@ -365,8 +329,8 @@ const JobDetailScreen = (props) => {
                                     style={{
                                         paddingHorizontal: 18,
                                         paddingVertical: 12,
-                                        backgroundColor: CommonColors.btnSubmit,
-                                        borderRadius: 12
+                                        backgroundColor: 'coral',
+                                        borderRadius: 6
                                     }}
 
                                 >
@@ -374,7 +338,7 @@ const JobDetailScreen = (props) => {
                                         style={[
                                             {
                                                 fontSize: 18,
-                                                fontWeight: '600',
+                                                fontWeight: '700',
                                                 color: 'white'
                                             }
                                         ]}
@@ -385,33 +349,76 @@ const JobDetailScreen = (props) => {
 
                                 <View
                                     style={[
-                                        styles.row
+                                        styles.row,
+
                                     ]}
                                 >
-                                    <IconButton
-                                        icon={CommonIcons.chatMessage}
-                                        color={CommonColors.btnSubmit}
-                                        size={22}
-                                        onPress={_onNavigateToChat}
-                                    />
-                                    <IconButton
-                                        icon={CommonIcons.phone}
-                                        color={CommonColors.btnSubmit}
-                                        size={22}
-                                        onPress={_onNavigateToChat}
-                                    />
+                                    <View
+                                        style={[
+                                            {
+                                                borderRadius: 8,
+                                                backgroundColor: 'white',
+                                                shadowColor: "#000",
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 2,
+                                                },
+                                                shadowOpacity: 0.25,
+                                                shadowRadius: 3.84,
+
+                                                elevation: 5,
+                                                marginHorizontal: 2
+                                            }
+                                        ]}
+                                    >
+                                        <IconButton
+                                            icon={CommonIcons.chatMessage}
+                                            color={CommonColors.btnSubmit}
+                                            size={26}
+                                            onPress={_onNavigateToChat}
+                                        />
+
+                                    </View>
+                                    <View
+                                        style={[
+                                            {
+                                                borderRadius: 8,
+                                                backgroundColor: 'white',
+                                                shadowColor: "#000",
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 2,
+                                                },
+                                                shadowOpacity: 0.25,
+                                                shadowRadius: 3.84,
+
+                                                elevation: 5,
+                                                marginHorizontal: 2
+                                            }
+                                        ]}
+                                    >
+                                        <IconButton
+                                            icon={CommonIcons.phone}
+                                            color={CommonColors.btnSubmit}
+                                            size={26}
+                                            onPress={_onNavigateToChat}
+                                        />
+
+                                    </View>
 
                                 </View>
                             </View>
 
                         </View>
+
                         {/* Description */}
                         <View style={[
                             styles.jobDescriptionsContainer,
                             {
                                 backgroundColor: 'white',
                                 marginHorizontal: 8,
-                                borderRadius: 12
+                                borderRadius: 6,
+                                minHeight: 400
                             }
                         ]}
                         >
@@ -472,14 +479,7 @@ const JobDetailScreen = (props) => {
                                     multiline={true}
 
                                 />
-                                {/* <Button style={{ marginVertical: 16, width: 160, alignSelf: 'center', backgroundColor: CommonColors.primary }}
-                                mode="contained"
-                                onPress={_applyJob}
-                                loading={isLoading}
-                                disabled={isLoading}
-                            >
-                                Ứng Tuyển
-                            </Button> */}
+
 
                                 <View style={[
                                     styles.row,

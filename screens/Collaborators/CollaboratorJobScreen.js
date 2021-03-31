@@ -9,7 +9,7 @@ import CommonColors from '../../constants/CommonColors';
 
 import { _getApplyJobList } from '../../utils/serverApi';
 
-import {JobItemApprovedCard, JobItemPendingCard} from '../../components/Card/CardJobItem';
+import { JobItemApprovedCard, JobItemPendingCard } from '../../components/Card/CardJobItem';
 import RowInformation from '../../components/Row/RowInformation';
 import CommonIcons from '../../constants/CommonIcons';
 import { formatDateTime, formatTimeString } from '../../utils/helper';
@@ -26,14 +26,14 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-            let collaboratorJobRes = await _getApplyJobList(user_id,"published");
-            // console.warn('res: ',collaboratorJobRes);
-            if (collaboratorJobRes.status) {
-                setCollaboratorJob(collaboratorJobRes.data);
-            } else {
-                setCollaboratorJob([]);
-            }
-        
+        let collaboratorJobRes = await _getApplyJobList(user_id, "published");
+        // console.warn('res: ',collaboratorJobRes);
+        if (collaboratorJobRes.status) {
+            setCollaboratorJob(collaboratorJobRes.data);
+        } else {
+            setCollaboratorJob([]);
+        }
+
 
     }
 
@@ -45,13 +45,13 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
         timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
-            
+
         }, 2000);
     }, []);
 
     useEffect(() => {
         _getCollaboratorJobs();
-    
+
 
         return () => {
             clearTimeout(timeoutEvent);
@@ -99,8 +99,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     const [refreshing, setRefreshing] = useState(false);
 
     const _getCollaboratorJobs = async () => {
-        let collaboratorJobRes = await _getApplyJobList(user_id,"approved");
-        console.warn('a: ',collaboratorJobRes);
+        let collaboratorJobRes = await _getApplyJobList(user_id, "approved");
         if (collaboratorJobRes.status) {
             setCollaboratorJob(collaboratorJobRes.data);
         }
@@ -118,6 +117,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     }, []);
 
     useEffect(() => {
+
         _getCollaboratorJobs();
         return () => {
             clearTimeout(timeoutEvent);
@@ -125,15 +125,15 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
 
     }, [])
 
-    if(refreshing){
+    if (refreshing) {
         return (
             <View
                 style={{
-                    display:'flex',
-                    flex:1 
+                    display: 'flex',
+                    flex: 1
                 }}
             >
-                <LoadingSimple/>
+                <LoadingSimple />
             </View>
         )
     }
@@ -155,15 +155,15 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
 
                     // />
                     <JobItemApprovedCard
-                       jobTitle={e?.job?.name} 
-                       jobPrice={e?.job?.suggestion_price}
-                       jobAddress={e?.job?.location?.province}
-                       children={
-                           <RowInformation
+                        jobTitle={e?.job?.name}
+                        jobPrice={e?.job?.suggestion_price}
+                        jobAddress={e?.job?.location?.province}
+                        children={
+                            <RowInformation
                                 iconName={CommonIcons.close}
                                 label={formatDateTime(e?.updated_at)}
-                           />
-                       }
+                            />
+                        }
                     />
                 )
             }
@@ -239,21 +239,24 @@ const CollaboratorJobScreen = (props) => {
         { key: 'confirmedJob', title: 'đã hoàn thành' },
 
     ]);
-    const renderScene = SceneMap({
-        applyingJob: () =>
-            <ApplyingJob
-                user_id={userInformation.id}
-            />,
-        approvedJob: () =>
-            <ApprovedJob
-                user_id={userInformation.id}
-            />,
-        confirmedJob: () =>
-            <ConfirmJob
-                user_id={userInformation.id}
-            />
+    // const renderScene = SceneMap({
+    //     applyingJob: ApplyingJob,
+    //     approvedJob: ApprovedJob,
+    //     confirmedJob: ConfirmJob,
+    // });
 
-    });
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'applyingJob':
+                return <ApplyingJob user_id={userInformation.id} />;
+            case 'approvedJob':
+                return <ApprovedJob user_id={userInformation.id} />;
+            case 'confirmedJob':
+                return <ConfirmJob user_id={userInformation.id} />;
+            default:
+                return null;
+        }
+    };
 
     const initialLayout = { width: Dimensions.get('window').width };
 

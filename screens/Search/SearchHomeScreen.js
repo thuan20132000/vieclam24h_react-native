@@ -73,12 +73,16 @@ const SearchHomeScreen = (props) => {
 
     useEffect(() => {
 
-        messaging().getToken().then((token) => console.warn(token));
 
         messaging().onNotificationOpenedApp(remoteMsg => {
             navigation.navigate('Notification')
         });
 
+        messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+            console.warn('bg: ',remoteMessage);
+        });
+
+        messaging().onMessage(async message => console.warn('message: ',message));
 
     }, []);
 
