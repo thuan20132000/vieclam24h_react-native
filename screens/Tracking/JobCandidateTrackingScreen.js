@@ -2,10 +2,9 @@ import React from 'react'
 import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { JobItemPendingCard } from '../../components/Card/CardJobItem'
 import CardUserContact from '../../components/Card/CardUserContact'
-
 import StepIndicator from 'react-native-step-indicator';
 
-const NotificationDetailScreen = (props) => {
+const JobCandidateTrackingScreen = () => {
 
     const labels = ["Ứng tuyển", "Chờ", "Chấp nhập", "Xác nhận", "Hoàn tất thanh toán"];
     const customStyles = {
@@ -55,11 +54,17 @@ const NotificationDetailScreen = (props) => {
         {
             position: '4',
             stepStatus: 'complete',
-            label: 'Xác nhận',
+            label: 'Xác nhận thực hiện',
+            currentPosition: ' 3',
+        },
+        {
+            position: '5',
+            stepStatus: 'complete',
+            label: 'Xác nhận hoàn thành',
             currentPosition: ' 4',
         },
         {
-            position: '4',
+            position: '6',
             stepStatus: 'complete',
             label: 'Hoàn tất thanh toán',
             currentPosition: ' 4',
@@ -69,9 +74,9 @@ const NotificationDetailScreen = (props) => {
     return (
         <View
             style={{
-                display:'flex',
-                flex:1,
-                backgroundColor:'white'
+                display: 'flex',
+                flex: 1,
+                backgroundColor: 'white'
             }}
         >
             <JobItemPendingCard
@@ -88,7 +93,7 @@ const NotificationDetailScreen = (props) => {
 
             <View
                 style={{
-                    height: 300,
+                    height: 400,
                     paddingHorizontal: 22,
                     backgroundColor: 'white'
                 }}
@@ -97,7 +102,7 @@ const NotificationDetailScreen = (props) => {
                     customStyles={customStyles}
                     currentPosition={2}
                     labels={label_custom}
-
+                    stepCount={6}
                     direction={'vertical'}
                     renderLabel={({ position, label, currentPosition, stepStatus }) =>
                         <View
@@ -111,7 +116,7 @@ const NotificationDetailScreen = (props) => {
                                 style={{
                                     display: 'flex',
                                     flexDirection: 'row',
-                                    justifyContent:'space-between'
+                                    justifyContent: 'space-between'
                                 }}
                             >
                                 <Text
@@ -148,6 +153,6 @@ const NotificationDetailScreen = (props) => {
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
-export default NotificationDetailScreen
+export default JobCandidateTrackingScreen
 
 const styles = StyleSheet.create({})

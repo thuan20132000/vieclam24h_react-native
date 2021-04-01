@@ -3,8 +3,6 @@ import { StyleSheet, Text, View, Image, RefreshControl, Dimensions } from 'react
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import { Subheading } from 'react-native-paper'
 import { useSelector } from 'react-redux'
-import HomeContent from '../../components/Body/HomeContent'
-import CardHorizontal from '../../components/Card/CardHorizontal'
 import CollaboratorCard from '../../components/Card/CollaboratorCard'
 import MenuItem from '../../components/Menu/MenuItem'
 import SearchButton from '../../components/Search/SearchButton'

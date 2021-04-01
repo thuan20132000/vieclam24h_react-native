@@ -77,6 +77,7 @@ import SearchHomeScreen from './screens/Search/SearchHomeScreen';
 import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
 import NotificationSettingHomeScreen from './screens/NotificationSettingStack/NotificationSettingHomeScreen';
 import NotificationDetailScreen from './screens/NotificationStack/NotificationDetailScreen';
+import JobCandidateTrackingScreen from './screens/Tracking/JobCandidateTrackingScreen';
 
 
 
@@ -348,18 +349,18 @@ function NotificationStack() {
 
     return (
         <NotificationStackNavigator.Navigator
-        screenOptions={{
-            title: "Thông báo",
-            gestureEnabled: false,
-            animationEnabled: true,
-            swipeEnabled: false,
-            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-            transitionSpec: {
-                open: configOpen,
-                close: configClose
-            },
+            screenOptions={{
+                title: "Thông báo",
+                gestureEnabled: false,
+                animationEnabled: true,
+                swipeEnabled: false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                },
 
-        }}
+            }}
 
 
         >
@@ -370,6 +371,10 @@ function NotificationStack() {
             <NotificationStackNavigator.Screen
                 name={'NotificationDetail'}
                 component={NotificationDetailScreen}
+            />
+            <NotificationStackNavigator.Screen
+                name='JobCandidateTracking'
+                component={JobCandidateTrackingScreen}
             />
         </NotificationStackNavigator.Navigator>
     )
@@ -768,6 +773,7 @@ function AccountStack() {
                     headerShown: false,
                 }}
             />
+           
             <AccountStackNavigator.Screen
                 name="NotificationSettingStack"
                 component={NotificationSettingStack}
@@ -775,6 +781,19 @@ function AccountStack() {
                     headerShown: false,
                 }}
             />
+             <AccountStackNavigator.Screen
+                name="JobCandidateTracking"
+                component={JobCandidateTrackingScreen}
+                options={{
+                    title:"",
+                    gestureEnabled: false,
+                    animationEnabled: true,
+                    swipeEnabled: false,
+                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    
+                }}
+            />
+
         </AccountStackNavigator.Navigator>
     )
 }

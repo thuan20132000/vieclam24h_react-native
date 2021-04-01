@@ -9,7 +9,6 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import ItemChip from '../components/Item/ItemChip';
 import serverConfig from '../serverConfig';
 import CardHorizontal from '../components/Card/CardHorizontal';
-import CardJobConfirm from '../components/Card/CardJobConfirm';
 import JobItem from '../components/Card/JobItem';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 

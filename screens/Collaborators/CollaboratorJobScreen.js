@@ -94,7 +94,7 @@ const ApplyingJob = ({ user_id, status = 2 }) => {
  * 
  * @param {*} param0 
  */
-const ApprovedJob = ({ user_id, status = 3 }) => {
+const ApprovedJob = ({ user_id, status = 3,navigation }) => {
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -123,7 +123,14 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
             clearTimeout(timeoutEvent);
         }
 
-    }, [])
+    }, []);
+
+
+    const _onNavigateJobCandidateTracking = (e) => {
+
+        navigation.navigate('JobCandidateTracking');
+
+    }
 
     if (refreshing) {
         return (
@@ -165,6 +172,8 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
                                 label={formatDateTime(e?.updated_at)}
                             />
                         }
+                        onItemPress={()=>_onNavigateJobCandidateTracking(e)}
+                        
                     />
                 )
             }
@@ -246,7 +255,7 @@ const CollaboratorJobScreen = (props) => {
             case 'applyingJob':
                 return <ApplyingJob user_id={userInformation.id} />;
             case 'approvedJob':
-                return <ApprovedJob user_id={userInformation.id} />;
+                return <ApprovedJob user_id={userInformation.id} navigation={props.navigation} />;
             case 'confirmedJob':
                 return <ConfirmJob user_id={userInformation.id} />;
             default:

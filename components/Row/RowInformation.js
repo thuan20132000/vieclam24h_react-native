@@ -20,12 +20,12 @@ const RowInformation = ({
     return (
         <View style={[
             {
-                display:'flex',
-                flexDirection:'row',
-                alignItems:'center',
-                marginVertical:4,
-                alignContent:'center',
-                
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 4,
+                alignContent: 'center',
+
             },
             containerStyle
 
@@ -36,34 +36,40 @@ const RowInformation = ({
                 color={iconColor || CommonColors.btnSubmit}
                 style={[
                     {
-                        marginHorizontal:6
+                        marginHorizontal: 6
 
                     },
                     iconStyle
                 ]}
 
             />
-            <Text
-                style={
-                    [
-                        {
-                            fontSize: 14,
-                            color:'grey',
-                            marginHorizontal:6
+            {
+                label &&
+                <Text
+                    style={
+                        [
+                            {
+                                fontSize: 14,
+                                color: 'grey',
+                                marginHorizontal: 6,
 
-                        },
-                        labelStyle
-                    ]
-                }
-            >
-                {label}
-            </Text>
+                            },
+                            labelStyle
+                        ]
+                    }
+                >
+                    {label}
+                </Text>
+
+            }
             <Text
                 style={[
                     {
-                        color:'black',
-                        fontSize:14,
-                        fontWeight:'700',
+                        color: 'black',
+                        fontSize: 14,
+                        fontWeight: '700',
+                        overflow: 'hidden',
+                        width: 240
                     },
                     valueStyle
                 ]}

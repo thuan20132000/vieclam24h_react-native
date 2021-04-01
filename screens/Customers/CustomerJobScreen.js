@@ -15,7 +15,6 @@ import {
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 import { formatDateTime, formatCash } from '../../utils/helper';
-import CardJobConfirm from '../../components/Card/CardJobConfirm';
 import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import LoadingSimple from '../../components/Loading/LoadingSimple';

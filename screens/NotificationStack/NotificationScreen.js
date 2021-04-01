@@ -159,7 +159,7 @@ const NotificationScreen = (props) => {
 
 
     const _onNotificationPress = async () => {
-        props.navigation.navigate('NotificationDetail');
+        props.navigation.navigate('JobCandidateTracking');
     }
 
     return (

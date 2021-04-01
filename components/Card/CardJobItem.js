@@ -121,7 +121,8 @@ export const JobItemPendingCard = ({
     children,
     onPressOpen,
     onPressDelete,
-    pressDisable
+    pressDisable,
+    canRemove=true
 }) => {
     return (
         <>
@@ -129,7 +130,7 @@ export const JobItemPendingCard = ({
                 jobTitle={jobTitle}
                 jobPrice={jobPrice}
                 jobAddress={jobAddress}
-                canRemove={true}
+                canRemove={canRemove}
                 containerStyle={containerStyle}
                 jobExpectedPrice={jobExpectedPrice}
                 children={children}
@@ -149,7 +150,8 @@ export const JobItemApprovedCard = ({
     jobAddress,
     children,
     pressDisable,
-    expectedPrice
+    expectedPrice,
+    onItemPress
 }) => {
     return (
         <>
@@ -161,6 +163,7 @@ export const JobItemApprovedCard = ({
                 children={children}
                 pressDisable={pressDisable}
                 jobExpectedPrice={expectedPrice}
+                onPressOpen={onItemPress}
             />
 
         </>
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.36,
         shadowRadius: 6.68,
 
-        elevation: 11,
+        elevation: 7,
         borderRadius: 8,
         padding: 6
     }

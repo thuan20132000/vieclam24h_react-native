@@ -304,9 +304,10 @@ const AccountScreen = (props) => {
                                 onPress={_logout}
                             >
                                 Đăng Xuất
-                </Button>
+                            </Button>
 
                         </View>
+                        
 
                     </>
                 }

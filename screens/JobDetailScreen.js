@@ -12,8 +12,6 @@ import {
 } from 'react-native'
 import { ScrollView, } from 'react-native-gesture-handler';
 import { Headline, IconButton, TextInput, Snackbar } from 'react-native-paper';
-import Carousel from 'react-native-snap-carousel';
-import CardItem from '../components/Card/CardItem';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CommonIcons from '../constants/CommonIcons';
 import CommonColors from '../constants/CommonColors';
@@ -22,9 +20,6 @@ import { useSelector } from 'react-redux';
 
 import { getJobDetail, applyJob, checkToConnectToUserChat } from '../utils/serverApi';
 import { formatCash } from '../utils/helper';
-
-import { JOB_DATA } from '../utils/SampleData';
-import LoadingSimple from '../components/Loading/LoadingSimple';
 
 import ImageViewer from 'react-native-image-zoom-viewer';
 import CommonImages from '../constants/CommonImages';
@@ -47,23 +42,6 @@ const JobDetailScreen = (props) => {
     const [isDisabling, setIsDisabling] = useState(false);
     const [galleryVisible, setGalleryVisible] = useState(false);
 
-
-    // Gallery images
-    const images = [{
-        // Simplest usage.
-        url: 'https://avatars2.githubusercontent.com/u/7970947?v=3&s=460',
-
-        // width: number
-        // height: number
-        // Optional, if you know the image size, you can set the optimization performance
-
-        // You can pass props to <Image />.
-        props: {
-            // headers: ...
-        }
-    }, {
-        url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQtt716Ot-mm3fMbISo19RrwLY94wlLocE0Sw&usqp=CAU'
-    }];
 
     //const [galleryImages,setGalleryImages] = useState([]);
 
