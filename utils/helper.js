@@ -54,32 +54,35 @@ export const isPhoneNumber = (number) => {
 
 
 export const getDaysBetweenTwoDates = (created_at) => {
-    var date1 = new Date(created_at);
-    var date2 = new Date();
-    var difference = date2.getTime() - date1.getTime();
+    var nowDateTimeString = new Date();
+
+    let created_date_timestring = created_at
+
+    if(isNaN(created_at)){
+        var date1 = new Date(created_at);
+        created_date_timestring = date1.getTime();
+    }
+
+    var difference = nowDateTimeString.getTime() - created_date_timestring;
     var days = Math.ceil(difference / (1000 * 3600 * 24));
 
-    var ml_day = 3600 * 1000 * 24;
-    var ms_to_now = date2.getTime() - date1.getTime();
-
-
-    var diff = (date2.getTime() - date1.getTime()) / 1000;
-    diff = diff / 60;
-    var fm = Math.abs(Math.round(diff));
+    var diff = (nowDateTimeString.getTime() - created_date_timestring) / 1000;
+    var fm = Math.floor(Math.abs(Math.round(diff / 60)));
 
     if(fm>1440){
-        console.warn(`${days-1} ngày trước at ${date1.getHours()} - ${date1.getMinutes()} - ${date1.getDate()}`);
-        return `${days-1} ngày trước lúc ${formatDateString(created_at)}`
+        // console.warn('fm: ',fm);
+        // console.warn(`${days} ngày trước at ${date1.getHours()} - ${date1.getMinutes()} - ${date1.getDate()}`);
+        return `${days} ngày trước `
 
     }else if(fm>=60){
-        let h = fm / 60;
-        console.warn(`${h} giờ trước at ${date1.getHours()} - ${date1.getMinutes()} - ${date1.getDate()}`);
-        return `${h} giờ trước lúc ${formatDateString(created_at)}`
+        let h =  Math.floor(fm / 60);
+        // console.warn(`${h} giờ trước at ${date1.getHours()} - ${date1.getMinutes()} - ${date1.getDate()}`);
+        return `${h} giờ trước `
 
         
     }else{
-        console.warn(`${fm} phút trước ${date1.getHours()} - ${date1.getMinutes()} - ${date1.getDate()}`)
-        return `${fm} phút trước lúc ${formatDateString(created_at)}`
+        // console.warn(`${fm} phút trước ${date1.getHours()} - ${date1.getMinutes()} - ${date1.getDate()}`)
+        return `${fm} phút trước `
 
     }
    

@@ -51,7 +51,6 @@ const SearchHomeScreen = (props) => {
     const _onGetDataSearch = async (value) => {
         setIsLoading(true);
         let searchRes = await _searchCandidate(userInformation.id, value);
-        console.warn(searchRes);
         if (searchRes.status && searchRes.data) {
             setSearchData(searchRes.data?.data);
         } else {
@@ -78,11 +77,11 @@ const SearchHomeScreen = (props) => {
             navigation.navigate('Notification')
         });
 
-        messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-            console.warn('bg: ',remoteMessage);
-        });
+        // messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+        //     console.warn('bg: ',remoteMessage);
+        // });
 
-        messaging().onMessage(async message => console.warn('message: ',message));
+        // messaging().onMessage(async message => console.warn('message: ',message));
 
     }, []);
 

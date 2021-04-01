@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image } from 'react-native';
-import { NavigationContainer,useNavigation,TabActions, useNavigationBuilder } from '@react-navigation/native';
+import { NavigationContainer, useNavigation, TabActions, useNavigationBuilder } from '@react-navigation/native';
 import { createStackNavigator, TransitionPresets, StackCardStyleInterpolator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -49,7 +49,7 @@ import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 import CollaboratorSearchScreen from './screens/Collaborators/CollaboratorSearchScreen';
 import CustomerStatisticScreen from './screens/Customers/CustomerStatisticScreen';
 import CollaboratorStatisticScreen from './screens/Collaborators/CollaboratorStatisticScreen';
-import NotificationScreen from './screens/NotificationScreen';
+import NotificationScreen from './screens/NotificationStack/NotificationScreen';
 import MapPlaceDirectionScreen from './screens/Map/MapPlaceDirectionScreen';
 import CategorySectionScreen from './screens/PostJob/CategorySectionScreen';
 import FieldSectionScreen from './screens/PostJob/FieldSectionScreen';
@@ -76,6 +76,7 @@ import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen
 import SearchHomeScreen from './screens/Search/SearchHomeScreen';
 import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
 import NotificationSettingHomeScreen from './screens/NotificationSettingStack/NotificationSettingHomeScreen';
+import NotificationDetailScreen from './screens/NotificationStack/NotificationDetailScreen';
 
 
 
@@ -101,7 +102,7 @@ function AuthenticationStack() {
                 name="register"
                 component={RegisterScreen}
                 options={{
-                    title:"Đăng ký"
+                    title: "Đăng ký"
                 }}
             />
         </AuthenticationStackNavigator.Navigator>
@@ -123,7 +124,7 @@ function CollaboratorHomeStack() {
             <CollaboratorHomeStackNavigator.Screen
                 name="CollaboratorHome"
                 component={CollaboratorHomeScreen}
-                
+
             />
             <CollaboratorHomeStackNavigator.Screen
                 name="JobDetail"
@@ -320,15 +321,55 @@ function CustomerJobStack(props) {
 
 const NotificationStackNavigator = createStackNavigator();
 function NotificationStack() {
+
+    const configOpen = {
+        animation: 'timing',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'spring',
+        config: {
+            stiffness: 500,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
     return (
         <NotificationStackNavigator.Navigator
-            screenOptions={{
-                title:"Thông báo"
-            }}
+        screenOptions={{
+            title: "Thông báo",
+            gestureEnabled: false,
+            animationEnabled: true,
+            swipeEnabled: false,
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            transitionSpec: {
+                open: configOpen,
+                close: configClose
+            },
+
+        }}
+
+
         >
             <NotificationStackNavigator.Screen
                 name={'NotificationList'}
                 component={NotificationScreen}
+            />
+            <NotificationStackNavigator.Screen
+                name={'NotificationDetail'}
+                component={NotificationDetailScreen}
             />
         </NotificationStackNavigator.Navigator>
     )
@@ -394,7 +435,7 @@ function PostJobStack(props) {
                     open: configOpen,
                     close: configClose
                 }
-            
+
             }}
 
         >
@@ -619,13 +660,47 @@ function UpdateCandidateStack(props) {
 
 const NotificationSettingStackNavigator = createStackNavigator();
 const NotificationSettingStack = () => {
+
+    const configOpen = {
+        animation: 'spring',
+        config: {
+            stiffness: 1000,
+            damping: 500,
+            mass: 3,
+            overshootClamping: true,
+            restDisplacementThreshold: 0.01,
+            restSpeedThreshold: 0.01,
+        },
+    };
+
+    const configClose = {
+        animation: 'timing',
+        config: {
+            duration: 200,
+            easing: Easing.linear
+        },
+    };
+
     return (
-        <NotificationSettingStackNavigator.Navigator>
+        <NotificationSettingStackNavigator.Navigator
+            screenOptions={{
+                gestureEnabled: false,
+                animationEnabled: true,
+                swipeEnabled: false,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                transitionSpec: {
+                    open: configOpen,
+                    close: configClose
+                }
+
+            }}
+
+        >
             <NotificationSettingStackNavigator.Screen
                 name="NoticationSettingHome"
                 component={NotificationSettingHomeScreen}
                 options={{
-                    title:"Cài đặt thông báo"
+                    title: "Cài đặt thông báo"
                 }}
             />
         </NotificationSettingStackNavigator.Navigator>
@@ -693,7 +768,7 @@ function AccountStack() {
                     headerShown: false,
                 }}
             />
-               <AccountStackNavigator.Screen
+            <AccountStackNavigator.Screen
                 name="NotificationSettingStack"
                 component={NotificationSettingStack}
                 options={{
@@ -874,7 +949,7 @@ function TabNavigator(props) {
                     tabBarLabel: 'Thông báo',
                     tabBarBadge: 3,
                 }}
-                
+
 
             />
             <BottomTabNavigator.Screen
@@ -916,9 +991,9 @@ function TabNavigator(props) {
 
                                 }
                                 style={{
-                                    width:40,
-                                    height:40,
-                                    borderRadius:20
+                                    width: 40,
+                                    height: 40,
+                                    borderRadius: 20
                                 }}
                             />
                         </View>
@@ -969,7 +1044,7 @@ const Router = () => {
     }, [userAccesstoken]);
 
 
-    
+
 
 
 

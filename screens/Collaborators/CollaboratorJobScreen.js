@@ -109,7 +109,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-
+        console.warn('app')
         timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
@@ -117,7 +117,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
     }, []);
 
     useEffect(() => {
-
+        
         _getCollaboratorJobs();
         return () => {
             clearTimeout(timeoutEvent);
@@ -155,6 +155,7 @@ const ApprovedJob = ({ user_id, status = 3 }) => {
 
                     // />
                     <JobItemApprovedCard
+                        key={index.toString()}
                         jobTitle={e?.job?.name}
                         jobPrice={e?.job?.suggestion_price}
                         jobAddress={e?.job?.location?.province}
@@ -239,12 +240,7 @@ const CollaboratorJobScreen = (props) => {
         { key: 'confirmedJob', title: 'đã hoàn thành' },
 
     ]);
-    // const renderScene = SceneMap({
-    //     applyingJob: ApplyingJob,
-    //     approvedJob: ApprovedJob,
-    //     confirmedJob: ConfirmJob,
-    // });
-
+  
     const renderScene = ({ route }) => {
         switch (route.key) {
             case 'applyingJob':

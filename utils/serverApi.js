@@ -1175,7 +1175,7 @@ export const _getUserNotifications = async (user_id) => {
         }
 
         return {
-            data: dataRes.data,
+            data: dataRes,
             message: 'success',
             status: true
         }
@@ -1189,6 +1189,48 @@ export const _getUserNotifications = async (user_id) => {
     }
 }
 
+
+
+
+
+export const _updateUserNotificationStatus = async (user_id, notification_id) => {
+    try {
+        let url = `${api.api_v1}/candidate/${user_id}/notifications`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT GET User Notification');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
 
 
 
