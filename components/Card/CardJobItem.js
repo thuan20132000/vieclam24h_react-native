@@ -179,7 +179,8 @@ export const JobItemConfirmedCard = (
         jobAddress,
         children,
         pressDisable,
-        expectedPrice
+        expectedPrice,
+        onItemPress
     }
 ) => {
     return (
@@ -191,6 +192,7 @@ export const JobItemConfirmedCard = (
             children={children}
             pressDisable={pressDisable}
             jobExpectedPrice={expectedPrice}
+            onPressOpen={onItemPress}
         />
     )
 }

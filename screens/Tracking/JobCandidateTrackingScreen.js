@@ -60,13 +60,13 @@ const JobCandidateTrackingScreen = () => {
         {
             position: '5',
             stepStatus: 'complete',
-            label: 'Xác nhận hoàn thành',
+            label: 'Xác nhận thanh toán',
             currentPosition: ' 4',
         },
         {
             position: '6',
             stepStatus: 'complete',
-            label: 'Hoàn tất thanh toán',
+            label: 'Hoàn tất đánh giá',
             currentPosition: ' 4',
         }
     ]
