@@ -36,41 +36,38 @@ const PendingJob = ({ navigation, userInformation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-    const _navigateToJobCollaboratorApplying = (job) => {
-        navigation.navigate('JobCollaboratorApplying', {
-            job_id: job.id,
-            candidates: job.relationships?.candidates
-        });
-    }
-
-
-    const _getPendingJobsData = async () => {
-        setIsLoading(true);
-        let pendingJobsRes = await _getCreatedJobList(userInformation.id, "published");
-        if (pendingJobsRes.status) {
-            setPendingJobsData(pendingJobsRes.data);
-        }
-        setIsLoading(false);
-
-    }
-
+  
     let timeoutEvent;
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = () => {
         setRefreshing(true);
 
         timeoutEvent = setTimeout(() => {
-            let pendingJobsRes = getUserPendingJobs(userInformation.id);
-            if (pendingJobsRes.status) {
-                setPendingJobsData(pendingJobsRes.data);
-            }
-            setRefreshing(false)
+            _getCreatedJobList(userInformation.id, 'published')
+                .then((data) => {
+                    if (data.status) {
+                        setPendingJobsData(data.data);
+                    }
+                })
+                .catch((error) => {
+                    console.log('error: ', error);
+                })
+                .finally(() => setRefreshing(false))
         }, 2000);
-    }, []);
+    };
 
     useEffect(() => {
 
-
-        _getPendingJobsData();
+        setIsLoading(true);
+        _getCreatedJobList(userInformation.id, 'published')
+            .then((data) => {
+                if (data.status) {
+                    setPendingJobsData(data.data);
+                }
+            })
+            .catch((error) => {
+                console.log('error: ', error);
+            })
+            .finally(() => setIsLoading(false))
 
         return () => {
             clearTimeout(timeoutEvent);
@@ -93,10 +90,9 @@ const PendingJob = ({ navigation, userInformation }) => {
     }
 
 
-    const _onNavigateToCustomerJobDetail = (job) => {
-        // console.warn(job);
-        navigation.navigate('CustomerJobDetail', {
-            data: job
+    const _onNavigateToCandidateSelection = (job) => {
+        navigation.navigate('JobCandidateSelection',{
+            data:job?.candidates
         })
     }
 
@@ -135,8 +131,24 @@ const PendingJob = ({ navigation, userInformation }) => {
                             jobTitle={e?.name}
                             jobPrice={e?.suggestion_price}
                             jobAddress={`${e?.location?.district} - ${e?.location?.province}`}
-                            onPressOpen={() => _onNavigateToCustomerJobDetail(e)}
-
+                            onPressOpen={() => _onNavigateToCandidateSelection(e)}
+                            children={
+                                <>
+                                <RowInformation
+                                    iconName={CommonIcons.person}
+                                    label={`${e.candidates?.length} người đã ứng tuyển`}
+                                    labelStyle={{
+                                        color:'red',
+                                        fontSize:16,
+                                        fontWeight:'700'
+                                    }}
+                                />
+                                <RowInformation
+                                    iconName={CommonIcons.calendarCheck}
+                                    label={`đăng lúc ${formatDateTime(e?.created_at)}`}
+                                />
+                                </>
+                            }
                         />
                     ) :
                     <ActivityIndicator
@@ -158,39 +170,44 @@ const ApprovedJob = ({ navigation, userInformation }) => {
     const [refreshing, setRefreshing] = useState(false);
 
 
-    const _navigateToJobCollaboratorApplying = (job) => {
-        navigation.navigate('JobCollaboratorApplying', {
-            job_id: job.id,
-            candidates: job.relationships?.candidates
-        });
-    }
-
-
-    const _getApprovedJobsData = async () => {
-        setIsLoading(true);
-        let approvedJobsRes = await _getCreatedJobList(userInformation.id, "approved");
-        if (approvedJobsRes.status) {
-            setApprovedJobsData(approvedJobsRes.data);
-        }
-        setIsLoading(false);
-    }
-
-    const onRefresh = React.useCallback(() => {
+    let timeoutEvent;
+    const onRefresh = () => {
         setRefreshing(true);
-
-        setTimeout(() => {
-            let approvedJobsRes = getUserApprovedJobs(userInformation.id);
-            if (approvedJobsRes.status) {
-                setApprovedJobsData(approvedJobsRes.data);
-            }
-            setRefreshing(false)
+        timeoutEvent = setTimeout(() => {
+            _getCreatedJobList(userInformation.id, 'approved')
+                .then((data) => {
+                    if (data.status) {
+                        setApprovedJobsData(data.data);
+                    }
+                })
+                .catch((error) => {
+                    console.log('error: ', error);
+                })
+                .finally(() => setRefreshing(false))
         }, 2000);
-    }, []);
+    };
 
 
 
     useEffect(() => {
-        _getApprovedJobsData();
+        setIsLoading(true);
+        console.log(userInformation);
+        _getCreatedJobList(userInformation.id, 'approved')
+            .then((data) => {
+                if (data.status) {
+                    setApprovedJobsData(data.data);
+                }
+            })
+            .catch((error) => {
+                console.log('error: ', error);
+            })
+            .finally(() => setIsLoading(false));
+
+
+        return () => {
+            clearTimeout(timeoutEvent);
+        }
+
     }, []);
 
 
@@ -305,45 +322,45 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
     const [refreshing, setRefreshing] = useState(false);
 
 
-    const _navigateToJobCollaboratorConfirmed = (job) => {
-        navigation.navigate('JobCollaboratorApplying', {
-            job_id: job.id,
-            candidates: job.relationships?.candidates
-        });
-    }
 
 
-    const _getConfirmedJobsData = async () => {
-        // setIsLoading(true);
-        // let approvedJobsRes = await getUserConfirmedJobs(userInformation.id);
-        // if (approvedJobsRes.status) {
-        //     setConfirmedJobsData(approvedJobsRes.data);
-        // }
-        // setIsLoading(false);
-        setIsLoading(true);
-        let confirmedJobRes = await _getCreatedJobList(userInformation.id, "confirmed");
-        if (confirmedJobRes.status) {
-            console.warn('confirmed job: ', confirmedJobRes);
-            setConfirmedJobsData(confirmedJobRes.data);
-        }
-        setIsLoading(false);
-    }
-
+    let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        setTimeout(() => {
-            let approvedJobsRes = getUserConfirmedJobs(userInformation.id);
-            if (approvedJobsRes.status) {
-                setConfirmedJobsData(approvedJobsRes.data);
-            }
-            setRefreshing(false)
+        timeoutEvent = setTimeout(() => {
+            _getCreatedJobList(userInformation.id, 'confirmed')
+                .then((data) => {
+                    if (data.status) {
+                        setConfirmedJobsData(data.data);
+                    }
+                })
+                .catch((error) => {
+                    console.log('error: ', error);
+                })
+                .finally(() => setRefreshing(false))
         }, 2000);
     }, []);
 
 
 
     useEffect(() => {
-        _getConfirmedJobsData();
+        setIsLoading(true);
+        _getCreatedJobList(userInformation.id, 'confirmed')
+            .then((data) => {
+                if (data.status) {
+                    setConfirmedJobsData(data.data);
+                }
+            })
+            .catch((error) => {
+                console.log('error: ', error);
+            })
+            .finally(() => setIsLoading(false));
+
+
+        return () => {
+            clearTimeout(timeoutEvent);
+        }
+
     }, []);
 
 
@@ -438,27 +455,27 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
 
                                         }}
                                     />
-                                
-                                     
-                                        <ButtonIcon
-                                            title={"Đánh giá lại"}
-                                            iconColor={'white'}
-                                            iconName={CommonIcons.checkboxCircleMark}
-                                            onPress={() => console.warn('review')}
-                                            titleStyle={{
-                                                fontWeight:'700',
-                                                fontSize:12,
-                                                color:'white'
-                                            }}
-                                            containerStyle={{
-                                                position:'absolute',
-                                                bottom:0,
-                                                right:0,
-                                                backgroundColor:'orangered',
-                                                padding:4,
-                                                borderRadius:6
-                                            }}
-                                        />
+
+
+                                    <ButtonIcon
+                                        title={"Đánh giá lại"}
+                                        iconColor={'white'}
+                                        iconName={CommonIcons.checkboxCircleMark}
+                                        onPress={() => console.warn('review')}
+                                        titleStyle={{
+                                            fontWeight: '700',
+                                            fontSize: 12,
+                                            color: 'white'
+                                        }}
+                                        containerStyle={{
+                                            position: 'absolute',
+                                            bottom: 0,
+                                            right: 0,
+                                            backgroundColor: 'orangered',
+                                            padding: 4,
+                                            borderRadius: 6
+                                        }}
+                                    />
 
                                 </>
                             }
@@ -516,26 +533,19 @@ const CustomerJobScreen = (props) => {
         { key: 'confirmedJob', title: 'Đã xác nhận' }
     ])
 
-    const renderScene = SceneMap({
-        pendingJob: () =>
-            <PendingJob
-                navigation={props.navigation}
-                userInformation={userInformation}
-            />,
-        approvedJob: () =>
-            <ApprovedJob
-                navigation={props.navigation}
-                userInformation={userInformation}
-            />,
-        confirmedJob: () =>
-            <ConfirmedJob
-                navigation={props.navigation}
-                userInformation={userInformation}
-            />,
 
-
-    });
-
+    const renderScene = ({ route }) => {
+        switch (route.key) {
+            case 'pendingJob':
+                return <PendingJob userInformation={userInformation} navigation={props.navigation} />;
+            case 'approvedJob':
+                return <ApprovedJob userInformation={userInformation} navigation={props.navigation} />;
+            case 'confirmedJob':
+                return <ConfirmedJob userInformation={userInformation} navigation={props.navigation} />;
+            default:
+                return null;
+        }
+    };
 
     const RenderTabBar = props => (
         <TabBar

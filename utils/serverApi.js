@@ -920,6 +920,14 @@ export const _approve_jobcandidate = async (
 
         let dataRes = await dataFetch.json();
 
+        if(!dataRes.status){
+            return {
+                status: false,
+                message: "error : "+dataRes.message,
+                data: []
+            }
+        }
+
         return {
             status: true,
             message: "success",
@@ -1232,6 +1240,48 @@ export const _updateUserNotificationStatus = async (user_id, notification_id) =>
     }
 }
 
+
+
+
+
+export const _getJobCandidateDetail = async (user_id,jobcandidate_id) => {
+    try {
+        let url = `${api.api_v1}/candidate/${user_id}/jobcandidate/${jobcandidate_id}/detail`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT GET User Notification');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes.data,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
 
 
 

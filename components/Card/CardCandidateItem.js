@@ -17,7 +17,8 @@ const CardCandidateItemBase = ({
     review_average,
     review_number,
     name,
-    profile_image
+    profile_image,
+    children
 }) => {
 
     return (
@@ -25,10 +26,35 @@ const CardCandidateItemBase = ({
             style={{
                 marginVertical: 1,
                 paddingHorizontal: 8,
+                marginVertical:6,
+                paddingVertical: 8,
+                marginHorizontal: 8,
+                borderRadius: 6,
                 backgroundColor: 'white',
-                paddingVertical: 8
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+
+                elevation: 5,
             }}
         >
+
+            <MaterialCommunityIcon
+                name={CommonIcons.heartOutline}
+                size={22}
+                color={'red'}
+                style={{
+                    position: 'absolute',
+                    right: 20,
+                    top: '40%',
+
+                }}
+                onPress={onLikePress}
+            />
             <TouchableOpacity
                 style={{
                     display: 'flex',
@@ -61,9 +87,10 @@ const CardCandidateItemBase = ({
                 </View>
                 <Text
                     style={{
-                        fontSize:14,
-                        color:'grey',
-                        marginHorizontal:6
+                        fontSize: 14,
+                        color: 'grey',
+                        fontStyle:'italic',
+                        marginVertical:4
                     }}
                 >
                     {descriptions || ''}
@@ -103,27 +130,21 @@ const CardCandidateItemBase = ({
                         ({review_number} đánh giá)
                     </Text>
                 </View>
-                <RowInformation
-                    iconName={CommonIcons.mapMarker}
-                    iconColor={'coral'}
-                    value={address || ''}
-                />
+                {
+                    address &&
+                    <RowInformation
+                        iconName={CommonIcons.mapMarker}
+                        iconColor={'coral'}
+                        value={address}
+                    />
+
+                }
             </TouchableOpacity>
 
 
-            <MaterialCommunityIcon
-                name={CommonIcons.heartOutline}
-                size={22}
-                color={'red'}
-                style={{
-                    position: 'absolute',
-                    right: 20,
-                    top: '40%',
-
-                }}
-                onPress={onLikePress}
-            />
-
+            {
+                children
+            }
         </View>
     )
 }

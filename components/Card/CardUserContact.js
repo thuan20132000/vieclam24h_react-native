@@ -7,7 +7,9 @@ import RowInformation from '../Row/RowInformation'
 import { Button } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors'
 
-const CardUserContact = () => {
+const CardUserContact = ({
+    chilrden
+}) => {
     return (
         <View
             style={[
@@ -92,6 +94,9 @@ const CardUserContact = () => {
                 </Button>
               
             </View>
+            {
+                chilrden
+            }
         </View>
     )
 }

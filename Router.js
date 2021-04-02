@@ -34,17 +34,12 @@ import CollaboratorDetailScreen from './screens/Customers/CollaboratorDetailScre
 
 
 //Customer Screen
-import CustomerHomeScreen from './screens/Customers/CustomerHomeScreen';
-import CustomerJobCreationScreen from './screens/Customers/CustomerJobCreationScreen';
 import CustomerJobScreen from './screens/Customers/CustomerJobScreen';
-import JobCollaboratorScreen from './screens/Customers/JobCollaboratorScreen';
-import CollaboratorListScreen from './screens/Customers/CollaboratorListScreen';
 
 
 // reducer
 import * as userActions from './store/actions/authenticationActions';
 import CommonColors from './constants/CommonColors';
-import SearchCollaboratorScreen from './screens/SearchCollaboratorScreen';
 import ChatLiveScreen from './screens/Messages/ChatLiveScreen';
 import CollaboratorSearchScreen from './screens/Collaborators/CollaboratorSearchScreen';
 import CustomerStatisticScreen from './screens/Customers/CustomerStatisticScreen';
@@ -59,7 +54,6 @@ import PhotoSectionScreen from './screens/PostJob/PhotoSectionScreen';
 import TitleSectionScreen from './screens/PostJob/TitleSectionScreen';
 import DescriptionSectionScreen from './screens/PostJob/DescriptionSectionScreen';
 import PriceSectionScreen from './screens/PostJob/PriceSectionScreen';
-import { StorePostJobProvider, StoreContext } from './utils/store';
 import ReviewSectionScreen from './screens/PostJob/ReviewSectionScreen';
 import LocationRegisterScreen from './screens/RegisterCandidate/LocationRegisterScreen';
 import CategoryRegisterScreen from './screens/RegisterCandidate/CategoryRegisterScreen';
@@ -71,13 +65,13 @@ import CategoryUpdateScreen from './screens/UpdateCandidate/CategoryUpdateScreen
 import LocationUpdateScreen from './screens/UpdateCandidate/LocationUpdateScreen';
 import IdentificationUpdateScreen from './screens/UpdateCandidate/IdentificationUpdateScreen';
 import ReviewUpdateScreen from './screens/UpdateCandidate/ReviewUpdateScreen';
-import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
-import CustomerJobDetailScreen from './screens/Customers/CustomerJobDetailScreen';
 import SearchHomeScreen from './screens/Search/SearchHomeScreen';
 import CandidateReviewsScreen from './screens/Customers/CandidateReviewsScreen';
 import NotificationSettingHomeScreen from './screens/NotificationSettingStack/NotificationSettingHomeScreen';
 import NotificationDetailScreen from './screens/NotificationStack/NotificationDetailScreen';
 import JobCandidateTrackingScreen from './screens/Tracking/JobCandidateTrackingScreen';
+import JobUserTrackingScreen from './screens/Tracking/JobUserTrackingScreen';
+import JobCandidateSelectionScreen from './screens/Customers/JobCandidateSelectionScreen';
 
 
 
@@ -150,61 +144,6 @@ function CollaboratorHomeStack() {
 
 
 
-
-/**
- * Collaborator's Job Stack
- */
-const CollaboratorJobStackNavigator = createStackNavigator();
-function CollaboratorJobStack() {
-    return (
-        <CollaboratorHomeStackNavigator.Navigator>
-            <CollaboratorHomeStackNavigator.Screen
-                name="CollaboratorJob"
-                component={CollaboratorJobScreen}
-            />
-        </CollaboratorHomeStackNavigator.Navigator>
-    )
-}
-
-
-
-
-/**
- * Customer Home Stack
- */
-const CustomerHomeStackNavigator = createStackNavigator();
-function CustomerHomeStack() {
-    return (
-        <CustomerHomeStackNavigator.Navigator>
-            <CustomerHomeStackNavigator.Screen
-                name="CustomerHome"
-                component={CustomerHomeScreen}
-            />
-            <CustomerHomeStackNavigator.Screen
-                name="CollaboratorList"
-                component={CollaboratorListScreen}
-                options={{
-                    title: "Danh Sách Ứng Viên"
-                }}
-            />
-            <CustomerHomeStackNavigator.Screen
-                name="CollaboratorDetail"
-                component={CollaboratorDetailScreen}
-                options={{
-                    title: "Thông tin ứng viên"
-                }}
-            />
-            <CollaboratorHomeStackNavigator.Screen
-                name="Search"
-                component={SearchCollaboratorScreen}
-            />
-            <ChatStackNavigator.Screen
-                name="ChatLive"
-                component={ChatLiveScreen}
-            />
-        </CustomerHomeStackNavigator.Navigator>
-    )
-}
 
 
 
@@ -290,7 +229,7 @@ function CustomerJobStack(props) {
                     title: "Công Việc Đăng Tuyển"
                 }}
             />
-            <CustomerHomeStackNavigator.Screen
+            {/* <CustomerHomeStackNavigator.Screen
                 name="JobCollaboratorApplying"
                 component={JobCollaboratorScreen}
             />
@@ -306,7 +245,7 @@ function CustomerJobStack(props) {
                 name="JobConfirm"
                 component={JobConfirmScreen}
 
-            />
+            /> */}
 
 
         </CustomerJobStackNavigator.Navigator>
@@ -719,6 +658,14 @@ const NotificationSettingStack = () => {
  */
 const AccountStackNavigator = createStackNavigator();
 function AccountStack() {
+
+    let option_slide = {
+        title: "",
+        gestureEnabled: false,
+        animationEnabled: true,
+        swipeEnabled: false,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    }
     return (
         <AccountStackNavigator.Navigator>
             <AccountStackNavigator.Screen
@@ -773,7 +720,7 @@ function AccountStack() {
                     headerShown: false,
                 }}
             />
-           
+
             <AccountStackNavigator.Screen
                 name="NotificationSettingStack"
                 component={NotificationSettingStack}
@@ -781,18 +728,23 @@ function AccountStack() {
                     headerShown: false,
                 }}
             />
-             <AccountStackNavigator.Screen
+            <AccountStackNavigator.Screen
                 name="JobCandidateTracking"
                 component={JobCandidateTrackingScreen}
-                options={{
-                    title:"",
-                    gestureEnabled: false,
-                    animationEnabled: true,
-                    swipeEnabled: false,
-                    cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-    
-                }}
+                options={option_slide}
             />
+            <AccountStackNavigator.Screen
+                name="JobUserTracking"
+                component={JobUserTrackingScreen}
+                options={option_slide}
+            />
+
+            <AccountStackNavigator.Screen
+                name="JobCandidateSelection"
+                component={JobCandidateSelectionScreen}
+                options={option_slide}
+            />
+
 
         </AccountStackNavigator.Navigator>
     )

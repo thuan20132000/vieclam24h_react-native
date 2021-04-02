@@ -6,7 +6,7 @@ import StepIndicator from 'react-native-step-indicator';
 import { _getJobCandidateDetail } from '../../utils/serverApi';
 import { formatCash, formatDateTime } from '../../utils/helper';
 
-const JobCandidateTrackingScreen = () => {
+const JobUserTrackingScreen = () => {
 
     const labels = ["Ứng tuyển", "Chờ", "Chấp nhập", "Xác nhận", "Hoàn tất thanh toán"];
     const customStyles = {
@@ -152,6 +152,6 @@ const JobCandidateTrackingScreen = () => {
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
-export default JobCandidateTrackingScreen
+export default JobUserTrackingScreen
 
 const styles = StyleSheet.create({})
