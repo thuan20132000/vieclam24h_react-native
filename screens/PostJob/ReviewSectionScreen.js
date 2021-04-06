@@ -12,11 +12,14 @@ const ReviewSectionScreen = (props) => {
     const dispatch = useDispatch();
 
     const { jobInformation } = useSelector(state => state.job);
+    const {userInformation} = useSelector(state => state.authentication);
 
     const [isLoading, setIsLoading] = useState(false);
-    const _onCreateJob = async () => {
 
-        console.warn(jobInformation);
+
+
+    const _onCreateJob = async () => {
+        
         setIsLoading(true);
         try {
             let res = await createJob(
@@ -26,6 +29,8 @@ const ReviewSectionScreen = (props) => {
                 jobInformation.budget,
                 jobInformation.field?.id,
                 jobInformation.photos,
+                userInformation.id
+
             );
 
             if(res.status){
@@ -41,6 +46,8 @@ const ReviewSectionScreen = (props) => {
             console.warn('ERROR : ', error);
         }
         setIsLoading(false);
+
+
     }
 
     return (

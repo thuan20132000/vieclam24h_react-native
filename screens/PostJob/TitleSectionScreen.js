@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react'
-import { Alert, StyleSheet, Text, View } from 'react-native'
+import React, { useState,useEffect, useRef, useLayoutEffect } from 'react'
+import { Alert, StyleSheet, Text, View,Keyboard } from 'react-native'
 import { ScrollView, TextInput } from 'react-native-gesture-handler'
 import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
@@ -12,13 +12,14 @@ import * as jobActions from '../../store/actions/jobActions';
 const TitleSectionScreen = (props) => {
 
     const dispatch = useDispatch();
+    const _refTitleInput = useRef();
     const { data } = props.route?.params;
     const { jobInformation } = useSelector(state => state.job);
 
     const [title, setTitle] = useState('');
 
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         setTitle(jobInformation.title);
     }, [])
 
@@ -71,10 +72,13 @@ const TitleSectionScreen = (props) => {
 
                     <Text style={[styles.textLabel]}>Tiêu đề công việc</Text>
                     <TextInput
+                        ref={_refTitleInput}
                         style={[styles.textinput]}
                         placeholder={'Tiêu đề công việc'}
                         onChangeText={(text) => setTitle(text)}
-                        value={title || jobInformation.title}
+                        value={title}
+                        onEndEditing={_onNextSection}
+                        keyboardAppearance='default'
                     />
 
                 </View>

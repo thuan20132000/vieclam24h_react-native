@@ -72,6 +72,7 @@ import NotificationDetailScreen from './screens/NotificationStack/NotificationDe
 import JobCandidateTrackingScreen from './screens/Tracking/JobCandidateTrackingScreen';
 import JobUserTrackingScreen from './screens/Tracking/JobUserTrackingScreen';
 import JobCandidateSelectionScreen from './screens/Customers/JobCandidateSelectionScreen';
+import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
 
 
 
@@ -227,6 +228,13 @@ function CustomerJobStack(props) {
                 component={CustomerJobScreen}
                 options={{
                     title: "Công Việc Đăng Tuyển"
+                }}
+            />
+            <CustomerJobStackNavigator.Screen
+                name="JobConfirm"
+                component={JobConfirmScreen}
+                options={{
+                    title: "Xác nhận công việc"
                 }}
             />
             {/* <CustomerHomeStackNavigator.Screen
@@ -720,7 +728,6 @@ function AccountStack() {
                     headerShown: false,
                 }}
             />
-
             <AccountStackNavigator.Screen
                 name="NotificationSettingStack"
                 component={NotificationSettingStack}

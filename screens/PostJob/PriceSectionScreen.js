@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, ScrollView, TextInput, Alert } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TextInput, Alert,Keyboard } from 'react-native'
 import CommonColors from '../../constants/CommonColors';
 import { formatCash } from '../../utils/helper';
 import BottomNavigation from './components/BottomNavigation'
@@ -9,7 +9,7 @@ import * as jobActions from '../../store/actions/jobActions';
 const PriceSectionScreen = (props) => {
 
     const dispatch = useDispatch();
-
+    const _refPriceInput = useRef();
     const { jobInformation } = useSelector(state => state.job);
 
 
@@ -19,6 +19,11 @@ const PriceSectionScreen = (props) => {
 
     useEffect(() => {
         setPrice(jobInformation.budget);
+
+        _refPriceInput.current.focus();
+
+      
+
     }, []);
 
     const _onEnterPrice = async (price) => {
@@ -30,7 +35,7 @@ const PriceSectionScreen = (props) => {
         }, 100);
     }
 
-    
+
     const _onPriceValidation = () => {
 
         if (!price || isNaN(price)) {
@@ -41,11 +46,11 @@ const PriceSectionScreen = (props) => {
     }
 
     const _onNextSection = () => {
-
+        Keyboard.dismiss();
         let valid_res = _onPriceValidation();
         if (!valid_res) {
 
-            Alert.alert("Thông báo","Vui lòng nhập giá hợp lệ.");
+            Alert.alert("Thông báo", "Vui lòng nhập giá hợp lệ.");
             return;
         }
 
@@ -60,6 +65,15 @@ const PriceSectionScreen = (props) => {
     }
 
 
+    const [temptPrice, setTemptPrice] = useState('');
+    const _onPriceChange = (text) => {
+
+        let convert_to_number = text.replace(/,/g, '');
+        let formated_price = formatCash(convert_to_number);
+        setTemptPrice(formated_price);
+        setPrice(convert_to_number);
+
+    }
 
     return (
         <View
@@ -70,12 +84,13 @@ const PriceSectionScreen = (props) => {
 
                     <Text style={[styles.textLabel]}>Ngân sách đưa ra (<Text style={{ color: 'red' }}>*</Text>)</Text>
                     <TextInput
+                        ref={_refPriceInput}
                         style={[styles.textinput, { justifyContent: 'flex-start', display: 'flex', flexDirection: 'column' }]}
                         placeholder={'Nhập giá'}
                         textAlignVertical={'center'}
                         keyboardType={'numeric'}
-                        value={price}
-                        onChangeText={(text) => setPrice(text)}
+                        value={temptPrice}
+                        onChangeText={(text) => _onPriceChange(text)}
 
                     />
                     <Text style={{

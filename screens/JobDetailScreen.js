@@ -35,8 +35,7 @@ const JobDetailScreen = (props) => {
 
     const job_id = props.route?.params?.job_id;
 
-    const productItems = Array(6).fill({});
-    const refCarousel = useRef('carousel');
+   
     const refRBSheet_applyJob = useRef();
     const [isLoading, setIsLoading] = useState(false);
     const [isDisabling, setIsDisabling] = useState(false);
@@ -162,8 +161,7 @@ const JobDetailScreen = (props) => {
     const _getJobDetail = async () => {
         setIsLoading(true);
         let job = await getJobDetail(job_id);
-        // console.warn('job detail: ',job);
-        // console.warn('job images: ',job.data.images);
+
 
         if (job.data) {
             setJobDetail(job.data);
@@ -303,11 +301,11 @@ const JobDetailScreen = (props) => {
 
                                 <TouchableOpacity
                                     onPress={() => refRBSheet_applyJob.current.open()}
-
+                                    disabled={jobDetail?.author?.id == userInformation.id?true:false}
                                     style={{
                                         paddingHorizontal: 18,
                                         paddingVertical: 12,
-                                        backgroundColor: 'coral',
+                                        backgroundColor: jobDetail?.author?.id == userInformation.id ?'grey':'coral',
                                         borderRadius: 6
                                     }}
 

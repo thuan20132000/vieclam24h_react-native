@@ -131,7 +131,6 @@ const ApprovedJob = ({ user_id, status = 3, navigation }) => {
     let timeoutEvent;
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        console.warn('app')
         timeoutEvent = setTimeout(() => {
             _getCollaboratorJobs();
             setRefreshing(false)
@@ -176,13 +175,9 @@ const ApprovedJob = ({ user_id, status = 3, navigation }) => {
             }
         >
             {
+                (collaboratorJobs && collaboratorJobs.length > 0) &&
                 collaboratorJobs.map((e, index) =>
-                    // <JobItem
-                    //     job={e}
-                    //     key={index.toString()}
-                    //     isConfirmed={false}
 
-                    // />
                     <JobItemApprovedCard
                         key={index.toString()}
                         jobTitle={e?.job?.name}
@@ -204,7 +199,7 @@ const ApprovedJob = ({ user_id, status = 3, navigation }) => {
 }
 
 
-const ConfirmJob = ({ user_id, status = 4 ,navigation}) => {
+const ConfirmJob = ({ user_id, status = 4, navigation }) => {
 
     const [collaboratorJobs, setCollaboratorJob] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -237,7 +232,7 @@ const ConfirmJob = ({ user_id, status = 4 ,navigation}) => {
         }
     }, []);
 
-    
+
     const _onNavigateJobCandidateTracking = (e) => {
 
         navigation.navigate('JobCandidateTracking');
@@ -252,20 +247,21 @@ const ConfirmJob = ({ user_id, status = 4 ,navigation}) => {
             }
         >
             {
+                (collaboratorJobs && collaboratorJobs.length > 0) &&
                 collaboratorJobs.map((e, index) =>
                     <JobItemConfirmedCard
                         key={index.toString()}
                         jobTitle={e.job?.name}
                         jobAddress={`${e.job?.location?.district || ''} - ${e.job?.location?.province || ''} `}
                         jobPrice={`${formatCash(e.confirmed_price)} vnđ`}
-                        onItemPress={()=>_onNavigateJobCandidateTracking(e)}
+                        onItemPress={() => _onNavigateJobCandidateTracking(e)}
                     >
                         <RowInformation
                             label={`${formatDateTime(e.updated_at)}`}
                             iconName={CommonIcons.calendarCheck}
                         />
                         <RowInformation
-                            label={e?.reviews[0]?.review_content}
+                            label={e?.reviews[0]?.content || "Không có đánh giá"}
                             iconName={CommonIcons.messages}
                         />
                         <RowInformation

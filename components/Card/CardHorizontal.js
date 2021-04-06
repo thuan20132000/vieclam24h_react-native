@@ -20,7 +20,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
 
     return (
         <TouchableOpacity style={styles.cardContainer}
-            onPress={() => onPress(item?.id)}
+            onPress={onPress}
 
         >
 
@@ -48,7 +48,7 @@ const CardHorizontal = ({ index, item, onPress }) => {
                         color: 'grey'
                     }}
                 >
-                    {item?.description}
+                    {item?.descriptions}
                 </Paragraph>
 
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
@@ -73,22 +73,6 @@ const CardHorizontal = ({ index, item, onPress }) => {
                     </Caption>
 
                 </View>
-
-                <Text style={{
-                    marginHorizontal: 2,
-                    fontWeight: '700',
-                    bottom: 0,
-                    position: 'relative',
-                    fontSize: 12,
-                    color: 'white',
-                    backgroundColor: 'coral',
-                    padding: 6,
-                    maxWidth: 120,
-                    textAlign: 'center',
-                    borderRadius: 6
-                }}>
-                    {item?.field?.name}
-                </Text>
                 <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
 
                     <Text style={{

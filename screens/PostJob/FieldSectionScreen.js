@@ -47,6 +47,7 @@ const FieldSectionScreen = (props) => {
         let data = {
             field:e
         }
+
         dispatch(jobActions.updateJob(data));
 
         props.navigation.navigate('LocationSection',{

@@ -130,7 +130,6 @@ const AccountScreen = (props) => {
 
     useLayoutEffect(() => {
 
-        console.warn(userInformation?.candidate_info);
 
         props.navigation.setOptions({
             headerShown: false
@@ -308,7 +307,17 @@ const AccountScreen = (props) => {
 
                         </View>
                         
-
+                        
+                        <View>
+                            <Text
+                                style={{
+                                    fontSize:14,
+                                    textAlign:'center'
+                                }}
+                            >
+                                Version 1.0
+                            </Text>
+                        </View>
                     </>
                 }
             />

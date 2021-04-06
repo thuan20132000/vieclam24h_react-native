@@ -696,7 +696,7 @@ export const createJob = async (
         formData.append('descriptions', descriptions);
         formData.append('location', JSON.stringify(location));
         formData.append('suggestion_price', suggestion_price);
-        formData.append('author_id', 6);
+        formData.append('author_id', author);
         formData.append('field_id', field_id);
 
         // formData.append('images',photos);
@@ -707,8 +707,7 @@ export const createJob = async (
                     type: e.mime,
                     uri: e.path
                 }
-                console.warn(file);
-                formData.append('images', file);
+                formData.append('images_file', file);
 
             });
 
@@ -737,7 +736,6 @@ export const createJob = async (
 
         let dataRes = await dataFetch.json();
 
-        console.warn('created res: ', dataRes);
 
         if (dataRes.status) {
             return {
@@ -920,10 +918,10 @@ export const _approve_jobcandidate = async (
 
         let dataRes = await dataFetch.json();
 
-        if(!dataRes.status){
+        if (!dataRes.status) {
             return {
                 status: false,
-                message: "error : "+dataRes.message,
+                message: "error : " + dataRes.message,
                 data: []
             }
         }
@@ -1244,7 +1242,7 @@ export const _updateUserNotificationStatus = async (user_id, notification_id) =>
 
 
 
-export const _getJobCandidateDetail = async (user_id,jobcandidate_id) => {
+export const _getJobCandidateDetail = async (user_id, jobcandidate_id) => {
     try {
         let url = `${api.api_v1}/candidate/${user_id}/jobcandidate/${jobcandidate_id}/detail`;
         let dataFetch = await fetch(`${url}`);
@@ -1282,7 +1280,6 @@ export const _getJobCandidateDetail = async (user_id,jobcandidate_id) => {
         }
     }
 }
-
 
 
 
@@ -1340,5 +1337,99 @@ export const onSubscribeToTopic = async (topic_name) => {
         return false;
     } catch (error) {
         return false;
+    }
+}
+
+
+
+
+export const _updateNotificationStatus = async (
+    notification_type,
+    value,
+    user_id
+) => {
+    try {
+        let formData = new FormData();
+        formData.append(notification_type,value);
+
+        let url = `${api.api_v1}/user/${user_id}/notification-configuration/update`;
+        let dataFetch = await fetch(`${url}`,{
+            method:'PUT',
+            body:formData
+        });
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT GET User Notification');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+        console.warn(dataRes);
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+export const _getUserNotificationConfig = async (user_id) => {
+    try {
+        let url = `${api.api_v1}/user/${user_id}/notification-configuration`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.log('ERROR AT GET USER NOTIFIACTION CONFIG');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
     }
 }

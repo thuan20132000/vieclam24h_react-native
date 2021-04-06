@@ -10,7 +10,7 @@ import ItemChip from '../components/Item/ItemChip';
 import serverConfig from '../serverConfig';
 import CardHorizontal from '../components/Card/CardHorizontal';
 import JobItem from '../components/Card/JobItem';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 
 const CandidateProfileScreen = (props) => {
 
@@ -20,7 +20,7 @@ const CandidateProfileScreen = (props) => {
 
         props.navigation.setOptions({
             title: 'Hồ sơ tìm việc',
-            
+
         })
         return () => {
 
@@ -28,7 +28,7 @@ const CandidateProfileScreen = (props) => {
     }, [])
 
     return (
-        <View style={[styles.container]}>
+        <ScrollView style={[styles.container]}>
             <View>
                 <View style={[styles.row]}>
                     <Image
@@ -40,14 +40,14 @@ const CandidateProfileScreen = (props) => {
                     />
                     <View style={[styles.column, { justifyContent: 'center' }]}>
                         <Text style={{ fontWeight: '700' }}>{userInformation.username}</Text>
-                        <Text>098496894568</Text>
+                        <Text>{userInformation.phonenumber}</Text>
                     </View>
 
                 </View>
             </View>
 
 
-            <View style={[styles.block, { paddingHorizontal: 6, margin: 4, paddingVertical: 18,overflow:'hidden' }]}>
+            <View style={[styles.block, { paddingHorizontal: 6, margin: 4, paddingVertical: 18, overflow: 'hidden' }]}>
                 <RowInformation
                     iconName={CommonIcons.star}
                     label={'Đánh giá: '}
@@ -61,13 +61,13 @@ const CandidateProfileScreen = (props) => {
                 <RowInformation
                     iconName={CommonIcons.historyJob}
                     label={'Ngày tham gia: '}
-                    value={`${formatDateString(userInformation?.date_joined)}`}
+                    value={`${formatDateString(userInformation?.created_at)}`}
                 />
                 <RowInformation
                     iconName={CommonIcons.checkboxCircleMark}
                     label={'Đã xác thực: '}
                 >
-                    <MaterialCommunityIcon
+                    {/* <MaterialCommunityIcon
                         name={CommonIcons.facebook}
                         size={18}
                         color={'blue'}
@@ -81,7 +81,7 @@ const CandidateProfileScreen = (props) => {
                         name={CommonIcons.phone}
                         size={18}
                         color={'green'}
-                    />
+                    /> */}
 
                 </RowInformation>
                 <RowInformation
@@ -114,7 +114,7 @@ const CandidateProfileScreen = (props) => {
                 <RowInformation
                     iconName={CommonIcons.tagPrice}
                     containerStyle={{
-                        flexWrap:'wrap'
+                        flexWrap: 'wrap'
                     }}
                 >
                     {
@@ -165,7 +165,7 @@ const CandidateProfileScreen = (props) => {
 
                 />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 

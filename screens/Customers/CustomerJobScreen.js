@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Alert, Dimensions, Image, RefreshControl, StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
-import { ActivityIndicator, Badge, Caption, IconButton, Paragraph, Title } from 'react-native-paper';
+import { Alert, Dimensions, Image, RefreshControl, StyleSheet, Text, View, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { Badge, Caption, IconButton, Paragraph, Title } from 'react-native-paper';
 import CardHorizontal from '../../components/Card/CardHorizontal';
 import { useSelector } from 'react-redux';
 import {
@@ -36,7 +36,7 @@ const PendingJob = ({ navigation, userInformation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
-  
+
     let timeoutEvent;
     const onRefresh = () => {
         setRefreshing(true);
@@ -91,8 +91,8 @@ const PendingJob = ({ navigation, userInformation }) => {
 
 
     const _onNavigateToCandidateSelection = (job) => {
-        navigation.navigate('JobCandidateSelection',{
-            data:job?.candidates
+        navigation.navigate('JobCandidateSelection', {
+            data: job?.candidates
         })
     }
 
@@ -108,7 +108,11 @@ const PendingJob = ({ navigation, userInformation }) => {
                     justifyContent: 'center'
                 }}
             >
-                <LoadingSimple />
+                <ActivityIndicator
+                    color={'coral'}
+                    size={'large'}
+
+                />
             </View>
         )
     }
@@ -134,19 +138,19 @@ const PendingJob = ({ navigation, userInformation }) => {
                             onPressOpen={() => _onNavigateToCandidateSelection(e)}
                             children={
                                 <>
-                                <RowInformation
-                                    iconName={CommonIcons.person}
-                                    label={`${e.candidates?.length} người đã ứng tuyển`}
-                                    labelStyle={{
-                                        color:'red',
-                                        fontSize:16,
-                                        fontWeight:'700'
-                                    }}
-                                />
-                                <RowInformation
-                                    iconName={CommonIcons.calendarCheck}
-                                    label={`đăng lúc ${formatDateTime(e?.created_at)}`}
-                                />
+                                    <RowInformation
+                                        iconName={CommonIcons.person}
+                                        label={`${e.candidates?.length} người đã ứng tuyển`}
+                                        labelStyle={{
+                                            color: 'red',
+                                            fontSize: 16,
+                                            fontWeight: '700'
+                                        }}
+                                    />
+                                    <RowInformation
+                                        iconName={CommonIcons.calendarCheck}
+                                        label={`đăng lúc ${formatDateTime(e?.created_at)}`}
+                                    />
                                 </>
                             }
                         />
@@ -249,7 +253,10 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                     justifyContent: 'center'
                 }}
             >
-                <LoadingSimple />
+                <ActivityIndicator
+                    size={'large'}
+                    color={'coral'}
+                />
             </View>
         )
     }
@@ -294,14 +301,15 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 
                                     }]}
                                 >
-                                    <ButtonIcon
+                                    {/* <ButtonIcon
                                         title={"Huỷ"}
                                         iconName={CommonIcons.removeTrash}
-                                    />
+                                    /> */}
                                     <ButtonIcon
                                         title={"Xác nhận"}
                                         iconName={CommonIcons.checkboxCircleMark}
                                         onPress={() => _onConfirmJob(e)}
+                                        iconColor={'red'}
                                     />
 
                                 </View>
@@ -410,17 +418,42 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                             fontStyle: 'italic'
                                         }}
                                     />
-                                    <RowInformation
-                                        iconName={CommonIcons.calendarCheck}
-                                        value={formatDateTime(e?.created_at || '')}
-                                        containerStyle={{
-                                            alignItems: 'center',
+                                    <View
+                                        style={{
+                                            display:'flex',
+                                            flexDirection:'row',
+                                            justifyContent:'center',
+                                            alignItems:'center',
+                                            paddingHorizontal:12
+                                        }}
+                                    >
+                                        <RowInformation
+                                            iconName={CommonIcons.calendarCheck}
+                                            value={formatDateTime(e?.created_at || '')}
+                                            containerStyle={{
+                                                alignItems: 'center',
+                                                width:'50%'
 
-                                        }}
-                                        labelStyle={{
-                                            fontStyle: 'italic'
-                                        }}
-                                    />
+                                            }}
+                                            labelStyle={{
+                                                fontStyle: 'italic'
+                                            }}
+                                        />
+                                        <RowInformation
+                                            iconName={CommonIcons.calendarCheck}
+                                            value={formatDateTime(e?.updated_at || '')}
+                                            containerStyle={{
+                                                alignItems: 'center',
+                                                width:'50%'
+
+
+                                            }}
+                                            labelStyle={{
+                                                fontStyle: 'italic'
+                                            }}
+                                        />
+
+                                    </View>
                                     <View style={{
                                         display: 'flex',
                                         flexDirection: 'row'
@@ -457,7 +490,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                     />
 
 
-                                    <ButtonIcon
+                                    {/* <ButtonIcon
                                         title={"Đánh giá lại"}
                                         iconColor={'white'}
                                         iconName={CommonIcons.checkboxCircleMark}
@@ -470,12 +503,12 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                         containerStyle={{
                                             position: 'absolute',
                                             bottom: 0,
-                                            right: 0,
+                                            left: 0,
                                             backgroundColor: 'orangered',
                                             padding: 4,
                                             borderRadius: 6
                                         }}
-                                    />
+                                    /> */}
 
                                 </>
                             }

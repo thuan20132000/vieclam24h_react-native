@@ -91,7 +91,11 @@ const NotificationScreen = (props) => {
         //     setNotificationData([...notificationData, remoteMessage.notification]);
 
         // })
+        messaging().onNotificationOpenedApp(remoteMsg => {
+            // props.navigation.navigate('Notification');
+            setUserNotification([remoteMsg, ...userNotification])
 
+        });
 
         const unsubscribe = messaging().onMessage(async remoteMessage => {
             console.log('tm: ', remoteMessage);
@@ -101,8 +105,7 @@ const NotificationScreen = (props) => {
         return unsubscribe;
 
     }, []);
-
-
+   
 
 
     const [nextPageLink, setNextPageLink] = useState('');
@@ -111,7 +114,6 @@ const NotificationScreen = (props) => {
         _getUserNotifications(userInformation?.id).then((e) => {
             if (e.status) {
                 setUserNotification(e.data?.data);
-                console.log(e)
                 setNextPageLink(e.data?.next);
             }
         });

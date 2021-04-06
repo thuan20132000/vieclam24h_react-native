@@ -5,24 +5,36 @@ import RowInformation from '../../components/Row/RowInformation'
 import messaging from '@react-native-firebase/messaging'
 import RowSwitch from '../../components/Row/RowSwitch'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { _updateNotificationStatus, _getUserNotificationConfig } from '../../utils/serverApi'
+import { useSelector } from 'react-redux'
 
 
 const NotificationSettingHomeScreen = () => {
 
+    const { userInformation } = useSelector(state => state.authentication);
+
     const [notificationReceive, setNotificationReceive] = useState(false);
     const [applyNotification, setApplyNotification] = useState(false);
-
+    const [messageNotification, setMessageNotification] = useState(false);
 
     const _onSubcribeTopic = async () => {
 
         let jobpostStatus = notificationReceive;
         if (jobpostStatus) {
             messaging().unsubscribeFromTopic('jobpost').then((e) => console.log('unsubcribe to : ', e));
+
+            await _updateNotificationStatus('post_job_notification', 'False', userInformation.id)
+
         } else {
             messaging().subscribeToTopic('jobpost').then((e) => console.log('subcribe to : ', e));
+            await _updateNotificationStatus('post_job_notification', 'True', userInformation.id)
+
         }
         await saveSettingOptions('jobpost', JSON.stringify(!jobpostStatus));
         setNotificationReceive(!jobpostStatus);
+
+
+
     }
 
 
@@ -30,11 +42,29 @@ const NotificationSettingHomeScreen = () => {
         let applyNotificationStatus = applyNotification;
         if (applyNotificationStatus) {
             messaging().unsubscribeFromTopic('jobapply').then((e) => console.log('unsubcribe to : ', e));
+            await _updateNotificationStatus('apply_job_notification', 'False', userInformation.id)
+
         } else {
             messaging().subscribeToTopic('jobapply').then((e) => console.log('subcribe to : ', e));
+            await _updateNotificationStatus('apply_job_notification', 'True', userInformation.id)
+
         }
         await saveSettingOptions('jobapply', JSON.stringify(!applyNotificationStatus));
         setApplyNotification(!applyNotificationStatus);
+    }
+
+
+    const _onMessageNotification = async () => {
+        if (messageNotification) {
+            await _updateNotificationStatus('user_message_notification', 'False', userInformation.id)
+
+        } else {
+            await _updateNotificationStatus('user_message_notification', 'True', userInformation.id)
+
+        }
+        await saveSettingOptions('user_message_notification', JSON.stringify(!messageNotification));
+        setMessageNotification(!messageNotification);
+
     }
 
 
@@ -57,7 +87,7 @@ const NotificationSettingHomeScreen = () => {
 
 
     const _onSaveTokenToDatabase = () => {
-        
+
     }
 
 
@@ -79,17 +109,31 @@ const NotificationSettingHomeScreen = () => {
             }
         });
 
-        messaging().getToken().then((token) => console.warn(token));
+        getSettingOptions('user_message_notification').then((e) => {
+            if (e == 'true') {
+                setMessageNotification(true);
+            } else {
+                setMessageNotification(false);
+            }
+        })
 
+        messaging().getToken().then((token) => console.log(token));
+
+
+        _getUserNotificationConfig(userInformation.id)
+            .then((data) => console.log('data: ',data));
 
         return () => {
             messaging().onTokenRefresh(token => {
-                console.warn('token changed: ',token);
+                console.warn('token changed: ', token);
             })
         }
 
 
-    }, [])
+    }, []);
+
+
+
 
 
     return (
@@ -106,6 +150,13 @@ const NotificationSettingHomeScreen = () => {
                 label={"Nhận thông báo ứng tuyển"}
                 notificationReceive={applyNotification}
                 _onNotificationChange={_onApplyNotification}
+            />
+            <RowSwitch
+                // _onNotificationChange={_onNotificationChange}
+                // notificationReceive={notificationReceive}
+                label={"Nhận thông báo tin nhắn"}
+                notificationReceive={messageNotification}
+                _onNotificationChange={_onMessageNotification}
             />
 
         </View>

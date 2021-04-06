@@ -1,36 +1,48 @@
-import React,{useState} from 'react'
-import { StyleSheet, Text, TextInput, View,ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, TextInput, View, ScrollView, TouchableOpacity } from 'react-native'
 import ReviewSatisfationLevel from '../../components/Review/ReviewSatisfationLevel';
 import CommonColors from '../../constants/CommonColors';
 import { _confirm_jobcandidate } from '../../utils/serverApi';
-import {useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
+import { formatCash } from '../../utils/helper';
 
 const JobConfirmScreen = (props) => {
 
-    const {data} = props.route?.params;
+    const { data } = props.route?.params;
 
-    const {userInformation} = useSelector(state => state.authentication)
+    const { userInformation } = useSelector(state => state.authentication)
 
     const [confirmedJobInfo, setConfirmedJobInfo] = useState({
         confirmedPrice: '',
         satisfationLevel: '',
         message: ''
     });
-
+    const [formatedPrice, setFormatedPrice] = useState(0);
+    const [isEnteringPrice, setIsEnteringPrice] = useState(false);
+    const [priceMaxLength, setPriceMaxLength] = useState(1);
 
     // React.useEffect(() => {
     //     console.warn(confirmedJobInfo)
     // }, [confirmedJobInfo])
+    const [tempPrice, setTempPrice] = useState(0);
+    const _onEnterConfirmedPrice = async (text) => {
+
+        var myStr = text;
+        var newStr = myStr.replace(/,/g, '');
+        let fm_price = formatCash(newStr);
+        setTempPrice(fm_price)
+        setConfirmedJobInfo({ ...confirmedJobInfo, confirmedPrice: newStr });
 
 
+    }
 
     const _onConfirmJobCandidate = async () => {
         // console.warn(data);
         // console.warn('auth: ',userInformation.id);
         // console.warn('candidate_id: ',data);
 
-        let fetchRes = await _confirm_jobcandidate(userInformation.id,data.id,confirmedJobInfo.satisfationLevel,confirmedJobInfo.message,confirmedJobInfo.confirmedPrice);
-        console.warn("res: ",fetchRes);
+        let fetchRes = await _confirm_jobcandidate(userInformation.id, data.id, confirmedJobInfo.satisfationLevel, confirmedJobInfo.message, confirmedJobInfo.confirmedPrice);
+        console.warn("res: ", fetchRes);
     }
 
     return (
@@ -39,19 +51,25 @@ const JobConfirmScreen = (props) => {
 
                 <View style={[styles.inputGroup]}>
                     <Text style={[styles.titleCaption]}>Giá xác nhận</Text>
-                    <TextInput style={[styles.textInput]}
-                        value={confirmedJobInfo.confirmedPrice}
-                        onChangeText={(text) => setConfirmedJobInfo({
-                            ...confirmedJobInfo, confirmedPrice: text
-                        }
-                        )}
+
+                    <TextInput style={[styles.textInput,
+                    {
+                        zIndex: -1,
+                    }
+                    ]}
+
+                        value={`${tempPrice}`}
+                        onChangeText={_onEnterConfirmedPrice}
                         keyboardType={'numeric'}
                         placeholder={`Nhập giá hoàn thành công việc`}
+
+
+
 
                     />
                     <Text style={{ fontSize: 10, color: 'grey', fontStyle: 'italic' }}>
                         Vui lòng cung cấp giá xác nhận để cải thiện môi trường kết nối tin cậy.
-                        </Text>
+                    </Text>
                 </View>
                 {/*  */}
                 <Text style={[styles.titleCaption, { marginHorizontal: 16 }]}>Mức độ hài lòng</Text>
@@ -72,7 +90,8 @@ const JobConfirmScreen = (props) => {
                         keyboardType={'default'}
                         // numberOfLines={8}
                         multiline={true}
-                        placeholder={'Đánh giá'}
+                        placeholder={'Nội dung đánh giá...'}
+                        textAlignVertical={'top'}
                     />
                 </View>
 

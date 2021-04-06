@@ -219,7 +219,7 @@ const CollaboratorHomeScreen = (props) => {
                                 item={e}
                                 {...props}
                                 key={index.toString()}
-                                onPress={_navigateToJobDetail}
+                                onPress={()=>_navigateToJobDetail(e.id)}
                             />
                         )
                     }

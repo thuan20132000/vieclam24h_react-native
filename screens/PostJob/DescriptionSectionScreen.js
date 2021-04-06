@@ -1,5 +1,5 @@
-import React, { useState,useEffect } from 'react'
-import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity, Alert, Keyboard } from 'react-native'
 import CommonColors from '../../constants/CommonColors'
 import BottomNavigation from './components/BottomNavigation'
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -12,13 +12,13 @@ import * as jobActions from '../../store/actions/jobActions';
 const DescriptionSectionScreen = (props) => {
 
     const dispatch = useDispatch();
-    const {jobInformation} = useSelector(state => state.job);
+    const { jobInformation } = useSelector(state => state.job);
 
-
+    const _refDescriptionInput = useRef();
 
     const [dateSelected, setDateSelected] = useState(new Date());
     const [timeSelected, setTimeSelected] = useState(new Date());
-    const [descriptions,setDescriptions] = useState('');
+    const [descriptions, setDescriptions] = useState('');
 
     const [mode, setMode] = useState('date');
     const [datetimepickerShow, setDatetimepickerShow] = useState(false);
@@ -33,11 +33,11 @@ const DescriptionSectionScreen = (props) => {
                 setDateSelected(selectedTime);
             } else if (mode == 'time') {
                 setTimeSelected(selectedTime);
-            
+
             }
 
         } catch (error) {
-            console.warn(error);
+            console.log(error);
         }
 
     };
@@ -63,12 +63,19 @@ const DescriptionSectionScreen = (props) => {
     const [withTime, setWithTime] = useState(false);
 
     useEffect(() => {
+        _refDescriptionInput.current.focus();
+
         setDescriptions(jobInformation.descriptions);
+
+
+        return () => {
+            Keyboard.dismiss;
+        }
     }, [])
 
     const _onDescriptionValidation = () => {
 
-        if(!descriptions || descriptions.length < 10 || descriptions.length > 250 || descriptions.trim() == ""){
+        if (!descriptions || descriptions.length < 10 || descriptions.length > 250 || descriptions.trim() == "") {
             return false;
         }
         return true;
@@ -79,14 +86,14 @@ const DescriptionSectionScreen = (props) => {
 
         let valid_res = _onDescriptionValidation();
 
-        if(!valid_res){
-            Alert.alert("Thông báo","Vui lòng nhập mô tả hợp lệ!");
+        if (!valid_res) {
+            Alert.alert("Thông báo", "Vui lòng nhập mô tả hợp lệ!");
             return;
         }
 
 
         let data = {
-            descriptions:descriptions
+            descriptions: descriptions
         }
         dispatch(jobActions.updateJob(data));
         props.navigation.navigate('PriceSection')
@@ -124,7 +131,7 @@ const DescriptionSectionScreen = (props) => {
                                 <Text style={[{ textAlign: 'center', fontWeight: '700', fontSize: 18 }]} >
                                     {timeSelected && formatTimeString(timeSelected) || `Chọn giờ`}
                                 </Text>
-                                <Text style={[{textAlign:'center'}]}>Giờ</Text>
+                                <Text style={[{ textAlign: 'center' }]}>Giờ</Text>
 
                             </TouchableOpacity>
                             <TouchableOpacity
@@ -132,7 +139,7 @@ const DescriptionSectionScreen = (props) => {
                                 style={[styles.buttonpicker]}
                             >
                                 <Text style={[{ textAlign: 'center', fontWeight: '700', fontSize: 18 }]} > {formatDateString(dateSelected) || `Chọn ngày`} </Text>
-                                <Text style={[{textAlign:'center'}]}>Ngày</Text>
+                                <Text style={[{ textAlign: 'center' }]}>Ngày</Text>
 
                             </TouchableOpacity>
                         </View>
@@ -159,6 +166,7 @@ const DescriptionSectionScreen = (props) => {
 
                     <Text style={[styles.textLabel]}>Mô tả công việc (<Text style={{ color: 'red' }}>*</Text>)</Text>
                     <TextInput
+                        ref={_refDescriptionInput}
                         style={[styles.textinput, { justifyContent: 'flex-start', display: 'flex', flexDirection: 'column' }]}
                         placeholder={'Mô tả công việc...'}
                         multiline
