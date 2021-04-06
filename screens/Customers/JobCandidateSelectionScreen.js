@@ -18,9 +18,8 @@ const JobCandidateSelectionScreen = (props) => {
 
     const _onApprovedJobCandidate = (jobcandidate) => {
         setIsLoading(true);
-        console.log(jobcandidate.id);
         setTimeout(() => {
-            _approve_jobcandidate(userInformation.id,jobcandidate.id)
+            _approve_jobcandidate(userInformation.id, jobcandidate.id)
                 .then((data) => {
                     if (data.status) {
                         console.log(data);
@@ -45,6 +44,14 @@ const JobCandidateSelectionScreen = (props) => {
         console.log(jobcandidate);
     }
 
+
+
+    const _onShowCandidateDetail = (candidate) => {
+            props.navigation.navigate('CandidateDetail',{
+                candidate:candidate.candidate
+            })
+    }
+
     return (
         <>
             <ModalLoading
@@ -60,7 +67,7 @@ const JobCandidateSelectionScreen = (props) => {
                             descriptions={`${e.descriptions}`}
                             review_average={`${e.candidate?.candidate_info?.review_overall?.review_level_avg}`}
                             review_number={`${e.candidate?.candidate_info?.review_overall?.review_count}`}
-
+                            onDetailPress={()=>_onShowCandidateDetail(e)}
 
                             children={
 

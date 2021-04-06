@@ -18,7 +18,8 @@ export const CandidateCard = ({
     review_level,
     message,
     children,
-    containerStyle
+    containerStyle,
+    bodyChildren
 
 }) => {
     return (
@@ -107,7 +108,9 @@ export const CandidateCard = ({
                             label={`${message}`}
                         />
                     }
-
+                    {
+                        bodyChildren
+                    }
 
                 </View>
             </View>

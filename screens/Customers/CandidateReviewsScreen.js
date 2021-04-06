@@ -14,7 +14,6 @@ const CandidateReviewsScreen = (props) => {
     const _onGetCandidateReviews = async () => {
         let reviewRes = await _getCandidateReviews(candidate?.id);
         // console.warn(reviewRes);
-        console.warn(reviewRes);
         if (!reviewRes.status) {
             Alert.alert("thông báo", "Vui lòng kiểm tra kết nối.")
             return;

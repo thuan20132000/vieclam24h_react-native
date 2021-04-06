@@ -1368,7 +1368,6 @@ export const _updateNotificationStatus = async (
         }
 
         let dataRes = await dataFetch.json();
-        console.warn(dataRes);
 
         if (!dataRes.status) {
             return {

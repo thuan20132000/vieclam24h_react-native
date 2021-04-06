@@ -239,7 +239,12 @@ const ApprovedJob = ({ navigation, userInformation }) => {
         });
 
     }
-
+    
+    const _onOpenSchedule = async (e) => {
+        navigation.navigate('JobUserTracking',{
+            data:e
+        })
+    }
 
 
     if (isLoading) {
@@ -281,17 +286,27 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                         jobAddress={`${e?.job?.location?.district} - ${e?.job?.location?.province}`}
                         expectedPrice={`${formatCash(e?.expected_price)} vnđ`}
                         pressDisable={true}
-
                         children={
                             <>
                                 <CandidateCard
                                     name={e?.candidate?.username}
                                     phone={e?.candidate?.phone || '097723213'}
-                                    message={e?.descriptions}
+                                    // message={e?.descriptions}
 
-                                    containerStyle={{
-
-                                    }}
+                                    containerStyle={[
+                                        styles.itemContainer
+                                    ]}
+                                    bodyChildren={
+                                        <Text
+                                            style={{
+                                                fontStyle:'italic',
+                                                color:'grey',
+                                                marginVertical:4
+                                            }}
+                                        >
+                                            {e?.descriptions}
+                                        </Text>
+                                    }
                                 />
                                 <View
                                     style={[{
@@ -301,10 +316,11 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 
                                     }]}
                                 >
-                                    {/* <ButtonIcon
-                                        title={"Huỷ"}
-                                        iconName={CommonIcons.removeTrash}
-                                    /> */}
+                                    <ButtonIcon
+                                        title={"Theo dõi"}
+                                        iconName={CommonIcons.calendarCheck}
+                                        onPress={()=>_onOpenSchedule(e)}
+                                    />
                                     <ButtonIcon
                                         title={"Xác nhận"}
                                         iconName={CommonIcons.checkboxCircleMark}
@@ -383,7 +399,11 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                     justifyContent: 'center'
                 }}
             >
-                <LoadingSimple />
+                <ActivityIndicator
+                    size={'large'}
+                    color={'coral'}
+
+                />
             </View>
         )
     }
@@ -406,10 +426,9 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                             pressDisable={true}
                             children={
                                 <>
-                                    <RowInformation
+                                    {/* <RowInformation
                                         iconName={CommonIcons.messages}
                                         label={`Đánh giá :`}
-                                        value={e?.reviews[0]?.review_content}
                                         containerStyle={{
                                             alignItems: 'center',
 
@@ -417,14 +436,14 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                         labelStyle={{
                                             fontStyle: 'italic'
                                         }}
-                                    />
+                                    /> */}
+
                                     <View
                                         style={{
-                                            display:'flex',
-                                            flexDirection:'row',
-                                            justifyContent:'center',
-                                            alignItems:'center',
-                                            paddingHorizontal:12
+                                            display: 'flex',
+                                            flexDirection: 'row',
+                                            justifyContent: 'flex-start',
+                                            alignItems: 'flex-start',
                                         }}
                                     >
                                         <RowInformation
@@ -432,7 +451,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                             value={formatDateTime(e?.created_at || '')}
                                             containerStyle={{
                                                 alignItems: 'center',
-                                                width:'50%'
+                                                width: '50%'
 
                                             }}
                                             labelStyle={{
@@ -444,7 +463,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                             value={formatDateTime(e?.updated_at || '')}
                                             containerStyle={{
                                                 alignItems: 'center',
-                                                width:'50%'
+                                                width: '50%'
 
 
                                             }}
@@ -456,19 +475,31 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                     </View>
                                     <View style={{
                                         display: 'flex',
-                                        flexDirection: 'row'
+                                        flexDirection: 'row',
+                                        justifyContent: 'center',
+                                        marginVertical: 12
                                     }}>
                                         {
                                             Array(e?.reviews[0]?.review_level).fill({}).map((e, index) =>
                                                 <MaterialCommunityIcon
-                                                    name={CommonIcons.star}
+                                                    key={index.toString()}
+                                                    name={CommonIcons.starOutline}
                                                     color={'gold'}
-                                                    size={18}
+                                                    size={26}
                                                 />
 
                                             )
                                         }
+
                                     </View>
+                                    <Text
+                                        style={{
+                                            color:'grey',
+                                            fontStyle:'italic'
+                                        }}
+                                    >
+                                        {e?.reviews[0]?.review_content || "Không có đánh giá"}
+                                    </Text>
                                     <RowInformation
                                         iconName={CommonIcons.tagPrice}
                                         label={`${formatCash(e?.confirmed_price || 0)} vnđ`}
@@ -482,7 +513,6 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                     <CandidateCard
                                         name={e?.candidate?.username}
                                         phone={e?.candidate?.phone || '097723213'}
-                                        message={e?.descriptions}
 
                                         containerStyle={{
 

@@ -751,7 +751,16 @@ function AccountStack() {
                 component={JobCandidateSelectionScreen}
                 options={option_slide}
             />
-
+            <AccountStackNavigator.Screen
+                name="CandidateDetail"
+                component={CollaboratorDetailScreen}
+                options={option_slide}
+            />
+            <AccountStackNavigator.Screen
+               name="CandidateReview"
+               component={CandidateReviewsScreen}
+               options={option_slide}
+            />
 
         </AccountStackNavigator.Navigator>
     )
