@@ -24,6 +24,7 @@ const JobCandidateSelectionScreen = (props) => {
                     if (data.status) {
                         console.log(data);
                         Alert.alert("Thành công", "Ứng viên sẽ liên hệ với bạn.");
+                        props.navigation.goBack()
 
                     } else {
                         Alert.alert("Không thành công", "Vui lòng kiểm tra kết nối mạng.");

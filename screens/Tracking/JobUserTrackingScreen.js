@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Dimensions, StyleSheet, Text, View, ScrollView } from 'react-native'
 import { JobItemPendingCard } from '../../components/Card/CardJobItem'
 import CardUserContact from '../../components/Card/CardUserContact'
 import StepIndicator from 'react-native-step-indicator';
 import { _getJobCandidateDetail } from '../../utils/serverApi';
 import { formatCash, formatDateTime } from '../../utils/helper';
+import { useSelector } from 'react-redux';
 
-const JobUserTrackingScreen = () => {
+const JobUserTrackingScreen = (props) => {
+
+    const { userInformation } = useSelector(state => state.authentication);
+    const { jobcandidate } = props.route.params;
+
 
     const labels = ["Ứng tuyển", "Chờ", "Chấp nhập", "Xác nhận", "Hoàn tất thanh toán"];
     const customStyles = {
@@ -37,19 +42,35 @@ const JobUserTrackingScreen = () => {
     const [jobcandidateTracking, setJobCandidateTracking] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [trackingData, setTrackingData] = useState([]);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
-        _getJobCandidateDetail(44, 7)
+        _getJobCandidateDetail(userInformation.id, jobcandidate.id || null)
             .then((dataRes) => {
-                setJobCandidateDetail(dataRes?.data?.jobcandidate_info);
-                setJobCandidateTracking(dataRes?.data?.jobcandidate_tracking);
+                if (dataRes.status) {
+                    setJobCandidateDetail(dataRes?.data?.jobcandidate_info);
+                    setJobCandidateTracking(dataRes?.data?.jobcandidate_tracking);
+
+                } else {
+                    setIsError(true);
+                }
             })
             .catch((error) => {
                 console.log('error: ', error);
             }).finally((e) => setIsLoading(false));
 
     }, []);
+
+
+
+    const _onNavigateUserContact = async () => {
+        // console.warn(jobcandidate.candidate);
+        // return;
+        props.navigation.navigate('CandidateDetail', {
+            candidate: jobcandidate?.candidate
+        });
+    }
 
 
 
@@ -70,8 +91,24 @@ const JobUserTrackingScreen = () => {
             </View>
         )
     }
+
+    if (isError) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <Text>Error</Text>
+            </View>
+        )
+    }
+
     return (
-        <View
+        <ScrollView
             style={{
                 display: 'flex',
                 flex: 1,
@@ -79,14 +116,17 @@ const JobUserTrackingScreen = () => {
             }}
         >
             <JobItemPendingCard
-                jobTitle={'Title'}
-                jobAddress={'Address'}
-                jobPrice={320000}
+                jobTitle={jobcandidateDetail?.job?.name}
+                jobAddress={`${jobcandidateDetail?.job?.location?.subdistrict} -${jobcandidateDetail?.job?.location?.district} - ${jobcandidateDetail?.job?.location?.province}`}
+                jobPrice={`${formatCash(jobcandidateDetail?.job?.suggestion_price)} > ${formatCash(jobcandidateDetail?.expected_price)}`}
                 pressDisable={true}
                 canRemove={false}
                 children={
 
-                    <CardUserContact />
+                    <CardUserContact
+                        onItemPress={_onNavigateUserContact}
+                        username={jobcandidateDetail?.candidate?.username}
+                    />
                 }
             />
 
@@ -146,7 +186,7 @@ const JobUserTrackingScreen = () => {
                 />
             </View>
 
-        </View>
+        </ScrollView>
     )
 }
 const deviceWidth = Dimensions.get('screen').width;

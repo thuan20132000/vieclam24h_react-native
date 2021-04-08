@@ -21,6 +21,8 @@ const JobConfirmScreen = (props) => {
     const [isEnteringPrice, setIsEnteringPrice] = useState(false);
     const [priceMaxLength, setPriceMaxLength] = useState(1);
 
+    const [jobCandidateInfo, setJobCandidateInfo] = useState('');
+
     // React.useEffect(() => {
     //     console.warn(confirmedJobInfo)
     // }, [confirmedJobInfo])
@@ -45,13 +47,21 @@ const JobConfirmScreen = (props) => {
         console.warn("res: ", fetchRes);
     }
 
+
+    React.useEffect(() => {
+        if (data) {
+            setJobCandidateInfo(data);
+        }
+    }, [])
+
     return (
         <View>
             <ScrollView style={{ marginHorizontal: 12 }}>
 
                 <View style={[styles.inputGroup]}>
-                    <Text style={[styles.titleCaption]}>Giá xác nhận</Text>
+                    <Text style={{ color: 'grey', fontStyle: 'italic' }}>Giá ứng tuyển : {`${formatCash(jobCandidateInfo?.expected_price)} vnđ`} </Text>
 
+                    <Text style={[styles.titleCaption]}>Giá xác nhận</Text>
                     <TextInput style={[styles.textInput,
                     {
                         zIndex: -1,
@@ -142,9 +152,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 8
     },
     titleCaption: {
-        fontWeight: '500',
+        fontWeight: '700',
         fontSize: 16,
-        marginVertical: 8,
+        marginVertical: 4,
         marginHorizontal: 12
     }
 })

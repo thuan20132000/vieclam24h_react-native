@@ -160,8 +160,23 @@ const NotificationScreen = (props) => {
 
 
 
-    const _onNotificationPress = async () => {
-        props.navigation.navigate('JobCandidateTracking');
+    const _onNotificationPress = async (notification) => {
+        if(!notification){
+            return;
+        }
+        if(notification?.jobcandidate?.id){
+            props.navigation.navigate('JobCandidateTracking',{
+                jobcandidate:notification?.jobcandidate
+            });
+            return;
+        }
+        if(notification?.job?.id){
+            props.navigation.navigate('JobDetail',{
+                job_id:notification?.job?.id
+            });
+            return;
+        }
+
     }
 
     return (
@@ -185,7 +200,7 @@ const NotificationScreen = (props) => {
                     title={`${item.title || item.notification?.title}`}
                     subtitle={`${item?.content || item.notification?.body}`}
                     time={getDaysBetweenTwoDates(item.sentTime || item.created_at)}
-                    onItemPress={_onNotificationPress}
+                    onItemPress={()=>_onNotificationPress(item)}
 
                 />
             )}

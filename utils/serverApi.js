@@ -855,6 +855,7 @@ export const _getCreatedJobList = async (
 
         if (!dataFetch.ok) {
             console.warn(`ERROR AT FETCH CREATED JOB ${job_status}`);
+            
             return {
                 status: false,
                 message: "error",
@@ -974,7 +975,7 @@ export const _confirm_jobcandidate = async (
         });
 
         if (!dataFetch.ok) {
-            console.warn(`ERROR AT FETCH CREATED JOB ${status}`);
+            console.warn(`ERROR AT FETCH UPDATE JOBCANDIDATE CONFIRMED`);
             return {
                 status: false,
                 message: "error",
@@ -1158,7 +1159,7 @@ export const _getCandidateReviews = async (
 
 export const _getUserNotifications = async (user_id) => {
     try {
-        let url = `${api.api_v1}/candidate/${user_id}/notifications`;
+        let url = `${api.api_v1}/user/${user_id}/notifications`;
         let dataFetch = await fetch(`${url}`);
         if (!dataFetch.ok) {
             console.warn('ERROR AT GET User Notification');
@@ -1265,6 +1266,8 @@ export const _getJobCandidateDetail = async (user_id, jobcandidate_id) => {
                 status: false
             }
         }
+
+
 
         return {
             data: dataRes.data,

@@ -149,7 +149,9 @@ const ApprovedJob = ({ user_id, status = 3, navigation }) => {
 
     const _onNavigateJobCandidateTracking = (e) => {
 
-        navigation.navigate('JobCandidateTracking');
+        navigation.navigate('JobCandidateTracking',{
+            jobcandidate:e
+        });
 
     }
 
@@ -158,10 +160,15 @@ const ApprovedJob = ({ user_id, status = 3, navigation }) => {
             <View
                 style={{
                     display: 'flex',
-                    flex: 1
+                    flex: 1,
+                    justifyContent:'center',
+                    alignItems:'center'
                 }}
             >
-                <LoadingSimple />
+                <ActivityIndicator
+                    size={'large'}
+                    color={'coral'}
+                />
             </View>
         )
     }
@@ -175,7 +182,7 @@ const ApprovedJob = ({ user_id, status = 3, navigation }) => {
             }
         >
             {
-                (collaboratorJobs && collaboratorJobs.length > 0) &&
+                (collaboratorJobs && collaboratorJobs?.length > 0) &&
                 collaboratorJobs.map((e, index) =>
 
                     <JobItemApprovedCard
@@ -235,7 +242,9 @@ const ConfirmJob = ({ user_id, status = 4, navigation }) => {
 
     const _onNavigateJobCandidateTracking = (e) => {
 
-        navigation.navigate('JobCandidateTracking');
+        navigation.navigate('JobCandidateTracking',{
+            jobcandidate:e
+        });
 
     }
     return (
@@ -260,7 +269,7 @@ const ConfirmJob = ({ user_id, status = 4, navigation }) => {
                             label={`${formatDateTime(e.updated_at)}`}
                             iconName={CommonIcons.calendarCheck}
                         />
-                        <RowInformation
+                        {/* <RowInformation
                             label={e?.reviews[0]?.content || "Không có đánh giá"}
                             iconName={CommonIcons.messages}
                         />
@@ -268,7 +277,7 @@ const ConfirmJob = ({ user_id, status = 4, navigation }) => {
                             iconName={CommonIcons.star}
                             iconColor={'gold'}
                             label={e?.reviews[0]?.review_level}
-                        />
+                        /> */}
                     </JobItemConfirmedCard>
                 )
             }

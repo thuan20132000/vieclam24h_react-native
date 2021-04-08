@@ -30,52 +30,66 @@ const RowInformation = ({
             containerStyle
 
         ]}>
-            <MaterialCommunityIcon
-                name={iconName || CommonIcons.chatMessage}
-                size={iconSize || 18}
-                color={iconColor || CommonColors.btnSubmit}
-                style={[
-                    {
-                        marginHorizontal: 6
-
-                    },
-                    iconStyle
-                ]}
-
-            />
             {
-                label &&
-                <Text
-                    style={
-                        [
-                            {
-                                fontSize: 14,
-                                color: 'grey',
-                                marginHorizontal: 6,
+                iconName &&
+                <MaterialCommunityIcon
+                    name={iconName || CommonIcons.chatMessage}
+                    size={iconSize || 18}
+                    color={iconColor || CommonColors.btnSubmit}
+                    style={[
+                        {
+                            marginHorizontal: 6,
+                            width: '10%'
+                        },
+                        iconStyle
+                    ]}
 
-                            },
-                            labelStyle
-                        ]
-                    }
-                >
-                    {label}
-                </Text>
+                />
 
             }
-            <Text
-                style={[
-                    {
-                        color: 'black',
-                        fontSize: 14,
-                        fontWeight: '700',
-                        overflow: 'hidden',
-                        width: 240
-                    },
-                    valueStyle
-                ]}
+            <View
+                style={{
+                    width: '90%',
+                    display: 'flex',
+                    flexDirection: 'row'
+                }}
             >
-                {value}
-            </Text>
+                {
+                    label &&
+                    <Text
+                        style={
+                            [
+                                {
+                                    fontSize: 14,
+                                    color: 'grey',
+                                    marginHorizontal: 6,
+
+                                },
+                                labelStyle
+                            ]
+                        }
+                        numberOfLines={3}
+                    >
+                        {label}
+                    </Text>
+
+                }
+                <Text
+                    style={[
+                        {
+                            color: 'black',
+                            fontSize: 14,
+                            fontWeight: '700',
+                            overflow: 'hidden',
+                            width: 240
+                        },
+                        valueStyle
+                    ]}
+                >
+                    {value}
+                </Text>
+            </View>
+
             {children}
         </View>
     )

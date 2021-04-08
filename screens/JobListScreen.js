@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { RefreshControl, StyleSheet, Text, View,FlatList, ScrollView, TouchableOpacity ,ActivityIndicator} from 'react-native'
+import { RefreshControl, StyleSheet, Text, View, FlatList, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native'
 import SimpleBottomSheet from '../components/BottomSheet/SimpleBottomSheet';
 import CardHorizontal from '../components/Card/CardHorizontal';
 import FilterBar from '../components/Filter/FilterBar';
@@ -53,7 +53,8 @@ const JobListScreen = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [perPage, setPerPage] = useState(6);
     const [postnumber, setPostnumber] = useState(0);
-    const [nextPage,setNextPage] = useState(null);
+    const [nextPage, setNextPage] = useState(null);
+    const [isLoadMore, setIsLoadMore] = useState(false);
     let { category } = props.route.params;
 
     const _getJobs = async () => {
@@ -67,8 +68,11 @@ const JobListScreen = (props) => {
         setIsLoading(false);
     }
 
-    const _navigateToJobDetail = async (job_id) => {
-        props.navigation.navigate('JobDetail', { job_id: job_id })
+    const _navigateToJobDetail = async (job) => {
+        if (!job) {
+            return;
+        }
+        props.navigation.navigate('JobDetail', { job_id: job?.id })
     }
 
 
@@ -76,12 +80,12 @@ const JobListScreen = (props) => {
 
     let timeoutEvent;
     const _loadMoreJobs = async () => {
-        setIsLoading(true);
+        setIsLoadMore(true);
 
 
-        if(nextPage){
+        if (nextPage) {
             let dataFetch = await fetch(nextPage);
-            if(!dataFetch.ok){
+            if (!dataFetch.ok) {
                 return;
             }
             let dataRes = await dataFetch.json();
@@ -90,12 +94,15 @@ const JobListScreen = (props) => {
                 timeoutEvent = setTimeout(() => {
                     setJobs([...jobs, ...dataRes.data]);
                     setNextPage(dataRes.next);
-    
+                    setIsLoadMore(false);
+
+
                 }, 300);
             }
+        }else{
+            setIsLoadMore(false);
         }
-        setIsLoading(false);
-        
+
     }
 
     useEffect(() => {
@@ -118,7 +125,7 @@ const JobListScreen = (props) => {
 
 
 
-   
+
 
 
 
@@ -179,16 +186,34 @@ const JobListScreen = (props) => {
             ...filterData,
             subdistrict: ''
         })
-    }, [filterData.district])
+    }, [filterData.district]);
+
+
+
+    if (isLoading) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <ActivityIndicator
+                    size={'large'}
+                    color={'coral'}
+
+                />
+            </View>
+        )
+    }
 
 
     return (
         <>
-            <View
-               
-            >
 
-            </View>
 
             {/* Filter */}
             <View
@@ -222,7 +247,7 @@ const JobListScreen = (props) => {
                         label={filterData.subdistrict?.name || `Phường/xã`}
 
                     />
-                 
+
                 </ScrollView>
             </View>
 
@@ -238,16 +263,16 @@ const JobListScreen = (props) => {
                         item={item}
                         key={index.toString()}
                         index={index}
-                        onPress={_navigateToJobDetail}
+                        onPress={() => _navigateToJobDetail(item)}
                     />
                 )}
                 keyExtractor={(item, index) => index.toString()}
                 extraData={selectedId}
-                onEndReachedThreshold={0.5}
+                onEndReachedThreshold={0.6}
                 onEndReached={_loadMoreJobs}
                 ListFooterComponent={
                     <ActivityIndicator
-                        animating={isLoading}
+                        animating={isLoadMore}
                         color={'coral'}
                         size={'large'}
                     />
@@ -263,8 +288,8 @@ const JobListScreen = (props) => {
                 dragFromTopOnly={true}
                 closeOnPressMask={true}
                 containerStyle={{
-                    borderTopRightRadius:22,
-                    borderTopLeftRadius:22
+                    borderTopRightRadius: 22,
+                    borderTopLeftRadius: 22
                 }}
 
             >

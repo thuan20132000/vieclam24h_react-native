@@ -91,6 +91,11 @@ const PendingJob = ({ navigation, userInformation }) => {
 
 
     const _onNavigateToCandidateSelection = (job) => {
+
+        if (job?.candidates?.length <= 0) {
+            return;
+        }
+
         navigation.navigate('JobCandidateSelection', {
             data: job?.candidates
         })
@@ -133,7 +138,7 @@ const PendingJob = ({ navigation, userInformation }) => {
                         <JobItemPendingCard
                             key={index.toString()}
                             jobTitle={e?.name}
-                            jobPrice={e?.suggestion_price}
+                            jobPrice={`${formatCash(e?.suggestion_price)} vnđ`}
                             jobAddress={`${e?.location?.district} - ${e?.location?.province}`}
                             onPressOpen={() => _onNavigateToCandidateSelection(e)}
                             children={
@@ -195,10 +200,10 @@ const ApprovedJob = ({ navigation, userInformation }) => {
 
     useEffect(() => {
         setIsLoading(true);
-        console.log(userInformation);
         _getCreatedJobList(userInformation.id, 'approved')
             .then((data) => {
-                if (data.status) {
+                if (data.status && data.data != null) {
+
                     setApprovedJobsData(data.data);
                 }
             })
@@ -239,13 +244,21 @@ const ApprovedJob = ({ navigation, userInformation }) => {
         });
 
     }
-    
+
     const _onOpenSchedule = async (e) => {
-        navigation.navigate('JobUserTracking',{
-            data:e
+        navigation.navigate('JobUserTracking', {
+            data: e,
+            jobcandidate: e
         })
     }
 
+    const _onNavigateUserContact = async (e) => {
+        // console.warn(e.candidate);
+        // return;
+        navigation.navigate('CandidateDetail', {
+            candidate: e?.candidate
+        });
+    }
 
     if (isLoading) {
         return (
@@ -266,6 +279,22 @@ const ApprovedJob = ({ navigation, userInformation }) => {
         )
     }
 
+    if (approvedJobsData?.length <= 0) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    backgroundColor: 'white',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
+            >
+                <Text>Chưa có ứng viên</Text>
+            </View>
+        )
+    }
+
     return (
         <ScrollView
             refreshControl={
@@ -275,14 +304,14 @@ const ApprovedJob = ({ navigation, userInformation }) => {
         >
             {
 
-                approvedJobsData.length > 0 &&
+                approvedJobsData?.length > 0 &&
 
                 approvedJobsData.map((e, index) =>
 
                     <JobItemApprovedCard
                         key={index.toString()}
                         jobTitle={e?.job?.name}
-                        jobPrice={`${formatCash(e?.job?.suggestion_price)} vnđ`}
+                        jobPrice={`${formatCash(e?.job?.suggestion_price)} - ${formatCash(e?.expected_price)} `}
                         jobAddress={`${e?.job?.location?.district} - ${e?.job?.location?.province}`}
                         expectedPrice={`${formatCash(e?.expected_price)} vnđ`}
                         pressDisable={true}
@@ -290,19 +319,21 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                             <>
                                 <CandidateCard
                                     name={e?.candidate?.username}
-                                    phone={e?.candidate?.phone || '097723213'}
+                                    // phone={e?.candidate?.phone || '097723213'}
                                     // message={e?.descriptions}
-
                                     containerStyle={[
                                         styles.itemContainer
                                     ]}
+                                    onItemPress={() => _onNavigateUserContact(e)}
                                     bodyChildren={
                                         <Text
                                             style={{
-                                                fontStyle:'italic',
-                                                color:'grey',
-                                                marginVertical:4
+                                                fontStyle: 'italic',
+                                                color: 'grey',
+                                                marginVertical: 4,
                                             }}
+                                            numberOfLines={2}
+                                            ellipsizeMode={'tail'}
                                         >
                                             {e?.descriptions}
                                         </Text>
@@ -319,7 +350,7 @@ const ApprovedJob = ({ navigation, userInformation }) => {
                                     <ButtonIcon
                                         title={"Theo dõi"}
                                         iconName={CommonIcons.calendarCheck}
-                                        onPress={()=>_onOpenSchedule(e)}
+                                        onPress={() => _onOpenSchedule(e)}
                                     />
                                     <ButtonIcon
                                         title={"Xác nhận"}
@@ -349,7 +380,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
 
 
     let timeoutEvent;
-    const onRefresh = React.useCallback(() => {
+    const onRefresh = () => {
         setRefreshing(true);
         timeoutEvent = setTimeout(() => {
             _getCreatedJobList(userInformation.id, 'confirmed')
@@ -363,7 +394,7 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                 })
                 .finally(() => setRefreshing(false))
         }, 2000);
-    }, []);
+    };
 
 
 
@@ -386,6 +417,16 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
         }
 
     }, []);
+
+
+
+    const _onOpenSchedule = async (e) => {
+        navigation.navigate('JobUserTracking', {
+            data: e,
+            jobcandidate: e
+        })
+    }
+
 
 
     if (isLoading) {
@@ -422,8 +463,9 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                         <JobItemConfirmedCard
                             key={index.toString()}
                             jobTitle={e?.job?.name}
-                            jobAddress={`${e?.job?.location?.district} - ${e?.job?.location?.province}`}
-                            pressDisable={true}
+                            jobAddress={`${e?.job?.location?.subdistrict} - ${e?.job?.location?.district} - ${e?.job?.location?.province}`}
+                            pressDisable={false}
+                            onItemPress={() => _onOpenSchedule(e)}
                             children={
                                 <>
                                     {/* <RowInformation
@@ -473,73 +515,13 @@ const ConfirmedJob = ({ navigation, userInformation }) => {
                                         />
 
                                     </View>
-                                    <View style={{
-                                        display: 'flex',
-                                        flexDirection: 'row',
-                                        justifyContent: 'center',
-                                        marginVertical: 12
-                                    }}>
-                                        {
-                                            Array(e?.reviews[0]?.review_level).fill({}).map((e, index) =>
-                                                <MaterialCommunityIcon
-                                                    key={index.toString()}
-                                                    name={CommonIcons.starOutline}
-                                                    color={'gold'}
-                                                    size={26}
-                                                />
-
-                                            )
-                                        }
-
-                                    </View>
-                                    <Text
-                                        style={{
-                                            color:'grey',
-                                            fontStyle:'italic'
-                                        }}
-                                    >
-                                        {e?.reviews[0]?.review_content || "Không có đánh giá"}
-                                    </Text>
                                     <RowInformation
                                         iconName={CommonIcons.tagPrice}
-                                        label={`${formatCash(e?.confirmed_price || 0)} vnđ`}
-                                        labelStyle={{
-                                            color: 'red',
-                                            fontSize: 18,
-                                            fontWeight: '700'
+                                        value={`${formatCash(e?.job?.suggestion_price)} vnđ`}
+                                        valueStyle={{
+                                            color: 'red'
                                         }}
                                     />
-
-                                    <CandidateCard
-                                        name={e?.candidate?.username}
-                                        phone={e?.candidate?.phone || '097723213'}
-
-                                        containerStyle={{
-
-                                        }}
-                                    />
-
-
-                                    {/* <ButtonIcon
-                                        title={"Đánh giá lại"}
-                                        iconColor={'white'}
-                                        iconName={CommonIcons.checkboxCircleMark}
-                                        onPress={() => console.warn('review')}
-                                        titleStyle={{
-                                            fontWeight: '700',
-                                            fontSize: 12,
-                                            color: 'white'
-                                        }}
-                                        containerStyle={{
-                                            position: 'absolute',
-                                            bottom: 0,
-                                            left: 0,
-                                            backgroundColor: 'orangered',
-                                            padding: 4,
-                                            borderRadius: 6
-                                        }}
-                                    /> */}
-
                                 </>
                             }
                         />

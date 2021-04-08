@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import CommonIcons from '../../constants/CommonIcons'
 import CommonImages from '../../constants/CommonImages'
 import ButtonIcon from '../Button/ButtonIcon'
@@ -8,7 +8,16 @@ import { Button } from 'react-native-paper';
 import CommonColors from '../../constants/CommonColors'
 
 const CardUserContact = ({
-    chilrden
+    chilrden,
+    onItemPress,
+    username,
+    address,
+    image_url,
+    phonenumber,
+    gender,
+    onPhonePress,
+    onChatPress,
+    contactDisplay = true
 }) => {
     return (
         <View
@@ -17,13 +26,14 @@ const CardUserContact = ({
 
             ]}
         >
-            <View
+            <TouchableOpacity
                 style={
                     {
                         display: 'flex',
                         flexDirection: 'row'
                     }
                 }
+                onPress={onItemPress}
             >
 
                 <View
@@ -35,7 +45,7 @@ const CardUserContact = ({
                 >
                     <Image
                         source={{
-                            uri: CommonImages.avatar
+                            uri: image_url || CommonImages.avatar
                         }}
                         style={{
                             width: 80,
@@ -52,48 +62,75 @@ const CardUserContact = ({
                     }}
                 >
                     <RowInformation
-                        value={'Mas csa'}
+                        value={username}
                         iconName={CommonIcons.account}
                     />
-                    <RowInformation
-                        value={'Hoa Minh, Lien Chieu'}
-                        iconName={CommonIcons.mapCheck}
-                        valueStyle={{
-                            fontSize: 12
-                        }}
-
-
-                    />
+                    {
+                        phonenumber &&
+                        <RowInformation
+                            value={phonenumber}
+                            iconName={CommonIcons.phone}
+                            valueStyle={{
+                                fontSize: 12
+                            }}
+                        />
+                    }
+                    {
+                        address &&
+                        <RowInformation
+                            value={address}
+                            iconName={CommonIcons.mapCheck}
+                            valueStyle={{
+                                fontSize: 12
+                            }}
+                        />
+                    }
+                    {
+                        gender &&
+                        <RowInformation
+                            value={gender}
+                            iconName={CommonIcons.person}
+                            valueStyle={{
+                                fontSize: 12
+                            }}
+                        />
+                    }
                 </View>
-            </View>
-            <View
-                style={{
-                    display:'flex',
-                    flexDirection:'row',
-                    alignItems:'center',
-                    justifyContent:'space-around',
-                    marginVertical:12
-                }}
-            >
-                <Button 
-                    icon={CommonIcons.phone} 
-                    mode="outlined" 
-                    onPress={() => console.log('Pressed')}
-                    color={'coral'}
-                
+            </TouchableOpacity>
+
+            {
+                contactDisplay &&
+                <View
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-around',
+                        marginVertical: 12
+                    }}
                 >
-                    Liên hệ
+                    <Button
+                        icon={CommonIcons.phone}
+                        mode="outlined"
+                        onPress={onPhonePress}
+                        color={'coral'}
+
+
+                    >
+                        Liên hệ
                 </Button>
-                <Button 
-                    icon={CommonIcons.messages} 
-                    mode="outlined" 
-                    onPress={() => console.log('Pressed')}
-                    color={'coral'}
-                >
-                    Nhắn tin
+                    <Button
+                        icon={CommonIcons.messages}
+                        mode="outlined"
+                        onPress={onChatPress}
+                        color={'coral'}
+                    >
+                        Nhắn tin
                 </Button>
-              
-            </View>
+
+                </View>
+            }
+
             {
                 chilrden
             }

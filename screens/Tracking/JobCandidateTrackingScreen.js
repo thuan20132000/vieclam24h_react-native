@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Dimensions, StyleSheet, Text, View, ScrollView } from 'react-native'
 import { JobItemPendingCard } from '../../components/Card/CardJobItem'
 import CardUserContact from '../../components/Card/CardUserContact'
 import StepIndicator from 'react-native-step-indicator';
 import { _getJobCandidateDetail } from '../../utils/serverApi';
 import { formatCash, formatDateTime } from '../../utils/helper';
+import { useSelector } from 'react-redux';
 
-const JobCandidateTrackingScreen = () => {
+const JobCandidateTrackingScreen = (props) => {
+    const { userInformation } = useSelector(state => state.authentication);
+    const { jobcandidate } = props.route.params;
 
     const labels = ["Ứng tuyển", "Chờ", "Chấp nhập", "Xác nhận", "Hoàn tất thanh toán"];
     const customStyles = {
@@ -37,19 +40,34 @@ const JobCandidateTrackingScreen = () => {
     const [jobcandidateTracking, setJobCandidateTracking] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [trackingData, setTrackingData] = useState([]);
+    const [isError, setIsError] = useState(false);
 
     useEffect(() => {
         setIsLoading(true);
-        _getJobCandidateDetail(44, 7)
+        _getJobCandidateDetail(userInformation.id, jobcandidate.id)
             .then((dataRes) => {
-                setJobCandidateDetail(dataRes?.data?.jobcandidate_info);
-                setJobCandidateTracking(dataRes?.data?.jobcandidate_tracking);
+                if (dataRes.status) {
+                    setJobCandidateDetail(dataRes?.data?.jobcandidate_info);
+                    setJobCandidateTracking(dataRes?.data?.jobcandidate_tracking);
+
+                } else {
+                    setIsError(true);
+                }
             })
             .catch((error) => {
                 console.log('error: ', error);
+                setIsError(true);
             }).finally((e) => setIsLoading(false));
 
     }, []);
+
+    const _onNavigateUserContact = async () => {
+        // console.warn(jobcandidate.candidate);
+        // return;
+        props.navigation.navigate('CandidateDetail', {
+            candidate: jobcandidate?.job?.author
+        });
+    }
 
 
 
@@ -70,8 +88,24 @@ const JobCandidateTrackingScreen = () => {
             </View>
         )
     }
+    if (isError) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <Text>Error</Text>
+            </View>
+        )
+    }
+
+
     return (
-        <View
+        <ScrollView
             style={{
                 display: 'flex',
                 flex: 1,
@@ -79,74 +113,82 @@ const JobCandidateTrackingScreen = () => {
             }}
         >
             <JobItemPendingCard
-                jobTitle={'Title'}
-                jobAddress={'Address'}
-                jobPrice={320000}
+                jobTitle={jobcandidateDetail?.job?.name}
+                jobAddress={`${jobcandidateDetail?.job?.location?.subdistrict || "trống "} - ${jobcandidateDetail?.job?.location?.district || 'trống'} - ${jobcandidateDetail?.job?.location?.province || 'trống'}`}
+                jobPrice={`${formatCash(jobcandidateDetail?.job?.suggestion_price)} > ${formatCash(jobcandidateDetail?.expected_price)}`}
                 pressDisable={true}
                 canRemove={false}
                 children={
 
-                    <CardUserContact />
+                    <CardUserContact
+                        username={jobcandidateDetail?.job?.author?.username}
+                        onItemPress={_onNavigateUserContact}
+
+                    />
                 }
             />
 
             <View
                 style={{
-                    height: jobcandidateTracking.length * 80,
+                    height: jobcandidateTracking?.length * 80,
                     paddingHorizontal: 22,
                     backgroundColor: 'white'
                 }}
             >
-                <StepIndicator
-                    customStyles={customStyles}
-                    currentPosition={jobcandidateTracking.length - 1}
-                    labels={jobcandidateTracking}
-                    stepCount={jobcandidateTracking.length}
-                    direction={'vertical'}
-                    renderLabel={({ position, label, currentPosition, stepStatus }) =>
-                        <View
-                            style={{
-                                width: deviceWidth - 80,
-                                paddingHorizontal: 6
-                            }}
-                        >
-                            <Text>{label.action_title}</Text>
+                {
+                    (jobcandidateTracking && jobcandidateTracking.length > 0) &&
+                    <StepIndicator
+                        customStyles={customStyles}
+                        currentPosition={jobcandidateTracking?.length - 1}
+                        labels={jobcandidateTracking}
+                        stepCount={jobcandidateTracking?.length}
+                        direction={'vertical'}
+                        renderLabel={({ position, label, currentPosition, stepStatus }) =>
                             <View
                                 style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'flex-start'
+                                    width: deviceWidth - 80,
+                                    paddingHorizontal: 6
                                 }}
                             >
-                                <Text
+                                <Text>{label.action_title || ''}</Text>
+                                <View
                                     style={{
-                                        fontSize: 12,
-                                        color: 'grey',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'flex-start'
                                     }}
                                 >
-                                    {label.action_content}
-                                </Text>
-                                <Text
-                                    style={{
-                                        fontSize: 10,
-                                        color: 'grey',
-                                        textAlign: 'right',
-                                        marginVertical: 4
-                                    }}
-                                >
-                                    {formatDateTime(label.created_at)}
-                                </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 12,
+                                            color: 'grey',
+                                        }}
+                                    >
+                                        {label.action_content || ''}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontSize: 10,
+                                            color: 'grey',
+                                            textAlign: 'right',
+                                            marginVertical: 4
+                                        }}
+                                    >
+                                        {formatDateTime(label.created_at)}
+                                    </Text>
 
+                                </View>
                             </View>
-                        </View>
-                    }
+                        }
 
 
 
-                />
+                    />
+                }
+
             </View>
 
-        </View>
+        </ScrollView>
     )
 }
 const deviceWidth = Dimensions.get('screen').width;

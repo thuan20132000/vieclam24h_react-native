@@ -51,6 +51,7 @@ const SearchHomeScreen = (props) => {
     const _onGetDataSearch = async (value) => {
         setIsLoading(true);
         let searchRes = await _searchCandidate(userInformation.id, value);
+
         if (searchRes.status && searchRes.data) {
             setSearchData(searchRes.data?.data);
         } else {

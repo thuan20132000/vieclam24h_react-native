@@ -19,11 +19,12 @@ export const CandidateCard = ({
     message,
     children,
     containerStyle,
-    bodyChildren
+    bodyChildren,
+    onItemPress
 
 }) => {
     return (
-        <View
+        <TouchableOpacity
             style={[styles.container, {
                 marginVertical: 12,
                 borderRadius: 12,
@@ -32,12 +33,16 @@ export const CandidateCard = ({
                 padding: 16
             },
             ]}
+            onPress={onItemPress}
         >
 
             <View style={[styles.row]}>
 
                 <View style={[
-                    styles.column
+                    styles.column,
+                    {
+                        width:'20%'
+                    }
                 ]} >
                     <Image
                         source={{
@@ -56,7 +61,8 @@ export const CandidateCard = ({
                 <View style={[
                     styles.column,
                     {
-                        marginHorizontal: 22
+                        marginHorizontal: 22,
+                        width:'80%'
                     }
                 ]} >
 
@@ -117,7 +123,7 @@ export const CandidateCard = ({
             {children}
 
 
-        </View>
+        </TouchableOpacity>
     )
 }
 

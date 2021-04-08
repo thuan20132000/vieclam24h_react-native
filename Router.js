@@ -323,6 +323,10 @@ function NotificationStack() {
                 name='JobCandidateTracking'
                 component={JobCandidateTrackingScreen}
             />
+            <NotificationStackNavigator.Screen
+                name="JobDetail"
+                component={JobDetailScreen}
+            />
         </NotificationStackNavigator.Navigator>
     )
 }
@@ -757,9 +761,9 @@ function AccountStack() {
                 options={option_slide}
             />
             <AccountStackNavigator.Screen
-               name="CandidateReview"
-               component={CandidateReviewsScreen}
-               options={option_slide}
+                name="CandidateReview"
+                component={CandidateReviewsScreen}
+                options={option_slide}
             />
 
         </AccountStackNavigator.Navigator>
