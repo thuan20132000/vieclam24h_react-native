@@ -1202,10 +1202,12 @@ export const _getUserNotifications = async (user_id) => {
 
 export const _updateUserNotificationStatus = async (user_id, notification_id) => {
     try {
-        let url = `${api.api_v1}/candidate/${user_id}/notifications`;
-        let dataFetch = await fetch(`${url}`);
+        let url = `${api.api_v1}/user/${user_id}/notification/${notification_id}`;
+        let dataFetch = await fetch(`${url}`,{
+            method:'PUT'
+        });
         if (!dataFetch.ok) {
-            console.warn('ERROR AT GET User Notification');
+            console.log('ERROR AT Update User Notification ',url);
 
             return {
                 data: [],

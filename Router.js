@@ -938,7 +938,6 @@ function TabNavigator(props) {
                 component={NotificationStack}
                 options={{
                     tabBarLabel: 'Thông báo',
-                    tabBarBadge: 3,
                 }}
 
 

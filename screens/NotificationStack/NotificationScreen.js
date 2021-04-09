@@ -5,7 +5,7 @@ import CommonImages from '../../constants/CommonImages'
 import messaging from '@react-native-firebase/messaging';
 import { useSelector } from 'react-redux';
 
-import { _getUserNotifications } from '../../utils/serverApi'
+import { _getUserNotifications, _updateUserNotificationStatus } from '../../utils/serverApi'
 import { getDaysBetweenTwoDates } from '../../utils/helper';
 
 const NotificationItem = ({
@@ -13,7 +13,8 @@ const NotificationItem = ({
     subtitle,
     time,
     avatar,
-    onItemPress
+    onItemPress,
+    isRead = false
 }) => {
     return (
         <TouchableOpacity
@@ -22,9 +23,9 @@ const NotificationItem = ({
                 {
                     marginHorizontal: 6,
                     flexWrap: 'wrap',
-                    backgroundColor: 'white',
+                    backgroundColor: isRead ? 'white' : '#87cefa',
                     borderBottomWidth: 0.2,
-                    borderBottomColor: 'grey'
+                    borderBottomColor: 'grey',
                 }
             ]}
             onPress={onItemPress}
@@ -62,11 +63,25 @@ const NotificationItem = ({
                 >
                     {subtitle}
                 </Text>
-                <Text
-                    style={[styles.subTime, { textAlign: 'left' }]}
+
+                <View
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                    }}
                 >
-                    {time}
-                </Text>
+                    <Text
+                        style={[styles.subTime, { textAlign: 'left' }]}
+                    >
+                        {time}
+                    </Text>
+                    <Text
+                        style={{ color: 'gray', fontStyle: "italic", fontSize: 12 }}
+                    >
+                        {isRead ? ' đã xem ' : ' chưa xem '}
+                    </Text>
+                </View>
             </View>
         </TouchableOpacity>
     )
@@ -80,6 +95,7 @@ const NotificationScreen = (props) => {
     const notification_data = props.route.params;
     const [notificationData, setNotificationData] = useState([]);
     const [userNotification, setUserNotification] = useState([]);
+    const [newNotificationNumber, setNewNotificationNumber] = useState(0);
     React.useEffect(() => {
         // console.warn('fafas');
         // messaging().onNotificationOpenedApp(remoteMsg => {
@@ -93,19 +109,20 @@ const NotificationScreen = (props) => {
         // })
         messaging().onNotificationOpenedApp(remoteMsg => {
             // props.navigation.navigate('Notification');
-            setUserNotification([remoteMsg, ...userNotification])
+            setUserNotification([{...remoteMsg,status:'pending'}, ...userNotification]);
+            setNewNotificationNumber(newNotificationNumber + 1);
 
         });
 
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.log('tm: ', remoteMessage);
+            console.warn('notification: ',remoteMessage);
             setUserNotification([remoteMessage, ...userNotification])
         });
 
         return unsubscribe;
 
     }, []);
-   
+
 
 
     const [nextPageLink, setNextPageLink] = useState('');
@@ -115,6 +132,7 @@ const NotificationScreen = (props) => {
             if (e.status) {
                 setUserNotification(e.data?.data);
                 setNextPageLink(e.data?.next);
+                console.log(e?.data?.data[0]);
             }
         });
     }, []);
@@ -161,23 +179,41 @@ const NotificationScreen = (props) => {
 
 
     const _onNotificationPress = async (notification) => {
-        if(!notification){
-            return;
-        }
-        if(notification?.jobcandidate?.id){
-            props.navigation.navigate('JobCandidateTracking',{
-                jobcandidate:notification?.jobcandidate
-            });
-            return;
-        }
-        if(notification?.job?.id){
-            props.navigation.navigate('JobDetail',{
-                job_id:notification?.job?.id
-            });
+        if (!notification) {
             return;
         }
 
+        _updateUserNotificationStatus(userInformation.id, notification.id)
+            .then(() => {
+
+                let notification_index = userNotification.findIndex((e) => e.id == notification.id);
+                let new_user_notiication = [...userNotification, userNotification[notification_index].status = 'read'];
+                setUserNotification(new_user_notiication);
+                if (notification?.jobcandidate?.id) {
+
+                    props.navigation.navigate('JobCandidateTracking', {
+                        jobcandidate: notification?.jobcandidate
+                    });
+                    return;
+                }
+                if (notification) {
+                    props.navigation.navigate('JobDetail', {
+                        job_id: notification?.job?.id || notification?.data?.job_id
+                    });
+                    return;
+                }
+
+            })
+            .catch((err) => console.log('error: ', err));
     }
+
+
+
+    React.useEffect(() => {
+        props.navigation.dangerouslyGetParent().setOptions({
+            tabBarBadge: newNotificationNumber
+        })
+    }, [newNotificationNumber]);
 
     return (
 
@@ -200,7 +236,9 @@ const NotificationScreen = (props) => {
                     title={`${item.title || item.notification?.title}`}
                     subtitle={`${item?.content || item.notification?.body}`}
                     time={getDaysBetweenTwoDates(item.sentTime || item.created_at)}
-                    onItemPress={()=>_onNotificationPress(item)}
+                    onItemPress={() => _onNotificationPress(item)}
+                    isRead={item.status != 'read' ? false : true}
+
 
                 />
             )}
