@@ -67,10 +67,10 @@ const CandidateProfileScreen = (props) => {
 
 
     return (
-        <ScrollView 
+        <ScrollView
             style={[
                 styles.container,
-                
+
             ]}
         >
             <View>
@@ -91,7 +91,7 @@ const CandidateProfileScreen = (props) => {
                         margin: 4,
                         paddingVertical: 18,
                         overflow: 'hidden',
-                        borderRadius:8
+                        borderRadius: 8
                     }
                 ]
                 }>
@@ -124,6 +124,7 @@ const CandidateProfileScreen = (props) => {
                             } else {
                                 return (
                                     <Image
+                                        key={index.toString()}
                                         style={[styles.avatar, { width: 50, height: 50, margin: 2 }]}
                                         source={{
                                             uri: `${serverConfig.url_absolute}/${e.image}` || CommonImages.notFound
@@ -182,7 +183,7 @@ const CandidateProfileScreen = (props) => {
                 </View>
             </View>
 
-            
+
         </ScrollView>
     )
 }

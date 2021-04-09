@@ -121,11 +121,7 @@ const AccountScreen = (props) => {
 
 
     const _onNavigateToStatistic = async () => {
-        if (userRole.id == 3) {
-            navigation.navigate('CustomerStatistic');
-        } else {
-            navigation.navigate('CollaboratorStatistic');
-        }
+        return;
     }
 
     useLayoutEffect(() => {
@@ -212,7 +208,15 @@ const AccountScreen = (props) => {
                             <List.Item
                                 title="Trợ Giúp"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={() => console.warn('ds')}
+                                onPress={() => {return;}}
+                                titleStyle={{
+                                    fontWeight: '700'
+                                }}
+                            />
+                            <List.Item
+                                title={"Cài đặt thông báo"}
+                                left={props => <List.Icon {...props} icon={CommonIcons.bell} />}
+                                onPress={() => props.navigation.navigate('NotificationSettingStack')}
                                 titleStyle={{
                                     fontWeight: '700'
                                 }}
@@ -270,14 +274,7 @@ const AccountScreen = (props) => {
                                                 fontWeight: '700'
                                             }}
                                         />
-                                        <List.Item
-                                            title={"Cài đặt thông báo"}
-                                            left={props => <List.Icon {...props} icon={CommonIcons.bell} />}
-                                            onPress={() => props.navigation.navigate('NotificationSettingStack')}
-                                            titleStyle={{
-                                                fontWeight: '700'
-                                            }}
-                                        />
+
                                     </>
                                     :
                                     <List.Item
@@ -306,13 +303,13 @@ const AccountScreen = (props) => {
                             </Button>
 
                         </View>
-                        
-                        
+
+
                         <View>
                             <Text
                                 style={{
-                                    fontSize:14,
-                                    textAlign:'center'
+                                    fontSize: 14,
+                                    textAlign: 'center'
                                 }}
                             >
                                 Version 1.0
