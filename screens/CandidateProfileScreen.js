@@ -147,6 +147,7 @@ const CandidateProfileScreen = (props) => {
                         userInformation?.candidate_info?.fields &&
                         userInformation?.candidate_info?.fields.map((e, index) =>
                             <ItemChip
+                                key={index.toString()}
                                 close={false}
                                 label={e.name}
                                 labelStyle={{

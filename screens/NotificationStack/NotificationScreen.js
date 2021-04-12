@@ -182,7 +182,7 @@ const NotificationScreen = (props) => {
         if (!notification) {
             return;
         }
-
+        console.warn('notification: ',notification);
         _updateUserNotificationStatus(userInformation.id, notification.id)
             .then(() => {
 

@@ -184,6 +184,7 @@ const CategoryUpdateScreen = (props) => {
             <BottomNavigation
                 onNextPress={() => navigateNext('LocationUpdate')}
                 nextTitle={'Tiếp tục'}
+                
                
             />
         </View>

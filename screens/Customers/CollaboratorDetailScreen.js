@@ -9,7 +9,7 @@ import CommonImages from '../../constants/CommonImages'
 import { useSelector } from 'react-redux';
 import server_url from '../../serverConfig';
 
-import {  _getCandidateDetail } from '../../utils/serverApi';
+import { _getCandidateDetail } from '../../utils/serverApi';
 import CommonColors from '../../constants/CommonColors'
 import RowInformation from '../../components/Row/RowInformation'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -52,10 +52,16 @@ const CollaboratorDetailScreen = (props) => {
     }
 
     const _onMoreReview = () => {
-        props.navigation.navigate('CandidateReview',{
-            candidate:candidateInfo
+        props.navigation.navigate('CandidateReview', {
+            candidate: candidateInfo
         });
     }
+
+
+    const _onNavigateToCandidateService = () => {
+        props.navigation.navigate('CandidateServiceList');
+    }
+
 
     if (isLoading) {
         return (
@@ -109,9 +115,17 @@ const CollaboratorDetailScreen = (props) => {
                     </TouchableOpacity>
 
                 </View>
+            </View>
 
-
-
+            {/* Bảng giá dịch vụ  */}
+            <View style={styles.sectionWrap} >
+                <RowInformation
+                    label={`Lựa chọn dịch vụ`}
+                    rightIcon={CommonIcons.arrowRightChevron}
+                    rightIconSize={26}
+                    onItemPress={_onNavigateToCandidateService}
+                    
+                />
             </View>
 
             <View style={[styles.sectionWrap]}>
@@ -131,6 +145,8 @@ const CollaboratorDetailScreen = (props) => {
 
                 </View>
             </View>
+
+
 
             {/*  */}
             <View style={[styles.sectionWrap]}>
@@ -224,17 +240,17 @@ const CollaboratorDetailScreen = (props) => {
                                     //     key={index.toString()}
                                     //     review={e}
                                     // />
-                                    <CardReviewCandidate 
+                                    <CardReviewCandidate
                                         key={index.toString()}
                                         name={e?.review_author?.username}
                                         review_content={e.review_content}
                                         review_level={e.review_level}
-                                        updated_at = {e.updated_at}
+                                        updated_at={e.updated_at}
                                     />
 
                                 )
                             }
-                          
+
                         </> :
                         <View>
                             <Text>Chưa có đánh giá nào từ khách hàng.</Text>
@@ -278,8 +294,8 @@ const styles = StyleSheet.create({
     },
     sectionWrap: {
         backgroundColor: 'white',
-        margin: 12,
-        borderRadius: 12,
+        margin: 4,
+        borderRadius: 4,
         padding: 6
     },
     sectionTitle: {

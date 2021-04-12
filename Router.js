@@ -73,8 +73,15 @@ import JobCandidateTrackingScreen from './screens/Tracking/JobCandidateTrackingS
 import JobUserTrackingScreen from './screens/Tracking/JobUserTrackingScreen';
 import JobCandidateSelectionScreen from './screens/Customers/JobCandidateSelectionScreen';
 import JobConfirmScreen from './screens/Customers/JobConfirmScreen';
+import CandidateServiceListScreen from './screens/ServiceSelectionStack/CandidateServiceListScreen';
+import SelectedServiceReviewScreen from './screens/ServiceSelectionStack/SelectedServiceReviewScreen';
+import PaymentMethodScreen from './screens/Payment/PaymentMethodScreen';
+import LocationSelectionCommonScreen from './screens/LocationSelectionCommonScreen';
 
 
+
+
+import {AuthenticationContext} from './store/context/AuthenticationContext';
 
 
 /**
@@ -777,6 +784,7 @@ function AccountStack() {
  * Search Stack
  */
 
+
 const SearchStackNavigator = createStackNavigator();
 const SearchStack = () => {
 
@@ -801,7 +809,11 @@ const SearchStack = () => {
     };
 
 
+
+
     return (
+
+
         <SearchStackNavigator.Navigator
             screenOptions={{
                 gestureEnabled: false,
@@ -815,6 +827,7 @@ const SearchStack = () => {
 
             }}
         >
+
             <SearchStackNavigator.Screen
                 name="SearchHome"
                 component={SearchHomeScreen}
@@ -831,6 +844,35 @@ const SearchStack = () => {
 
             />
             <SearchStackNavigator.Screen
+                name="CandidateServiceList"
+                component={CandidateServiceListScreen}
+                options={{
+                    title: "Dịch vụ cung cấp"
+                }}
+
+            />
+            <SearchStackNavigator.Screen
+                name="SelectedServiceReview"
+                component={SelectedServiceReviewScreen}
+                options={{
+                    title: "Thanh toán dịch vụ"
+                }}
+            />
+            <SearchStackNavigator.Screen
+                name="PaymentMethodSelection"
+                component={PaymentMethodScreen}
+                options={{
+                    title: "Phương thức thanh toán"
+                }}
+            />
+            <SearchStackNavigator.Screen
+                name="LocationSelection"
+                component={LocationSelectionCommonScreen}
+                options={{
+                    title: "Địa điểm"
+                }}
+            />
+            <SearchStackNavigator.Screen
                 name="CandidateReview"
                 component={CandidateReviewsScreen}
                 options={{
@@ -838,7 +880,9 @@ const SearchStack = () => {
                 }}
 
             />
+
         </SearchStackNavigator.Navigator>
+
     )
 }
 
@@ -940,7 +984,6 @@ function TabNavigator(props) {
                     tabBarLabel: 'Thông báo',
                 }}
 
-
             />
             <BottomTabNavigator.Screen
                 name="HomeSearch"
@@ -1017,6 +1060,13 @@ function TabNavigator(props) {
 
 // Main
 
+
+const UserInfoContext = React.createContext({
+    name: "Thuantruong",
+    age: 23
+});
+
+
 const Router = () => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -1035,18 +1085,27 @@ const Router = () => {
 
 
 
-
+    const msg = React.useContext(AuthenticationContext);
 
 
     return (
-        <NavigationContainer>
-            {
-                isAuthenticated ?
-                    <TabNavigator /> :
-                    <AuthenticationStack />
+        <AuthenticationContext.Provider
+            value={{
+                name: 'Thuantruong',
+                age: 23,
+                gender: "man"
+            }}
+        >
+            <NavigationContainer>
+                {
+                    isAuthenticated ?
+                        <TabNavigator /> :
+                        <AuthenticationStack />
 
-            }
-        </NavigationContainer>
+                }
+            </NavigationContainer>
+        </AuthenticationContext.Provider>
+
     )
 }
 export default Router;

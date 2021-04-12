@@ -47,6 +47,8 @@ export default {
     
     facebook:'facebook',
     calendarCheck:'calendar-check',
-    microphone:'microphone'
+    microphone:'microphone',
+    cashMultiple:'cash-multiple',
+
 
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import CommonColors from '../../constants/CommonColors'
@@ -15,10 +15,14 @@ const RowInformation = ({
     valueStyle,
     containerStyle,
     children,
-    iconStyle
+    iconStyle,
+    rightIcon,
+    rightIconStyle,
+    rightIconSize,
+    onItemPress
 }) => {
     return (
-        <View style={[
+        <Pressable style={[
             {
                 display: 'flex',
                 flexDirection: 'row',
@@ -29,7 +33,10 @@ const RowInformation = ({
             },
             containerStyle
 
-        ]}>
+        ]}
+
+        onPress={onItemPress}
+        >
             {
                 iconName &&
                 <MaterialCommunityIcon
@@ -89,9 +96,26 @@ const RowInformation = ({
                     {value}
                 </Text>
             </View>
+            {
+                rightIcon &&
+                <MaterialCommunityIcon
+                    name={rightIcon || CommonIcons.chatMessage}
+                    size={rightIconSize || 18}
+                    color={iconColor || CommonColors.btnSubmit}
+                    style={[
+                        {
+                            marginHorizontal: 6,
+                            width: '10%'
+                        },
+                        rightIconStyle
+                    ]}
+
+                />
+
+            }
 
             {children}
-        </View>
+        </Pressable>
     )
 }
 

@@ -87,3 +87,15 @@ export const getDaysBetweenTwoDates = (created_at) => {
     }
    
 }
+
+
+
+export const isExistInArray = (item,array = []) => {
+    
+    let findRes = array.findIndex(e => e.id == item.id);
+    if(findRes === -1){
+        return false;
+    }
+    return true;
+
+}
