@@ -49,6 +49,7 @@ export default {
     calendarCheck:'calendar-check',
     microphone:'microphone',
     cashMultiple:'cash-multiple',
+    shieldChecked:'shield-check-outline',
 
 
 }

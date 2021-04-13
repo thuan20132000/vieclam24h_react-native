@@ -25,6 +25,8 @@ import AutheticationReducer from './store/reducer/authenticationReducer';
 import SocketSubcribe from './store/reducer/websocketReducer';
 import LanguageReducer from './store/reducer/languageReducer';
 import JobReducer from './store/reducer/jobReducer';
+import cartServiceReducer from './store/reducer/cartReducer';
+import locationReducer from './store/reducer/locationReducer';
 
 import { Translate } from './locales/index';
 
@@ -39,7 +41,9 @@ const rootReducer = combineReducers({
   authentication: AutheticationReducer,
   socketSubcribe: SocketSubcribe,
   language: LanguageReducer,
-  job: JobReducer
+  job: JobReducer,
+  cart:cartServiceReducer,
+  location:locationReducer
 });
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 

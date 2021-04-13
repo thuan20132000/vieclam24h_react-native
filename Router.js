@@ -81,7 +81,6 @@ import LocationSelectionCommonScreen from './screens/LocationSelectionCommonScre
 
 
 
-import {AuthenticationContext} from './store/context/AuthenticationContext';
 
 
 /**
@@ -1061,12 +1060,6 @@ function TabNavigator(props) {
 // Main
 
 
-const UserInfoContext = React.createContext({
-    name: "Thuantruong",
-    age: 23
-});
-
-
 const Router = () => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -1085,26 +1078,18 @@ const Router = () => {
 
 
 
-    const msg = React.useContext(AuthenticationContext);
 
 
     return (
-        <AuthenticationContext.Provider
-            value={{
-                name: 'Thuantruong',
-                age: 23,
-                gender: "man"
-            }}
-        >
-            <NavigationContainer>
-                {
-                    isAuthenticated ?
-                        <TabNavigator /> :
-                        <AuthenticationStack />
 
-                }
-            </NavigationContainer>
-        </AuthenticationContext.Provider>
+        <NavigationContainer>
+            {
+                isAuthenticated ?
+                    <TabNavigator /> :
+                    <AuthenticationStack />
+
+            }
+        </NavigationContainer>
 
     )
 }

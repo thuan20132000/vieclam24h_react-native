@@ -7,10 +7,13 @@ import CommonIcons from '../../constants/CommonIcons';
 import { formatCash, isExistInArray } from '../../utils/helper';
 import RowSelection from '../PostJob/components/RowSelection';
 import BottomNavigation from './components/BottomNavigation';
+import * as cartActions from '../../store/actions/cartActions';
+import {useDispatch} from 'react-redux';
+
 
 const CandidateServiceListScreen = (props) => {
 
-
+    const dispatch = useDispatch();
     const [expanded, setExpanded] = React.useState(true);
 
     const handlePress = () => setExpanded(!expanded);
@@ -66,7 +69,8 @@ const CandidateServiceListScreen = (props) => {
                 ]
             },
         ]
-    )
+    );
+
 
 
     const _onSelectService = async (service) => {
@@ -102,6 +106,10 @@ const CandidateServiceListScreen = (props) => {
 
 
     React.useEffect(() => {
+
+
+
+
         props.navigation.dangerouslyGetParent().setOptions({
             tabBarVisible: false
         });
@@ -116,6 +124,10 @@ const CandidateServiceListScreen = (props) => {
 
 
     const _onNavigateToServiceReview  = async () => {
+
+        // console.warn('data: ',selectedServices);
+        dispatch(cartActions.addService(selectedServices,totalPrice,selectedServices.length));
+
         props.navigation.navigate('SelectedServiceReview')
     }
 
@@ -130,7 +142,6 @@ const CandidateServiceListScreen = (props) => {
             }}
         >
             <ScrollView>
-
                 <List.Section >
 
 
@@ -190,11 +201,31 @@ const CandidateServiceListScreen = (props) => {
 
                 childrenTop={
                     <View>
-                        <Text>Thành tiền: {formatCash(totalPrice)}</Text>
+                        <Text
+                            style={{
+                                fontWeight:'700'
+                            }}
+                        >
+                            Thành tiền: <Text style={{color:'red'}} >{formatCash(totalPrice)}</Text>
+                        </Text>
                     </View>
                 }
 
                 onNextPress={_onNavigateToServiceReview}
+                containerStyle={{
+                    borderTopLeftRadius:22,
+                    borderTopRightRadius:22,
+                    shadowColor: "black",
+                    shadowOffset: {
+                        width: 4,
+                        height: 5,
+                    },
+                    shadowOpacity: 0.65,
+                    shadowRadius: 1.84,
+            
+                    elevation: 11,
+
+                }}
             />
         </View>
     )

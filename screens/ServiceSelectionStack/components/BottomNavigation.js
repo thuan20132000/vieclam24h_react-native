@@ -11,7 +11,8 @@ const BottomNavigation = ({
     nextTitle,
     backTitle,
     nextButtonStyle,
-    childrenTop
+    childrenTop,
+    containerStyle
 }) => {
     return (
         <View
@@ -21,7 +22,8 @@ const BottomNavigation = ({
                         backgroundColor: CommonColors.secondary,
                         padding: 12
                     },
-                    styles.row
+                    styles.row,
+                    containerStyle
                 ]
             }
         >
