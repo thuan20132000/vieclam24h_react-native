@@ -77,6 +77,8 @@ import CandidateServiceListScreen from './screens/ServiceSelectionStack/Candidat
 import SelectedServiceReviewScreen from './screens/ServiceSelectionStack/SelectedServiceReviewScreen';
 import PaymentMethodScreen from './screens/Payment/PaymentMethodScreen';
 import LocationSelectionCommonScreen from './screens/LocationSelectionCommonScreen';
+import MyServiceHomeScreen from './screens/MyServiceStack/MyServiceHomeScreen';
+import MyServiceCreateScreen from './screens/MyServiceStack/MyServiceCreateScreen';
 
 
 
@@ -669,6 +671,30 @@ const NotificationSettingStack = () => {
     )
 }
 
+/**
+ * MyService Stack
+ */
+
+const MyServiceNavigator = createStackNavigator();
+const MyServiceStack = () => {
+    return (
+        <MyServiceNavigator.Navigator
+
+        >
+            <MyServiceNavigator.Screen
+                name={"MyServiceHome"}
+                component={MyServiceHomeScreen}
+            />
+            <MyServiceNavigator.Screen
+                name={"MyServiceCreate"}
+                component={MyServiceCreateScreen}
+            />
+        </MyServiceNavigator.Navigator>
+
+    )
+}
+
+
 
 
 /**
@@ -770,6 +796,11 @@ function AccountStack() {
                 name="CandidateReview"
                 component={CandidateReviewsScreen}
                 options={option_slide}
+            />
+            <AccountStackNavigator.Screen
+                name="MyServiceStack"
+                component={MyServiceStack}
+                options={option_slide, { headerShown: false }}
             />
 
         </AccountStackNavigator.Navigator>

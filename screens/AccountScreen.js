@@ -274,6 +274,14 @@ const AccountScreen = (props) => {
                                                 fontWeight: '700'
                                             }}
                                         />
+                                         <List.Item
+                                            title="Dịch vụ của tôi"
+                                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                            onPress={() => props.navigation.navigate('MyServiceStack')}
+                                            titleStyle={{
+                                                fontWeight: '700'
+                                            }}
+                                        />
 
                                     </>
                                     :

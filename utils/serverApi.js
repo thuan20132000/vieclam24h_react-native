@@ -425,9 +425,7 @@ export const getFields = async (category_id = '', access_token = '') => {
             });
         } else {
             datafetch = await fetch(`${api.api_v1}/fields`, {
-                headers: {
-                    "Authorization": `${bearer}`
-                }
+                
             });
         }
 
