@@ -1,12 +1,13 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { Dimensions, Modal, StyleSheet, Text, View } from 'react-native'
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
+import { useSelector } from 'react-redux';
 import SimpleBottomSheet from '../../components/BottomSheet/SimpleBottomSheet';
 import ButtonSubmit from '../../components/Button/ButtonSubmit';
 import RowSelection from '../../components/Row/RowSelection';
 import CommonColors from '../../constants/CommonColors';
 import { formatCash } from '../../utils/helper';
-import { getFields } from '../../utils/serverApi';
+import { getFields, _createCandidateService } from '../../utils/serverApi';
 
 const MyServiceCreateScreen = (props) => {
     const _refBottomSheetFields = useRef();
@@ -17,15 +18,19 @@ const MyServiceCreateScreen = (props) => {
         price: ''
     });
     const [isConfiming, setIsConfirming] = useState(false);
-
+    const {userInformation} = useSelector(state => state.authentication);
     useEffect(() => {
-        getFields()
-            .then((res) => {
-                if (res.status) {
-                    setFieldList(res.data);
-                }
-            })
-            .catch((err) => console.log('error: ', err))
+        // getFields()
+        //     .then((res) => {
+        //         if (res.status) {
+        //             setFieldList(res.data);
+        //         }
+        //     })
+        //     .catch((err) => console.log('error: ', err))
+        let candidate_fields = userInformation.candidate_info?.fields;
+        if(candidate_fields){
+            setFieldList(candidate_fields);
+        }
 
     }, []);
 
@@ -46,13 +51,25 @@ const MyServiceCreateScreen = (props) => {
 
 
 
-    const _onAddService = () => {
+    const _onAddService = async () => {
         setIsConfirming(true);
-        setTimeout(() => {
-            setIsConfirming(false);
-            props.route.params.myService(serviceInfo);
-            props.navigation.goBack();
-        }, 2200);
+        console.log(serviceInfo);
+        _createCandidateService(userInformation.id,serviceInfo.name,serviceInfo.price,serviceInfo.field?.id)
+            .then((res) => {
+                if(res.status){
+                    setIsConfirming(false);
+                    props.route.params.myService(res.data?.data);
+                    props.navigation.goBack();
+                }
+            })
+            .catch(err => console.log(err))
+            .finally(() => setIsConfirming(false));
+        return;
+        // setTimeout(() => {
+        //     setIsConfirming(false);
+        //     props.route.params.myService(serviceInfo);
+        //     props.navigation.goBack();
+        // }, 2200);
     }
 
     return (

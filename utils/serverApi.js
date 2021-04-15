@@ -425,7 +425,7 @@ export const getFields = async (category_id = '', access_token = '') => {
             });
         } else {
             datafetch = await fetch(`${api.api_v1}/fields`, {
-                
+
             });
         }
 
@@ -853,7 +853,7 @@ export const _getCreatedJobList = async (
 
         if (!dataFetch.ok) {
             console.warn(`ERROR AT FETCH CREATED JOB ${job_status}`);
-            
+
             return {
                 status: false,
                 message: "error",
@@ -1201,11 +1201,11 @@ export const _getUserNotifications = async (user_id) => {
 export const _updateUserNotificationStatus = async (user_id, notification_id) => {
     try {
         let url = `${api.api_v1}/user/${user_id}/notification/${notification_id}`;
-        let dataFetch = await fetch(`${url}`,{
-            method:'PUT'
+        let dataFetch = await fetch(`${url}`, {
+            method: 'PUT'
         });
         if (!dataFetch.ok) {
-            console.log('ERROR AT Update User Notification ',url);
+            console.log('ERROR AT Update User Notification ', url);
 
             return {
                 data: [],
@@ -1353,12 +1353,12 @@ export const _updateNotificationStatus = async (
 ) => {
     try {
         let formData = new FormData();
-        formData.append(notification_type,value);
+        formData.append(notification_type, value);
 
         let url = `${api.api_v1}/user/${user_id}/notification-configuration/update`;
-        let dataFetch = await fetch(`${url}`,{
-            method:'PUT',
-            body:formData
+        let dataFetch = await fetch(`${url}`, {
+            method: 'PUT',
+            body: formData
         });
         if (!dataFetch.ok) {
             console.warn('ERROR AT GET User Notification');
@@ -1403,6 +1403,147 @@ export const _getUserNotificationConfig = async (user_id) => {
         let dataFetch = await fetch(`${url}`);
         if (!dataFetch.ok) {
             console.log('ERROR AT GET USER NOTIFIACTION CONFIG');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+export const _createCandidateService = async (candidate_id, service_name, price, field_id) => {
+    try {
+
+
+        let url = `${api.api_v1}/candidate/${candidate_id}/service`;
+        let dataFetch = await fetch(`${url}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                name: service_name,
+                price: price,
+                field_id: field_id
+
+            })
+        });
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT Create Candidate service');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+export const _getCandidateServices = async (candidate_id) => {
+    try {
+        let url = `${api.api_v1}/candidate/${candidate_id}/services`;
+        let dataFetch = await fetch(`${url}`);
+        if (!dataFetch.ok) {
+            console.log('ERROR AT GET CANDIDATE SERVICES');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+export const _deleteCandidateService = async (candidate_id,service) => {
+    try {
+
+
+        let url = `${api.api_v1}/candidate/${candidate_id}/service/${service?.id}`;
+        let dataFetch = await fetch(`${url}`, {
+            method: 'DELETE'
+        });
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT Delete Candidate service');
 
             return {
                 data: [],
