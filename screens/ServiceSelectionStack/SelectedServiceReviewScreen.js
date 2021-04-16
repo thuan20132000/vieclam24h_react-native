@@ -219,7 +219,7 @@ const SelectedServiceReviewScreen = (props) => {
                             service_list.map((e, index) =>
                                 <List.Item
                                     key={index.toString()}
-                                    title={e.title}
+                                    title={e.name}
                                     description={formatCash(e.price)}
                                     left={props => <List.Icon {...props} icon={CommonIcons.tagPrice} />}
                                 />

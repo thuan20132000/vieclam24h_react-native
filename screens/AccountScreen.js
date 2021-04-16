@@ -172,22 +172,12 @@ const AccountScreen = (props) => {
                 }}
                 renderContent={() =>
                     <>
-                        <View style={{
-                            borderColor: 'grey',
-                            margin: 12,
-                            backgroundColor: 'white',
-                            padding: 12,
-                            borderRadius: 12,
-                            shadowColor: "#000",
-                            shadowOffset: {
-                                width: 0,
-                                height: 6,
-                            },
-                            shadowOpacity: 0.37,
-                            shadowRadius: 7.49,
-
-                            elevation: 12,
-                        }}>
+                        <View style={[
+                            styles.sectionContainer,
+                            {
+                                marginTop:22
+                            }
+                        ]}>
 
                             <List.Item
                                 title="Đăng tin"
@@ -198,65 +188,25 @@ const AccountScreen = (props) => {
                                 }}
                             />
                             <List.Item
-                                title="Quản lý đăng tuyển"
+                                title="Tin đăng của tôi"
                                 left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
                                 onPress={() => props.navigation.navigate("UserJobStack")}
                                 titleStyle={{
                                     fontWeight: '700'
                                 }}
                             />
-                            <List.Item
-                                title="Trợ Giúp"
-                                left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                onPress={() => {return;}}
-                                titleStyle={{
-                                    fontWeight: '700'
-                                }}
-                            />
-                            <List.Item
-                                title={"Cài đặt thông báo"}
-                                left={props => <List.Icon {...props} icon={CommonIcons.bell} />}
-                                onPress={() => props.navigation.navigate('NotificationSettingStack')}
-                                titleStyle={{
-                                    fontWeight: '700'
-                                }}
-                            />
+
+
 
                         </View>
-
-
-                        <View style={{
-                            margin: 12,
-                            borderColor: 'black',
-                            backgroundColor: 'white',
-                            padding: 12,
-                            borderRadius: 12,
-                            shadowColor: "#000",
-                            shadowOffset: {
-                                width: 0,
-                                height: 6,
-                            },
-                            shadowOpacity: 0.37,
-                            shadowRadius: 7.49,
-
-                            elevation: 12,
-
-                        }}>
-
-
-
+                        <View style={[
+                            styles.sectionContainer
+                        ]}>
 
                             {
                                 userInformation?.candidate_info ?
                                     <>
-                                        <List.Item
-                                            title="Thống Kê"
-                                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
-                                            onPress={_onNavigateToStatistic}
-                                            titleStyle={{
-                                                fontWeight: '700'
-                                            }}
-                                        />
+
 
                                         <List.Item
                                             title="Ứng tuyển"
@@ -267,17 +217,25 @@ const AccountScreen = (props) => {
                                             }}
                                         />
                                         <List.Item
-                                            title="Hồ sơ tìm việc"
+                                            title="Hồ sơ ứng viên"
                                             left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
                                             onPress={() => props.navigation.navigate('CandidateProfile')}
                                             titleStyle={{
                                                 fontWeight: '700'
                                             }}
                                         />
-                                         <List.Item
+                                        <List.Item
                                             title="Dịch vụ của tôi"
                                             left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
                                             onPress={() => props.navigation.navigate('MyServiceStack')}
+                                            titleStyle={{
+                                                fontWeight: '700'
+                                            }}
+                                        />
+                                        <List.Item
+                                            title="Đơn sữa chửa"
+                                            left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                            onPress={() => props.navigation.navigate('OrderStack')}
                                             titleStyle={{
                                                 fontWeight: '700'
                                             }}
@@ -297,6 +255,31 @@ const AccountScreen = (props) => {
 
                             }
 
+                        </View>
+                        <View style={[
+                            styles.sectionContainer
+                        ]}>
+
+                            <List.Accordion
+                                title="Xem thêm"
+                            >
+                                <List.Item
+                                    title={"Cài đặt thông báo"}
+                                    left={props => <List.Icon {...props} icon={CommonIcons.bell} />}
+                                    onPress={() => props.navigation.navigate('NotificationSettingStack')}
+                                    titleStyle={{
+                                        fontWeight: '700'
+                                    }}
+                                />
+                                <List.Item
+                                    title="Thống Kê"
+                                    left={props => <List.Icon {...props} icon={CommonIcons.historyJob} />}
+                                    onPress={_onNavigateToStatistic}
+                                    titleStyle={{
+                                        fontWeight: '700'
+                                    }}
+                                />
+                            </List.Accordion>
                         </View>
 
 
@@ -350,6 +333,23 @@ const styles = StyleSheet.create({
     buttonLogout: {
         width: 220,
         alignSelf: 'center'
+    },
+    sectionContainer: {
+        borderColor: 'grey',
+        marginHorizontal: 8,
+        marginTop: 4,
+        padding: 6,
+        borderRadius: 4,
+        backgroundColor: 'white',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 6,
+        },
+        shadowOpacity: 0.37,
+        shadowRadius: 7.49,
+
+        elevation: 12,
     }
 
 

@@ -79,6 +79,8 @@ import PaymentMethodScreen from './screens/Payment/PaymentMethodScreen';
 import LocationSelectionCommonScreen from './screens/LocationSelectionCommonScreen';
 import MyServiceHomeScreen from './screens/MyServiceStack/MyServiceHomeScreen';
 import MyServiceCreateScreen from './screens/MyServiceStack/MyServiceCreateScreen';
+import OrderListScreen from './screens/OrderStack/OrderListScreen';
+import OrderDetailScreen from './screens/OrderStack/OrderDetailScreen';
 
 
 
@@ -695,6 +697,33 @@ const MyServiceStack = () => {
 }
 
 
+/**
+ * Booking Stack
+ */
+
+const OrderStackNavigator = createStackNavigator();
+function OrderStack(){
+    let option_slide = {
+        title: "",
+        gestureEnabled: false,
+        animationEnabled: true,
+        swipeEnabled: false,
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    }
+
+    return (
+        <OrderStackNavigator.Navigator>
+            <OrderStackNavigator.Screen
+                name={"OrderList"}
+                component={OrderListScreen}
+            />
+             <OrderStackNavigator.Screen
+                name={"OrderDetail"}
+                component={OrderDetailScreen}
+            />
+        </OrderStackNavigator.Navigator>
+    )
+}
 
 
 /**
@@ -800,6 +829,11 @@ function AccountStack() {
             <AccountStackNavigator.Screen
                 name="MyServiceStack"
                 component={MyServiceStack}
+                options={option_slide, { headerShown: false }}
+            />
+            <AccountStackNavigator.Screen
+                name="OrderStack"
+                component={OrderStack}
                 options={option_slide, { headerShown: false }}
             />
 

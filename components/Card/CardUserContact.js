@@ -17,13 +17,14 @@ const CardUserContact = ({
     gender,
     onPhonePress,
     onChatPress,
-    contactDisplay = true
+    contactDisplay = true,
+    containerStyle
 }) => {
     return (
         <View
             style={[
                 styles.container,
-
+                containerStyle
             ]}
         >
             <TouchableOpacity

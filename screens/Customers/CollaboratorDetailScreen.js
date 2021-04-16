@@ -59,7 +59,9 @@ const CollaboratorDetailScreen = (props) => {
 
 
     const _onNavigateToCandidateService = () => {
-        props.navigation.navigate('CandidateServiceList');
+        props.navigation.navigate('CandidateServiceList',{
+            candidate:candidate
+        });
     }
 
 
