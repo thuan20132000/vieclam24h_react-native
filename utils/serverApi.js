@@ -1674,11 +1674,10 @@ export const _getCandidateBookingDetail = async (candidate_id, booking_id) => {
 
 
 
-export const _updateServiceBooking = async (user_id, booking_id,booking_status,content) => {
+export const _updateServiceBooking = async (user_id, booking_id, booking_status, content) => {
     try {
 
-
-        let url = `${api.api_v1}/user/${user_id}/booking/${booking_id}`;
+        let url = `${api.api_v1}/user/${user_id}/booking/${booking_id}/update`;
         let dataFetch = await fetch(`${url}`, {
             method: 'PUT',
             headers: {
@@ -1687,11 +1686,117 @@ export const _updateServiceBooking = async (user_id, booking_id,booking_status,c
             },
             body: JSON.stringify({
                 booking_status: booking_status,
-                booking_content:content
+                booking_content: content
             })
         });
         if (!dataFetch.ok) {
             console.warn('ERROR AT Update Booking Service');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+export const _bookService = async (user_id, candidate_id, total_price, services_list = []) => {
+    try {
+
+        let url = `${api.api_v1}/user/${user_id}/services/book`;
+        let dataFetch = await fetch(`${url}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                total_price: total_price,
+                candidate_id: candidate_id,
+                services: services_list
+            })
+        });
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT Create Booking Service');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+
+export const _updateUserNotificationToken = async (user_id,user_token) => {
+
+    try {
+
+        let url = `${api.api_v1}/user/${user_id}/notification-token`;
+        let dataFetch = await fetch(`${url}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token: user_token,
+            })
+        });
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT Upate Notification Token');
 
             return {
                 data: [],

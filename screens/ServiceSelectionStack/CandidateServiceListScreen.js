@@ -76,7 +76,6 @@ const CandidateServiceListScreen = (props) => {
 
 
     useEffect(() => {
-        console.log('candidate: ',candidate.id);
 
         _getCandidateServices(candidate?.id)
             .then((res)=> {
@@ -157,7 +156,9 @@ const CandidateServiceListScreen = (props) => {
         // console.warn('data: ',selectedServices);
         dispatch(cartActions.addService(selectedServices,totalPrice,selectedServices.length));
 
-        props.navigation.navigate('SelectedServiceReview')
+        props.navigation.navigate('SelectedServiceReview',{
+            candidate:candidate
+        })
     }
 
 

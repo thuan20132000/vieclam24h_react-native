@@ -8,14 +8,15 @@ import { IconButton } from 'react-native-paper';
 import CommonIcons from '../../constants/CommonIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ButtonSubmit from '../../components/Button/ButtonSubmit';
-import { _getCandidateBookingDetail } from '../../utils/serverApi';
+import { _getCandidateBookingDetail, _updateServiceBooking } from '../../utils/serverApi';
 import { useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 
 const OrderDetailScreen = (props) => {
-
+    const navigation = useNavigation();
     const { userInformation } = useSelector(state => state.authentication);
 
-    const { booking } = props.route.params;
+    const { booking_id } = props.route.params;
 
     const labels = ["Ứng tuyển", "Chờ", "Chấp nhập", "Xác nhận", "Hoàn tất thanh toán"];
     const customStyles = {
@@ -43,35 +44,64 @@ const OrderDetailScreen = (props) => {
     }
 
     const [bookingTracking, setBookingTracking] = useState([]);
+    const [bookingInfo,setBookingInfo] = useState();
 
 
-    useEffect(() => {
 
-        _getCandidateBookingDetail(userInformation.id, booking.id)
+    const _onUpdateTrackking = () => {
+        _getCandidateBookingDetail(userInformation.id, booking_id)
             .then((res) => {
                 // console.log('res: ', res.data.data.order_tracking);
                 if (res.status) {
-                    setBookingTracking(res.data?.data?.order_tracking);
+                    let trackking = res.data?.data?.order_tracking;
+                    if (trackking && trackking.length > 0) {
+                        setBookingTracking(trackking.reverse());
+                    }
+                    setBookingInfo(res.data?.data?.order_info);
+                    // console.warn('trackking: ',res.data?.data?.order_info)
                 }
             })
             .catch((err) => {
                 console.log('error: ', err)
             })
             .finally(() => console.log('final '))
+    }
 
 
-        props.navigation.dangerouslyGetParent().dangerouslyGetParent().setOptions({
+
+    useEffect(() => {
+
+
+        _onUpdateTrackking();
+
+        navigation.dangerouslyGetParent().dangerouslyGetParent()?.setOptions({
             tabBarVisible: false,
         });
 
         return () => {
-            props.navigation.dangerouslyGetParent().dangerouslyGetParent().setOptions({
+            navigation.dangerouslyGetParent().dangerouslyGetParent()?.setOptions({
                 tabBarVisible: true,
             });
 
         }
 
-    }, [])
+    }, []);
+
+
+
+
+    const _onApprovedServiceBooking = async () => {
+
+        try {
+            
+            let fetchRes = await _updateServiceBooking(userInformation.id, booking_id, 'approved', 'Chấp nhận yêu cầu dịch vụ');
+            if(fetchRes.status){
+                _onUpdateTrackking();
+            }
+        } catch (error) {
+            console.warn('error: ',error);
+        }
+    }
 
     return (
         <View
@@ -85,6 +115,10 @@ const OrderDetailScreen = (props) => {
             >
                 <OrderCart
                     time={new Date()}
+                    service_list={bookingInfo?.services}
+                    address={`76 Nguyễn Thái Bình`}
+                    created_at={bookingInfo?.created_at}
+                    total_price={bookingInfo?.total_price}
                 />
 
                 <View
@@ -135,30 +169,28 @@ const OrderDetailScreen = (props) => {
                                             marginVertical: 4
                                         }}
                                     >
-                                        {formatDateTime(new Date())}
+                                        {formatDateTime(label?.updated_at)}
                                     </Text>
 
                                 </View>
                             </View>
                         }
-
-
-
                     />
 
                     {
-                        bookingTracking.length <= 1 &&
+                        (bookingTracking.length <= 1 && bookingInfo &&  userInformation.id == bookingInfo.candidate?.user) &&
                         <View
                             style={{
                                 display: 'flex',
                                 flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                marginTop:32
+                                marginTop: 32
                             }}
                         >
                             <ButtonSubmit
                                 label={"Nhận việc"}
+                                onItemPress={_onApprovedServiceBooking}
                             />
 
                         </View>

@@ -5,7 +5,7 @@ import RowInformation from '../../components/Row/RowInformation'
 import messaging from '@react-native-firebase/messaging'
 import RowSwitch from '../../components/Row/RowSwitch'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { _updateNotificationStatus, _getUserNotificationConfig } from '../../utils/serverApi'
+import { _updateNotificationStatus, _getUserNotificationConfig, _updateUserNotificationToken } from '../../utils/serverApi'
 import { useSelector } from 'react-redux'
 
 
@@ -66,6 +66,8 @@ const NotificationSettingHomeScreen = () => {
         setMessageNotification(!messageNotification);
 
     }
+
+
 
 
 
@@ -141,7 +143,7 @@ const NotificationSettingHomeScreen = () => {
             }
         });
 
-        // messaging().getToken().then((token) => console.log(token));
+        messaging().getToken().then((token) => _updateUserNotificationToken(userInformation.id,token));
 
 
         // _getUserNotificationConfig(userInformation.id)

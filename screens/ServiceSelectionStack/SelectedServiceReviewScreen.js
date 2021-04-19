@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Alert } from 'react-native'
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons'
 import ItemSelectionChecbox from '../../components/Item/ItemSelectionChecbox'
 import CommonColors from '../../constants/CommonColors'
@@ -13,9 +13,14 @@ import BottomNavigation from './components/BottomNavigation'
 import { useDispatch, useSelector } from 'react-redux';
 import * as cartActions from '../../store/actions/cartActions';
 import ModalCompleteConfirmed from '../../components/Modal/ModalCompleteConfirmed'
+import { _bookService } from '../../utils/serverApi'
 
 
 const SelectedServiceReviewScreen = (props) => {
+    const { candidate } = props.route?.params;
+
+
+
     const dispatch = useDispatch();
     const { service_list, total_price, total_number } = useSelector(state => state.cart);
     const { location } = useSelector(state => state.location);
@@ -25,8 +30,8 @@ const SelectedServiceReviewScreen = (props) => {
     const [serviceLocation, setServiceLocation] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const { userInformation } = useSelector(state => state.authentication);
-    const [isConfirming,setIsConfirming] = useState(false);
-    const [isConfirmed,setIsConfirmed] = useState(false);
+    const [isConfirming, setIsConfirming] = useState(false);
+    const [isConfirmed, setIsConfirmed] = useState(false);
 
 
 
@@ -87,15 +92,41 @@ const SelectedServiceReviewScreen = (props) => {
 
 
 
-    const _onReviewSubmit = () => {
-        // console.warn()
+    const _onReviewSubmit = async () => {
+
+        let services_id_list = service_list.map((e) => e.id);
+        let bookres = await _bookService(userInformation.id, candidate.id, total_price, services_id_list);
+
+        if (bookres.status) {
+            Alert.alert("Thành công", "Đã gửi yêu cầu dịch vụ thành công, vui lòng theo dõi ở thông báo.", [
+
+                {
+                    text: "OK", onPress: () => {
+                        props.navigation.reset({
+                            index: 0,
+                            routes: [
+                                { name: 'Notification' },
+                               
+                            ],
+                        });
+
+
+                    }
+                }
+            ])
+        }
+
+
+        return;
         setIsConfirming(true);
-    
+
         setTimeout(() => {
+
+
             setIsConfirmed(true);
         }, 2200);
 
-        dispatch(cartActions.updateServiceReview(timeSelected,serviceLocation,paymentMethod));
+        dispatch(cartActions.updateServiceReview(timeSelected, serviceLocation, paymentMethod));
     }
 
 
@@ -103,10 +134,10 @@ const SelectedServiceReviewScreen = (props) => {
         setIsConfirmed(false);
         setIsConfirming(false);
         props.navigation.reset({
-            index:1,
-            routes:[
+            index: 1,
+            routes: [
                 {
-                    name:'SearchHome'
+                    name: 'SearchHome'
                 }
             ]
         })
@@ -114,184 +145,184 @@ const SelectedServiceReviewScreen = (props) => {
 
 
     return (
-            <View
-                style={{
-                    display: 'flex',
-                    flex: 1,
-                    backgroundColor: 'white',
-                    justifyContent: 'space-between'
-                }}
-            >
+        <View
+            style={{
+                display: 'flex',
+                flex: 1,
+                backgroundColor: 'white',
+                justifyContent: 'space-between'
+            }}
+        >
 
-                <ScrollView>
-                    {/* address */}
-                    <ModalCompleteConfirmed
-                        visible={isConfirming}
-                        isConfirmed={isConfirmed}
-                        setVisible={setIsConfirming}
-                        onCompleteSubmit={_onBackHomePress}
+            <ScrollView>
+                {/* address */}
+                <ModalCompleteConfirmed
+                    visible={isConfirming}
+                    isConfirmed={isConfirmed}
+                    setVisible={setIsConfirming}
+                    onCompleteSubmit={_onBackHomePress}
 
 
+                />
+                <View
+                    style={[styles.section]}
+                >
+
+                    <List.Item
+                        title="Địa chỉ"
+                        left={props => <List.Icon {...props} icon={CommonIcons.mapCheck} />}
+                        onPress={_onNavigateToLocationSelection}
+
+                        description={
+                            serviceLocation &&
+                            `${userInformation.username} (${userInformation.phonenumber}) ${serviceLocation?.address} ${serviceLocation?.subdistrict} ${serviceLocation?.district} ${serviceLocation?.province}`}
+                        descriptionNumberOfLines={3}
                     />
-                    <View
-                        style={[styles.section]}
-                    >
-
-                        <List.Item
-                            title="Địa chỉ"
-                            left={props => <List.Icon {...props} icon={CommonIcons.mapCheck} />}
-                            onPress={_onNavigateToLocationSelection}
-
-                            description={
-                                serviceLocation &&
-                                `${userInformation.username} (${userInformation.phonenumber}) ${serviceLocation?.address} ${serviceLocation?.subdistrict} ${serviceLocation?.district} ${serviceLocation?.province}`}
-                            descriptionNumberOfLines={3}
-                        />
-                    </View>
+                </View>
 
 
-                    {/* time */}
-                    <View
-                        style={[styles.section]}
-                    >
-                        <View style={[styles.group]}>
-                            <View>
-                                <ItemSelectionChecbox
-                                    isChecked={withTime}
-                                    label={'Thời gian'}
-                                    onItemPress={() => setWithTime(!withTime)}
-                                    labelStyle={[styles.textLabel]}
-                                />
-                            </View>
-                            {
-                                withTime &&
-                                <View style={[styles.group, styles.row, { justifyContent: 'space-around' }]}>
-                                    <TouchableOpacity
-                                        onPress={showTimepicker}
-                                        style={[styles.buttonpicker]}
-
-
-                                    >
-                                        <Text style={[{ textAlign: 'center', fontWeight: '700', fontSize: 18 }]} >
-                                            {timeSelected && formatTimeString(timeSelected) || `Chọn giờ`}
-                                        </Text>
-                                        <Text style={[{ textAlign: 'center' }]}>Giờ</Text>
-
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={showDatepicker}
-                                        style={[styles.buttonpicker]}
-                                    >
-                                        <Text style={[{ textAlign: 'center', fontWeight: '700', fontSize: 18 }]} > {formatDateString(dateSelected) || `Chọn ngày`} </Text>
-                                        <Text style={[{ textAlign: 'center' }]}>Ngày</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            }
-
-                            {/* Show datetime picker */}
-                            {
-                                datetimepickerShow &&
-                                <DateTimePicker
-
-                                    testID="dateTimePicker"
-                                    value={dateSelected}
-                                    mode={mode}
-                                    is24Hour={true}
-                                    display="default"
-                                    onChange={onChange}
-                                />
-
-                            }
-
-
+                {/* time */}
+                <View
+                    style={[styles.section]}
+                >
+                    <View style={[styles.group]}>
+                        <View>
+                            <ItemSelectionChecbox
+                                isChecked={withTime}
+                                label={'Thời gian'}
+                                onItemPress={() => setWithTime(!withTime)}
+                                labelStyle={[styles.textLabel]}
+                            />
                         </View>
-                    </View>
-
-
-                    {/* Services */}
-                    <View
-                        style={[
-                            styles.section
-                        ]}
-                    >
                         {
-                            service_list && service_list.length > 0 &&
-                            service_list.map((e, index) =>
-                                <List.Item
-                                    key={index.toString()}
-                                    title={e.name}
-                                    description={formatCash(e.price)}
-                                    left={props => <List.Icon {...props} icon={CommonIcons.tagPrice} />}
-                                />
+                            withTime &&
+                            <View style={[styles.group, styles.row, { justifyContent: 'space-around' }]}>
+                                <TouchableOpacity
+                                    onPress={showTimepicker}
+                                    style={[styles.buttonpicker]}
 
-                            )
+
+                                >
+                                    <Text style={[{ textAlign: 'center', fontWeight: '700', fontSize: 18 }]} >
+                                        {timeSelected && formatTimeString(timeSelected) || `Chọn giờ`}
+                                    </Text>
+                                    <Text style={[{ textAlign: 'center' }]}>Giờ</Text>
+
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={showDatepicker}
+                                    style={[styles.buttonpicker]}
+                                >
+                                    <Text style={[{ textAlign: 'center', fontWeight: '700', fontSize: 18 }]} > {formatDateString(dateSelected) || `Chọn ngày`} </Text>
+                                    <Text style={[{ textAlign: 'center' }]}>Ngày</Text>
+                                </TouchableOpacity>
+                            </View>
                         }
 
+                        {/* Show datetime picker */}
+                        {
+                            datetimepickerShow &&
+                            <DateTimePicker
+
+                                testID="dateTimePicker"
+                                value={dateSelected}
+                                mode={mode}
+                                is24Hour={true}
+                                display="default"
+                                onChange={onChange}
+                            />
+
+                        }
+
+
                     </View>
-
-                    {/* Payment */}
-                    <View
-                        style={[styles.section]}
-                    >
-                        <List.Item
-                            title="Phương thức thanh toán"
-                            right={props => <List.Icon {...props} icon={CommonIcons.account} />}
-                            onPress={_onNavigateToPaymentMethodSelection}
-                            description={'Thanh toán tiền mặt'}
-                        />
-                        <List.Item
-                            title="Tổng tiền dịch vụ"
-                            description={formatCash(total_price)}
-                            descriptionStyle={{
-                                color: 'red',
-                                fontWeight: '700'
-                            }}
-                        />
-                    </View>
+                </View>
 
 
-                </ScrollView>
+                {/* Services */}
                 <View
+                    style={[
+                        styles.section
+                    ]}
+                >
+                    {
+                        service_list && service_list.length > 0 &&
+                        service_list.map((e, index) =>
+                            <List.Item
+                                key={index.toString()}
+                                title={e.name}
+                                description={formatCash(e.price)}
+                                left={props => <List.Icon {...props} icon={CommonIcons.tagPrice} />}
+                            />
+
+                        )
+                    }
+
+                </View>
+
+                {/* Payment */}
+                <View
+                    style={[styles.section]}
+                >
+                    <List.Item
+                        title="Phương thức thanh toán"
+                        right={props => <List.Icon {...props} icon={CommonIcons.account} />}
+                        onPress={_onNavigateToPaymentMethodSelection}
+                        description={'Thanh toán tiền mặt'}
+                    />
+                    <List.Item
+                        title="Tổng tiền dịch vụ"
+                        description={formatCash(total_price)}
+                        descriptionStyle={{
+                            color: 'red',
+                            fontWeight: '700'
+                        }}
+                    />
+                </View>
+
+
+            </ScrollView>
+            <View
+                style={{
+                    padding: 12
+                }}
+            >
+                <Text
                     style={{
-                        padding: 12
+                        fontSize: 12,
+                        textAlign: 'center'
+
                     }}
                 >
-                    <Text
-                        style={{
-                            fontSize: 12,
-                            textAlign: 'center'
-
-                        }}
-                    >
-                        Xác nhận dịch vụ đồng nghĩa với việc bạn đồng ý với các điều khoản của dịch vụ cung cấp
+                    Xác nhận dịch vụ đồng nghĩa với việc bạn đồng ý với các điều khoản của dịch vụ cung cấp
                     </Text>
-                </View>
-                <BottomNavigation
-                    nextTitle={'Xác nhận dịch vụ'}
-                    nextButtonStyle={{
-                        backgroundColor: CommonColors.btnSubmit
-                    }}
-                    onNextPress={_onReviewSubmit}
-
-                    containerStyle={{
-                        borderTopLeftRadius:22,
-                        borderTopRightRadius:22,
-                        shadowColor: "black",
-                        shadowOffset: {
-                            width: 4,
-                            height: 5,
-                        },
-                        shadowOpacity: 0.65,
-                        shadowRadius: 1.84,
-                
-                        elevation: 11,
-    
-                    }}
-                />
-
-
-
             </View>
+            <BottomNavigation
+                nextTitle={'Xác nhận dịch vụ'}
+                nextButtonStyle={{
+                    backgroundColor: CommonColors.btnSubmit
+                }}
+                onNextPress={_onReviewSubmit}
+
+                containerStyle={{
+                    borderTopLeftRadius: 22,
+                    borderTopRightRadius: 22,
+                    shadowColor: "black",
+                    shadowOffset: {
+                        width: 4,
+                        height: 5,
+                    },
+                    shadowOpacity: 0.65,
+                    shadowRadius: 1.84,
+
+                    elevation: 11,
+
+                }}
+            />
+
+
+
+        </View>
     )
 }
 

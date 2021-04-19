@@ -337,6 +337,10 @@ function NotificationStack() {
                 name="JobDetail"
                 component={JobDetailScreen}
             />
+            <NotificationStackNavigator.Screen
+                name="OrderDetail"
+                component={OrderDetailScreen}
+            />
         </NotificationStackNavigator.Navigator>
     )
 }

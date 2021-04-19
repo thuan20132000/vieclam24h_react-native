@@ -109,13 +109,13 @@ const NotificationScreen = (props) => {
         // })
         messaging().onNotificationOpenedApp(remoteMsg => {
             // props.navigation.navigate('Notification');
-            setUserNotification([{...remoteMsg,status:'pending'}, ...userNotification]);
+            setUserNotification([{ ...remoteMsg, status: 'pending' }, ...userNotification]);
             setNewNotificationNumber(newNotificationNumber + 1);
 
         });
 
         const unsubscribe = messaging().onMessage(async remoteMessage => {
-            console.warn('notification: ',remoteMessage);
+            console.warn('notification: ', remoteMessage);
             setUserNotification([remoteMessage, ...userNotification])
         });
 
@@ -128,14 +128,25 @@ const NotificationScreen = (props) => {
     const [nextPageLink, setNextPageLink] = useState('');
 
     React.useEffect(() => {
-        _getUserNotifications(userInformation?.id).then((e) => {
-            if (e.status) {
-                setUserNotification(e.data?.data);
-                setNextPageLink(e.data?.next);
-                console.log(e?.data?.data[0]);
-            }
+
+
+        const unsubscribe = props.navigation.addListener('focus', () => {
+     
+            _getUserNotifications(userInformation?.id).then((e) => {
+                if (e.status) {
+                    setUserNotification(e.data?.data);
+                    setNextPageLink(e.data?.next);
+                    // console.log(e?.data?.data[0]);
+                    // console.log('DATA:', e?.data?.data[0].booking);
+                }
+            });
         });
-    }, []);
+
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
+
+
+    }, [props.navigation]);
 
     const [isRefreshing, setIsRefreshing] = useState(false);
     const _onRefreshNewNotification = async () => {
@@ -182,13 +193,18 @@ const NotificationScreen = (props) => {
         if (!notification) {
             return;
         }
-        console.warn('notification: ',notification);
+        // console.warn('notification: ', notification);
         _updateUserNotificationStatus(userInformation.id, notification.id)
             .then(() => {
 
-                let notification_index = userNotification.findIndex((e) => e.id == notification.id);
-                let new_user_notiication = [...userNotification, userNotification[notification_index].status = 'read'];
-                setUserNotification(new_user_notiication);
+                // let notification_index = userNotification.findIndex((e) => e.id == notification.id);
+                // console.warn('index: ',notification_index);
+                // if (notification_index) {
+                //     let new_user_notiication = [...userNotification, userNotification[notification_index].status = 'read'];
+                //     setUserNotification(new_user_notiication);
+
+                // }
+
                 if (notification?.jobcandidate?.id) {
 
                     props.navigation.navigate('JobCandidateTracking', {
@@ -196,9 +212,19 @@ const NotificationScreen = (props) => {
                     });
                     return;
                 }
-                if (notification) {
+
+
+                if (notification.job) {
                     props.navigation.navigate('JobDetail', {
                         job_id: notification?.job?.id || notification?.data?.job_id
+                    });
+                    return;
+                }
+
+
+                if (notification.booking || notification.data?.booking_id) {
+                    props.navigation.navigate('OrderDetail', {
+                        booking_id: notification?.booking?.id || notification?.data?.booking_id
                     });
                     return;
                 }
@@ -238,7 +264,6 @@ const NotificationScreen = (props) => {
                     time={getDaysBetweenTwoDates(item.sentTime || item.created_at)}
                     onItemPress={() => _onNotificationPress(item)}
                     isRead={item.status != 'read' ? false : true}
-
 
                 />
             )}
