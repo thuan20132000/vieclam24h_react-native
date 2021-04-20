@@ -40,7 +40,7 @@ const OrderCart = ({
                 {
                     service_list.length > 0 &&
                     service_list.map((e, index) =>
-                        <View
+                        <View key={index.toString()}
                             style={[styles.serviceItem]}
                         >
                             <Text

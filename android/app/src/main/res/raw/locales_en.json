@@ -1,0 +1,20 @@
+
+{
+    "home":"Home",
+    "stay":"Stay",
+    "tour":"Tour",
+    "self_driving_car":"Self-driving car",
+    "visit":"Visit",
+    "cuisine":"Cuisine",
+    "shopping":"Shopping",
+    "account":"Account",
+    "history":"History",
+
+    "schedule":"Schedule",
+    "amenity":"Amenity",
+    "search":"Search",
+
+    "new_jobs":"New Jobs",
+    "apply":"Apply",
+    "messages":"Messages"
+}

@@ -99,6 +99,8 @@ const JobDetailScreen = (props) => {
 
     let timeout;
     const _applyJob = async () => {
+        // refRBSheet_applyJob.current.close();
+        // return;
         try {
             setIsLoading(true);
             setIsDisabling(true);
@@ -106,19 +108,19 @@ const JobDetailScreen = (props) => {
 
             let checkValidated = _onCheckValidateApply();
 
-
+            
 
             if (checkValidated) {
 
                 let applyRes = await applyJob(userInformation.id, job_id, jobApplyData.expected_price, jobApplyData.description);
                 if (!applyRes.status) {
+
                     if (applyRes.code == "CANDIDATE_404") {
                         Alert.alert("Thông báo", "Bạn cần đăng ký ứng viên để ứng tuyển.");
 
                     } else {
                         Alert.alert("Thất bại", `Ứng viên đã ứng tuyển, không thể ứng tuyển lại!`);
                     }
-                    refRBSheet_applyJob.current.close();
 
                     timeout = setTimeout(() => {
                         props.navigation.navigate('Accounts')
@@ -140,7 +142,7 @@ const JobDetailScreen = (props) => {
                             ],
                         })
 
-                    }, 2500);
+                    }, 1500);
                 }
             }
 
