@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, ScrollView, Image } from 'react-native'
 import OrderCart from './components/OrderCart'
 import StepIndicator from 'react-native-step-indicator';
 import CardUserContact from '../../components/Card/CardUserContact';
@@ -11,6 +11,10 @@ import ButtonSubmit from '../../components/Button/ButtonSubmit';
 import { _getCandidateBookingDetail, _updateServiceBooking } from '../../utils/serverApi';
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
+import { FAB } from 'react-native-paper';
+import CommonColors from '../../constants/CommonColors';
+import CommonImages from '../../constants/CommonImages';
+import ButtonIcon from '../../components/Button/ButtonIcon';
 
 const OrderDetailScreen = (props) => {
     const navigation = useNavigation();
@@ -44,7 +48,7 @@ const OrderDetailScreen = (props) => {
     }
 
     const [bookingTracking, setBookingTracking] = useState([]);
-    const [bookingInfo,setBookingInfo] = useState();
+    const [bookingInfo, setBookingInfo] = useState();
 
 
 
@@ -74,12 +78,12 @@ const OrderDetailScreen = (props) => {
 
         _onUpdateTrackking();
 
-        navigation.dangerouslyGetParent().dangerouslyGetParent()?.setOptions({
+        navigation.dangerouslyGetParent().setOptions({
             tabBarVisible: false,
         });
 
         return () => {
-            navigation.dangerouslyGetParent().dangerouslyGetParent()?.setOptions({
+            navigation.dangerouslyGetParent().setOptions({
                 tabBarVisible: true,
             });
 
@@ -93,13 +97,13 @@ const OrderDetailScreen = (props) => {
     const _onApprovedServiceBooking = async () => {
 
         try {
-            
+
             let fetchRes = await _updateServiceBooking(userInformation.id, booking_id, 'approved', 'Chấp nhận yêu cầu dịch vụ');
-            if(fetchRes.status){
+            if (fetchRes.status) {
                 _onUpdateTrackking();
             }
         } catch (error) {
-            console.warn('error: ',error);
+            console.warn('error: ', error);
         }
     }
 
@@ -119,13 +123,36 @@ const OrderDetailScreen = (props) => {
                     address={`76 Nguyễn Thái Bình`}
                     created_at={bookingInfo?.created_at}
                     total_price={bookingInfo?.total_price}
-                />
+                    username={userInformation.id == bookingInfo?.candidate?.user ? bookingInfo?.user?.username : userInformation.username}
+                    onDetailPress={() => console.warn('ds')}
+
+
+                >
+                    <TouchableOpacity style={[styles.row, {
+                        backgroundColor: 'white'
+                    }]} >
+                        <Image
+                            source={{
+                                uri: CommonImages.avatar
+                            }}
+                            style={{
+                                width: 40,
+                                height: 40
+                            }}
+                        />
+                        <Text
+                            style={{ marginHorizontal: 22, fontSize: 18 }}
+                        >
+                            {userInformation.id == bookingInfo?.candidate?.user ? bookingInfo?.user?.username : userInformation.username}
+                        </Text>
+                    </TouchableOpacity>
+                </OrderCart>
 
                 <View
                     style={[
                         styles.section,
                         {
-                            height: bookingTracking?.length * 80,
+                            height: bookingTracking?.length * 120,
                             minHeight: 80,
                             marginVertical: 22
                         }
@@ -176,9 +203,33 @@ const OrderDetailScreen = (props) => {
                             </View>
                         }
                     />
+                    <View
+                        style={[
+                            styles.row,
+                            {
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }
+                        ]}
+                    >
+                        <TouchableOpacity
+                            style={{
+                                margin:4,
+                                backgroundColor:CommonColors.btnSubmit,
+                                padding:12,
+                                borderRadius:4
+                            }}
+                        >
+                            <Text
+                                style={{fontSize:12,color:'white',fontWeight:'700'}}
+                            >
+                                Xác nhận hoàn thành
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
 
                     {
-                        (bookingTracking.length <= 1 && bookingInfo &&  userInformation.id == bookingInfo.candidate?.user) &&
+                        (bookingTracking.length <= 1 && bookingInfo && userInformation.id == bookingInfo.candidate?.user) &&
                         <View
                             style={{
                                 display: 'flex',
@@ -200,19 +251,31 @@ const OrderDetailScreen = (props) => {
 
 
             </ScrollView>
-            <CardUserContact
-                username={'customer'}
-
-                containerStyle={{
-                    position: 'absolute',
-                    zIndex: 999,
-                    bottom: 10,
-                    marginHorizontal: 12,
-                    display: 'flex',
-                    alignSelf: 'center',
-                    width: deviceWidth - 12
-                }}
+            <FAB
+                style={[
+                    styles.fab2,
+                    {
+                        backgroundColor: CommonColors.btnSubmit
+                    }
+                ]}
+                icon={CommonIcons.chatMessage}
+                onPress={() => console.log('Pressed')}
+                color={'white'}
             />
+            <FAB
+                style={[
+                    styles.fab,
+                    {
+                        backgroundColor: CommonColors.btnSubmit
+                    }
+                ]}
+                small={false}
+                icon={CommonIcons.phone}
+                onPress={() => console.log('Pressed')}
+                color={'white'}
+
+            />
+
         </View>
     )
 }
@@ -235,5 +298,22 @@ const styles = StyleSheet.create({
         marginVertical: 1,
         borderRadius: 4,
         marginHorizontal: 4
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 60,
+    },
+    fab2: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 140,
+    },
+    row: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })

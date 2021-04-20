@@ -10,6 +10,9 @@ const OrderCart = ({
     total_price,
     service_list = [],
     created_at,
+    username,
+    onDetailPress,
+    children
 
 }) => {
     return (
@@ -19,7 +22,7 @@ const OrderCart = ({
                     styles.section
                 ]}
             >
-                { }
+                {children}
                 <RowInformation
                     iconName={CommonIcons.calendarCheck}
                     label={formatDateTime(created_at)}
