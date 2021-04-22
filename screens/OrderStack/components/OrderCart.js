@@ -51,13 +51,13 @@ const OrderCart = ({
                                     styles.serviceTitle
                                 ]}
                             >
-                                Vệ sinh máy giặt
-                                </Text>
+                                {e.name}
+                            </Text>
                             <Text
                                 style={[styles.servicePrice]}
                             >
-                                320000
-                                </Text>
+                                {`${formatCash(e.price)} vnđ`}
+                            </Text>
                         </View>
 
                     )

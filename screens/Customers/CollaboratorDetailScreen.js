@@ -131,7 +131,7 @@ const CollaboratorDetailScreen = (props) => {
             </View>
 
             <View style={[styles.sectionWrap]}>
-                <Text style={[styles.sectionTitle]} >Nghề nghiệp chuyên môn: </Text>
+                <Text style={[styles.sectionTitle]} >Lĩnh vực hoạt động: </Text>
                 <View style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap', margin: 12 }}>
                     {
                         candidateInfo?.candidate_info?.fields?.map((e, index) =>

@@ -7,12 +7,12 @@ import CommonColors from '../../constants/CommonColors';
 import CommonIcons from '../../constants/CommonIcons';
 import CommonImages from '../../constants/CommonImages';
 
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getUserConversation } from '../../utils/serverApi';
-import {formatDateTime} from '../../utils/helper';
-import {subcribe} from '../../store/actions/websocketActions';
+import { formatDateTime } from '../../utils/helper';
+import { subcribe } from '../../store/actions/websocketActions';
 
-const MessageChatitem = ({ isMine, message,date,profileImage }) => {
+const MessageChatitem = ({ isMine, message, date, profileImage }) => {
 
     return (
         <View style={[styles.messageItemWrap, {
@@ -50,7 +50,7 @@ const MessageChatitem = ({ isMine, message,date,profileImage }) => {
                         date &&
                         formatDateTime(date)
                     }
-                    
+
                 </Text>
             </View>
         </View>
@@ -133,38 +133,38 @@ const ChatLiveScreen = (props) => {
     const [sendValue, setSendValue] = useState('');
 
 
-    useMemo(() => {
-        const socket = new WebSocket(`wss://damp-stream-67132.herokuapp.com/${userInformation.id}`);
-        setWsSocket(socket)
+    // useMemo(() => {
+    //     const socket = new WebSocket(`wss://damp-stream-67132.herokuapp.com/${userInformation.id}`);
+    //     setWsSocket(socket)
 
-    }, []);
+    // }, []);
 
-    wsSocket.onmessage = async (msg) => {
-        let message = JSON.parse(msg.data);
+    // wsSocket.onmessage = async (msg) => {
+    //     let message = JSON.parse(msg.data);
 
-        dispatch(subcribe(message));
+    //     dispatch(subcribe(message));
 
-        // console.warn('socket message: ', message);
-        if (message.connection == recipient._id) {
+    //     // console.warn('socket message: ', message);
+    //     if (message.connection == recipient._id) {
 
-            setMessageArr([message,...messageArr]);
+    //         setMessageArr([message,...messageArr]);
 
-        };
+    //     };
 
-        // let newMessage = {
-        //     "from": { "email": "", "id": message.from, "name": "" },
-        //     "message": message.message,
-        // }
-        // console.warn('message: ',message);
-        // setMessageRealTime(message);
+    //     // let newMessage = {
+    //     //     "from": { "email": "", "id": message.from, "name": "" },
+    //     //     "message": message.message,
+    //     // }
+    //     // console.warn('message: ',message);
+    //     // setMessageRealTime(message);
 
-    }
+    // }
 
 
 
     const _onSendMessage = async () => {
 
-     //   console.warn(recipient);
+        //   console.warn(recipient);
         let sendData = {
             "connection": recipient.id || recipient._id,
             "conversation_id": recipient.conversation_id,
@@ -179,7 +179,7 @@ const ChatLiveScreen = (props) => {
             "type": "message",
             "message": sendValue,
             "isMine": true,
-            "date":Date.now()
+            "date": Date.now()
         }
 
         // setMessageArr([...messageArr, sendData]);
@@ -191,21 +191,21 @@ const ChatLiveScreen = (props) => {
 
 
     const [nextPageNumber, setNextPageNumber] = useState(0);
-    const _onGetUserConversation = async () => {
+    // const _onGetUserConversation = async () => {
 
-        let userConversationsRes = await getUserConversation(user._id, 12,nextPageNumber,'desc');
+    //     let userConversationsRes = await getUserConversation(user._id, 12,nextPageNumber,'desc');
 
-        if (userConversationsRes.status) {
-            setMessageArr(userConversationsRes.data.data);
-        } else {
-            setMessageArr([]);
-        }
-    }
+    //     if (userConversationsRes.status) {
+    //         setMessageArr(userConversationsRes.data.data);
+    //     } else {
+    //         setMessageArr([]);
+    //     }
+    // }
 
 
     useEffect(() => {
 
-        _onGetUserConversation();
+        // _onGetUserConversation();
 
     }, []);
 
@@ -235,21 +235,21 @@ const ChatLiveScreen = (props) => {
 
 
     const onRefreshOldMessage = async () => {
-        setRefreshing(true);
+        // setRefreshing(true);
 
-        try {
-            let userConversationsRes = await getUserConversation(user._id, 12, nextPageNumber,'desc');
+        // try {
+        //     let userConversationsRes = await getUserConversation(user._id, 12, nextPageNumber,'desc');
 
-            setMessageArr(prev => {
-                return [...prev,...userConversationsRes.data.data];
-            })
+        //     setMessageArr(prev => {
+        //         return [...prev,...userConversationsRes.data.data];
+        //     })
 
-            setNextPageNumber(nextPageNumber+5);
-            setRefreshing(false);
+        //     setNextPageNumber(nextPageNumber+5);
+        //     setRefreshing(false);
 
-        } catch (error) {
-            setRefreshing(false);
-        }
+        // } catch (error) {
+        //     setRefreshing(false);
+        // }
 
     }
 
@@ -261,11 +261,8 @@ const ChatLiveScreen = (props) => {
             <FlatList style={{ flex: 1, zIndex: -1 }}
                 inverted={-1}
                 data={messageArr}
-        
-              onEndReachedThreshold={0.1}
-                onEndReached={onRefreshOldMessage}
-                onEndReachedThreshold={0.5}
-                onRefresh={onRefreshOldMessage}
+
+            
                 refreshing={true}
 
                 renderItem={({ item, index }) => (
@@ -275,7 +272,7 @@ const ChatLiveScreen = (props) => {
                         message={item.message}
                         date={item.date}
                         profileImage={user.user_image}
-                        
+
 
                     />
                 )}
@@ -283,37 +280,33 @@ const ChatLiveScreen = (props) => {
             />
 
 
-            <KeyboardAvoidingView
-                behavior={'padding'}
-                keyboardVerticalOffset={86}
-            >
-                <View
-                    style={
-                        [styles.formInputWrap]
-                    }>
-                    <IconButton
-                        icon={CommonIcons.fileLink}
-                        color={CommonColors.primary}
-                        size={26}
-                        onPress={() => console.log('Pressed')}
-                    />
 
-                    <TextInput
-                        style={[styles.messageTextInput]}
-                        onChangeText={text => setSendValue(text)}
-                        value={sendValue}
-                        multiline={true}
+            <View
+                style={
+                    [styles.formInputWrap]
+                }>
+                <IconButton
+                    icon={CommonIcons.fileLink}
+                    color={CommonColors.primary}
+                    size={26}
+                    onPress={() => console.log('Pressed')}
+                />
 
-                    />
-                    <IconButton
-                        icon={CommonIcons.send}
-                        color={CommonColors.primary}
-                        size={26}
-                        onPress={_onSendMessage}
+                <TextInput
+                    style={[styles.messageTextInput]}
+                    onChangeText={text => setSendValue(text)}
+                    value={sendValue}
+                    multiline={true}
 
-                    />
-                </View>
-            </KeyboardAvoidingView>
+                />
+                <IconButton
+                    icon={CommonIcons.send}
+                    color={CommonColors.primary}
+                    size={26}
+                    onPress={_onSendMessage}
+
+                />
+            </View>
         </>
     )
 }
@@ -341,11 +334,11 @@ const styles = StyleSheet.create({
 
     },
     messageTextInput: {
-        height: 30,
+        height: 40,
         borderColor: 'gray',
         borderWidth: 0.2,
         margin: 6,
-        borderRadius: 22,
+        borderRadius: 4,
         width: '90%',
         paddingHorizontal: 8,
     },

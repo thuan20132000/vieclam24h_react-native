@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
         padding: 12,
         backgroundColor: CommonColors.btnSubmit,
         borderRadius: 6,
-        width: 120,
+        minWidth: 120,
         marginVertical: 22
     }
 })

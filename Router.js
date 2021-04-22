@@ -81,6 +81,7 @@ import MyServiceHomeScreen from './screens/MyServiceStack/MyServiceHomeScreen';
 import MyServiceCreateScreen from './screens/MyServiceStack/MyServiceCreateScreen';
 import OrderListScreen from './screens/OrderStack/OrderListScreen';
 import OrderDetailScreen from './screens/OrderStack/OrderDetailScreen';
+import OrderConfirmScreen from './screens/OrderStack/OrderConfirmScreen';
 
 
 
@@ -340,6 +341,14 @@ function NotificationStack() {
             <NotificationStackNavigator.Screen
                 name="OrderDetail"
                 component={OrderDetailScreen}
+            />
+            <NotificationStackNavigator.Screen
+                name="OrderConfirm"
+                component={OrderConfirmScreen}
+            />
+            <NotificationStackNavigator.Screen
+                name="Chat"
+                component={ChatLiveScreen}
             />
         </NotificationStackNavigator.Navigator>
     )
@@ -706,7 +715,7 @@ const MyServiceStack = () => {
  */
 
 const OrderStackNavigator = createStackNavigator();
-function OrderStack(){
+function OrderStack() {
     let option_slide = {
         title: "",
         gestureEnabled: false,
@@ -721,7 +730,7 @@ function OrderStack(){
                 name={"OrderList"}
                 component={OrderListScreen}
             />
-             <OrderStackNavigator.Screen
+            <OrderStackNavigator.Screen
                 name={"OrderDetail"}
                 component={OrderDetailScreen}
             />
@@ -814,7 +823,6 @@ function AccountStack() {
                 component={JobUserTrackingScreen}
                 options={option_slide}
             />
-
             <AccountStackNavigator.Screen
                 name="JobCandidateSelection"
                 component={JobCandidateSelectionScreen}

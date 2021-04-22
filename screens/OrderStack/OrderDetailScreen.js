@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, View, Dimensions, ScrollView, Image } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, ScrollView, Image, ActivityIndicator } from 'react-native'
 import OrderCart from './components/OrderCart'
 import StepIndicator from 'react-native-step-indicator';
 import CardUserContact from '../../components/Card/CardUserContact';
@@ -21,7 +21,7 @@ const OrderDetailScreen = (props) => {
     const { userInformation } = useSelector(state => state.authentication);
 
     const { booking_id } = props.route.params;
-
+    const [isLoading, setIsLoading] = React.useState(false);
     const labels = ["Ứng tuyển", "Chờ", "Chấp nhập", "Xác nhận", "Hoàn tất thanh toán"];
     const customStyles = {
         stepIndicatorSize: 25,
@@ -53,22 +53,26 @@ const OrderDetailScreen = (props) => {
 
 
     const _onUpdateTrackking = () => {
+
+        setIsLoading(true);
         _getCandidateBookingDetail(userInformation.id, booking_id)
             .then((res) => {
                 // console.log('res: ', res.data.data.order_tracking);
                 if (res.status) {
                     let trackking = res.data?.data?.order_tracking;
                     if (trackking && trackking.length > 0) {
-                        setBookingTracking(trackking.reverse());
+                        setBookingTracking(trackking);
                     }
                     setBookingInfo(res.data?.data?.order_info);
-                    // console.warn('trackking: ',res.data?.data?.order_info)
+                    // console.warn('trackking: ', res.data?.data?.order_info)
                 }
             })
             .catch((err) => {
-                console.log('error: ', err)
+                console.log('error: ', err);
             })
-            .finally(() => console.log('final '))
+            .finally(() => {
+                setIsLoading(false);
+            })
     }
 
 
@@ -98,13 +102,63 @@ const OrderDetailScreen = (props) => {
 
         try {
 
-            let fetchRes = await _updateServiceBooking(userInformation.id, booking_id, 'approved', 'Chấp nhận yêu cầu dịch vụ');
+            let fetchRes = await _updateServiceBooking(userInformation.id, booking_id, 'approved', 'Chấp nhận yêu cầu dịch vụ',"Chấp nhận yêu cầu dịch vụ");
+            
             if (fetchRes.status) {
                 _onUpdateTrackking();
+            }else{
+                console.warn('res: ',fetchRes)
             }
         } catch (error) {
             console.warn('error: ', error);
         }
+    }
+
+
+    const _onNavigateToConfirm = async () => {
+
+        props.navigation.navigate('OrderConfirm', {
+            order: bookingInfo
+        })
+    }
+
+
+    const _onSendRequestConfirm = async () => {
+        _updateServiceBooking(userInformation.id,booking_id,'request_confirm','yêu cầu xác nhận và đánh giá chất lượng dịch vụ','Vui lòng xác nhận dịch vụ ')
+        .then((res) => {
+            if(res.status){
+                _onUpdateTrackking();
+            }else{
+                console.warn('error: ',res);
+            }
+        })
+        .catch((err) => {
+            console.log('error: ',err)
+        })
+        .finally(() => {
+            console.log('finally');
+        })
+        
+    }
+
+
+
+    if (isLoading || !bookingInfo || !bookingTracking) {
+        return (
+            <View
+                style={{
+                    display: 'flex',
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}
+            >
+                <ActivityIndicator
+                    size={'large'}
+                    color={'coral'}
+                />
+            </View>
+        )
     }
 
     return (
@@ -153,7 +207,8 @@ const OrderDetailScreen = (props) => {
                         styles.section,
                         {
                             height: bookingTracking?.length * 120,
-                            minHeight: 80,
+                            minHeight: 160,
+                            paddingHorizontal: 6,
                             marginVertical: 22
                         }
                     ]}
@@ -203,30 +258,38 @@ const OrderDetailScreen = (props) => {
                             </View>
                         }
                     />
-                    <View
-                        style={[
-                            styles.row,
-                            {
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }
-                        ]}
-                    >
-                        <TouchableOpacity
-                            style={{
-                                margin:4,
-                                backgroundColor:CommonColors.btnSubmit,
-                                padding:12,
-                                borderRadius:4
-                            }}
+                    
+
+                    {
+                        (bookingInfo?.status == 'request_confirm' && userInformation.id != bookingInfo.candidate?.user) &&
+                        <View
+                            style={[
+                                styles.row,
+                                {
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }
+                            ]}
                         >
-                            <Text
-                                style={{fontSize:12,color:'white',fontWeight:'700'}}
+                            <TouchableOpacity
+                                style={{
+                                    margin: 4,
+                                    backgroundColor: CommonColors.btnSubmit,
+                                    padding: 12,
+                                    borderRadius: 4
+                                }}
+
+                                onPress={_onNavigateToConfirm}
                             >
-                                Xác nhận hoàn thành
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                                <Text
+                                    style={{ fontSize: 12, color: 'white', fontWeight: '700' }}
+                                >
+                                    Xác nhận hoàn thành
+                                    </Text>
+                            </TouchableOpacity>
+                        </View>
+
+                    }
 
                     {
                         (bookingTracking.length <= 1 && bookingInfo && userInformation.id == bookingInfo.candidate?.user) &&
@@ -236,7 +299,6 @@ const OrderDetailScreen = (props) => {
                                 flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                marginTop: 32
                             }}
                         >
                             <ButtonSubmit
@@ -246,6 +308,25 @@ const OrderDetailScreen = (props) => {
 
                         </View>
 
+                    }
+
+
+                    {
+                        (bookingInfo?.status == 'approved' && userInformation.id == bookingInfo.candidate?.user) &&
+                        <View
+                            style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}
+                        >
+                            <ButtonSubmit
+                                label={"gửi yêu cầu xác nhận"}
+                                onItemPress={_onSendRequestConfirm}
+                            />
+
+                        </View>
                     }
                 </View>
 
@@ -259,7 +340,7 @@ const OrderDetailScreen = (props) => {
                     }
                 ]}
                 icon={CommonIcons.chatMessage}
-                onPress={() => console.log('Pressed')}
+                onPress={() => props.navigation.navigate('Chat',{user:'s'})}
                 color={'white'}
             />
             <FAB

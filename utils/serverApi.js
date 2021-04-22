@@ -1674,7 +1674,7 @@ export const _getCandidateBookingDetail = async (candidate_id, booking_id) => {
 
 
 
-export const _updateServiceBooking = async (user_id, booking_id, booking_status, content) => {
+export const _updateServiceBooking = async (user_id, booking_id, booking_status, booking_content, booking_title) => {
     try {
 
         let url = `${api.api_v1}/user/${user_id}/booking/${booking_id}/update`;
@@ -1686,7 +1686,8 @@ export const _updateServiceBooking = async (user_id, booking_id, booking_status,
             },
             body: JSON.stringify({
                 booking_status: booking_status,
-                booking_content: content
+                booking_content: booking_content,
+                booking_title: booking_title
             })
         });
         if (!dataFetch.ok) {
@@ -1780,7 +1781,7 @@ export const _bookService = async (user_id, candidate_id, total_price, services_
 
 
 
-export const _updateUserNotificationToken = async (user_id,user_token) => {
+export const _updateUserNotificationToken = async (user_id, user_token) => {
 
     try {
 
@@ -1797,6 +1798,61 @@ export const _updateUserNotificationToken = async (user_id,user_token) => {
         });
         if (!dataFetch.ok) {
             console.warn('ERROR AT Upate Notification Token');
+
+            return {
+                data: [],
+                message: dataFetch,
+                status: false
+            }
+        }
+
+        let dataRes = await dataFetch.json();
+
+        if (!dataRes.status) {
+            return {
+                data: [],
+                message: dataRes,
+                status: false
+            }
+        }
+
+        return {
+            data: dataRes,
+            message: 'success',
+            status: true
+        }
+
+    } catch (error) {
+        return {
+            data: [],
+            message: 'error ' + error,
+            status: false
+        }
+    }
+}
+
+
+
+export const _confirmService = async (user_id, booking_id, booking_status, booking_title, booking_content, review_level, review_content) => {
+    try {
+
+        let url = `${api.api_v1}/user/${user_id}/booking/${booking_id}/confirm`;
+        let dataFetch = await fetch(`${url}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                booking_status: booking_status,
+                booking_title:booking_title,
+                booking_content:booking_content,
+                review_level:review_level,
+                review_content:review_content
+            })
+        });
+        if (!dataFetch.ok) {
+            console.warn('ERROR AT confirm service');
 
             return {
                 data: [],
